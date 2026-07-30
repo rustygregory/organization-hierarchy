@@ -69,6 +69,28 @@ const PersonaFieldWrapper = styled.div`
   min-width: 260px;
 `
 
+// Version switcher sits immediately left of the persona menu, so the two
+// prototype controls read as one group.
+const VersionOverlay = styled.div`
+  position: absolute;
+  top: 0;
+  right: 712px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  z-index: 10;
+`
+
+const VersionFieldWrapper = styled.div`
+  min-width: 200px;
+`
+
+const VERSIONS = [
+  { id: 'v1', label: 'V1 MVP' },
+  { id: 'v2', label: 'V2 with end-users' },
+  { id: 'v3', label: 'V3 Sans lines' },
+]
+
 export default function App() {
   // Product switcher stays pinned to Support for this prototype.
   const [currentProduct, setCurrentProduct] = useState('support')
@@ -80,6 +102,11 @@ export default function App() {
   const [personaId, setPersonaId] = useState(PERSONAS[0].id)
   const persona = getPersona(personaId)
 
+  // V1 MVP shows organizations only; V2 adds the end users inside them; V3 is
+  // V1 without row dividers, with the child count moved beside each name.
+  const [version, setVersion] = useState('v1')
+  const versionLabel = VERSIONS.find((option) => option.id === version)?.label
+
   return (
     <ThemeProvider>
       <PageContainer>
@@ -88,6 +115,27 @@ export default function App() {
           <TabBarOverlay>
             <TabBar title={persona.name} />
           </TabBarOverlay>
+          <VersionOverlay>
+            <VersionFieldWrapper>
+              <Field>
+                <Combobox
+                  isCompact
+                  isEditable={false}
+                  inputValue={versionLabel}
+                  selectionValue={version}
+                  onChange={({ selectionValue }) => {
+                    if (selectionValue) setVersion(selectionValue)
+                  }}
+                >
+                  {VERSIONS.map((option) => (
+                    <Option key={option.id} value={option.id} label={option.label}>
+                      {option.label}
+                    </Option>
+                  ))}
+                </Combobox>
+              </Field>
+            </VersionFieldWrapper>
+          </VersionOverlay>
           <PersonaOverlay>
             <PersonaFieldWrapper>
               <Field>
@@ -120,8 +168,8 @@ export default function App() {
           />
           <MainContent>
             {/* Remount on persona change so the tree's expand state resets to
-                all-collapsed for the new person. */}
-            <UserProfile key={persona.id} persona={persona} />
+                fully-open for the new person's subtree. */}
+            <UserProfile key={`${persona.id}-${version}`} persona={persona} version={version} />
           </MainContent>
         </ContentRow>
       </PageContainer>

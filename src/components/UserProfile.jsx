@@ -2,8 +2,7 @@ import { useState } from 'react'
 import styled from 'styled-components'
 import { Avatar } from '@zendeskgarden/react-avatars'
 import { Button } from '@zendeskgarden/react-buttons'
-import { XL } from '@zendeskgarden/react-typography'
-import { Tag } from '@zendeskgarden/react-tags'
+import { XXL } from '@zendeskgarden/react-typography'
 import OrganizationHierarchyTab from './OrganizationHierarchyTab'
 import { getOrganization } from '../data/hierarchy'
 
@@ -31,14 +30,14 @@ const PropertyGroup = styled.div`
 const PropertyLabel = styled.div`
   width: 88px;
   min-width: 88px;
-  font-size: 12px;
+  font-size: 14px;
   color: #646864;
   text-align: right;
   padding-top: 1px;
 `
 
 const PropertyValue = styled.div`
-  font-size: 13px;
+  font-size: 14px;
   color: #2f3130;
   word-break: break-word;
 `
@@ -69,14 +68,6 @@ const NameBlock = styled.div`
   gap: 2px;
   margin-right: auto;
   min-width: 0;
-`
-
-const RoleLine = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  color: #646864;
-  font-size: 13px;
 `
 
 const TabList = styled.div`
@@ -121,18 +112,23 @@ const Placeholder = styled.div`
   border-radius: 8px;
   background: #f7f7f7;
   color: #646864;
-  font-size: 13px;
+  font-size: 14px;
   text-align: center;
 `
 
-const initials = (name) =>
-  name
-    .split(' ')
-    .map((part) => part[0])
-    .slice(0, 2)
-    .join('')
+/* Garden's `user-solo-stroke`, inlined at 26px so it fills the large avatar the
+   way the real profile header does. Generic on purpose — the prototype switches
+   personas, and initials made each one look like a different account. */
+const PersonIcon = () => (
+  <svg width="26" height="26" viewBox="0 0 16 16" focusable="false" aria-hidden="true">
+    <g fill="none" stroke="currentColor" strokeWidth="1">
+      <circle cx="8" cy="5" r="3.5" />
+      <path strokeLinecap="round" d="M2.5 15.5c.3-2.8 2.6-5 5.5-5s5.2 2.2 5.5 5" />
+    </g>
+  </svg>
+)
 
-export default function UserProfile({ persona }) {
+export default function UserProfile({ persona, version = 'v1' }) {
   const [activeTab, setActiveTab] = useState('hierarchy')
 
   // The one organization this person is attached to. Under today's flat model
@@ -204,17 +200,13 @@ export default function UserProfile({ persona }) {
 
       <MainSection>
         <ProfileHeader>
-          <Avatar size="large">
-            <Avatar.Text>{initials(persona.name)}</Avatar.Text>
+          <Avatar size="large" backgroundColor="#646864" foregroundColor="#ffffff">
+            <PersonIcon />
           </Avatar>
           <NameBlock>
-            <XL tag="h1" style={{ fontWeight: 600, color: '#2f3130' }}>
+            <XXL tag="h1" style={{ color: '#2f3130' }}>
               {persona.name}
-            </XL>
-            <RoleLine>
-              <span>{persona.role}</span>
-              <Tag hue="grey">{persona.userType}</Tag>
-            </RoleLine>
+            </XXL>
           </NameBlock>
           <Button isPrimary>New ticket</Button>
         </ProfileHeader>
@@ -232,7 +224,7 @@ export default function UserProfile({ persona }) {
         </TabList>
 
         {activeTab === 'hierarchy' ? (
-          <OrganizationHierarchyTab persona={persona} />
+          <OrganizationHierarchyTab persona={persona} version={version} />
         ) : (
           <Placeholder>
             {activeLabel} is out of scope for this prototype — the exploration
