@@ -37,6 +37,16 @@ const RULE_COLOR = '#eae9e8'
    empty spacer everywhere else), so the rails sit at the same x on both. */
 const SELECTION_BAR_SLOT = 3
 
+/* The selected row's background: blue.100, the faintest step on Flora's primary
+   ramp. It's a tint rather than a fill — enough to read as a band across the row
+   at a glance, not enough to compete with the names sitting on it. Paired with
+   the bar so the two read as one marking.
+
+   Hover stays grey.100 so hovering a row never imitates selection; the selected
+   row keeps its own tint on hover rather than reverting to grey. */
+const SELECTED_ROW_BG = '#f3f6fb'
+const HOVER_ROW_BG = '#f7f7f7'
+
 /* Where a row's name text begins, measured from the left edge of the name
    cell — the point its horizontal rule starts from. */
 const ruleInsetFor = (depth) =>
@@ -128,12 +138,15 @@ const TreeTable = styled(Table)`
    V3 drops it entirely: the only line left running across the page is the one
    under the header, so the tree's own vertical guides carry the structure. */
 const TreeRow = styled(Row)`
-  &:hover {
-    background-color: #f7f7f7;
-  }
-
+  /* Set on the cells rather than the row: Garden gives its own cells a
+     background, which would paint over a colour set on the row itself. */
   td {
     position: relative;
+    background-color: ${(props) => (props.$selected ? SELECTED_ROW_BG : 'transparent')};
+  }
+
+  &:hover td {
+    background-color: ${(props) => (props.$selected ? SELECTED_ROW_BG : HOVER_ROW_BG)};
   }
 
   ${(props) =>
