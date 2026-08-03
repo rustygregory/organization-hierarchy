@@ -995,11 +995,11 @@ Error generating stack: `+e.message+`
   line-height: 1;
   white-space: nowrap;
   flex-shrink: 0;
-`,Vy=[{id:`td-synnex`,name:`TD Synnex`,type:`Reseller Network`,parentId:null},{id:`reseller-a`,name:`Reseller A`,type:`Service Provider`,parentId:`td-synnex`},{id:`bramblewick`,name:`Bramblewick University`,type:`Company`,parentId:`reseller-a`},{id:`computer-science`,name:`Computer Science`,type:`Cost Center`,parentId:`bramblewick`},{id:`artificial-intelligence`,name:`Artificial Intelligence`,type:`Cost Center`,parentId:`computer-science`},{id:`machine-learning-lab`,name:`Machine Learning Lab`,type:`Supervisory`,parentId:`artificial-intelligence`},{id:`natural-language-lab`,name:`Natural Language Lab`,type:`Supervisory`,parentId:`artificial-intelligence`},{id:`robotics-lab`,name:`Robotics Lab`,type:`Supervisory`,parentId:`artificial-intelligence`},{id:`speech-processing-group`,name:`Speech Processing Group`,type:`Supervisory`,parentId:`natural-language-lab`},{id:`transcription-team`,name:`Transcription Team`,type:`Supervisory`,parentId:`speech-processing-group`},{id:`neural-networks-group`,name:`Neural Networks Group`,type:`Supervisory`,parentId:`machine-learning-lab`},{id:`deep-learning-unit`,name:`Deep Learning Unit`,type:`Supervisory`,parentId:`neural-networks-group`},{id:`computer-vision-team`,name:`Computer Vision Team`,type:`Supervisory`,parentId:`deep-learning-unit`},{id:`speech-recognition-team`,name:`Speech Recognition Team`,type:`Supervisory`,parentId:`deep-learning-unit`},{id:`image-recognition-squad`,name:`Image Recognition Squad`,type:`Supervisory`,parentId:`computer-vision-team`},{id:`model-training-pod`,name:`Model Training Pod`,type:`Supervisory`,parentId:`image-recognition-squad`},{id:`gpu-cluster-ops`,name:`GPU Cluster Ops`,type:`Supervisory`,parentId:`model-training-pod`},{id:`dataset-curation-pod`,name:`Dataset Curation Pod`,type:`Supervisory`,parentId:`model-training-pod`},{id:`evaluation-pod`,name:`Evaluation Pod`,type:`Supervisory`,parentId:`model-training-pod`},{id:`inference-serving-pod`,name:`Inference Serving Pod`,type:`Supervisory`,parentId:`model-training-pod`},{id:`mathematics`,name:`Mathematics`,type:`Cost Center`,parentId:`bramblewick`},{id:`applied-mathematics`,name:`Applied Mathematics`,type:`Cost Center`,parentId:`mathematics`},{id:`pure-mathematics`,name:`Pure Mathematics`,type:`Cost Center`,parentId:`mathematics`},{id:`statistics`,name:`Statistics`,type:`Cost Center`,parentId:`mathematics`},{id:`numerical-analysis-group`,name:`Numerical Analysis Group`,type:`Cost Center`,parentId:`applied-mathematics`},{id:`simulation-team`,name:`Simulation Team`,type:`Supervisory`,parentId:`numerical-analysis-group`},{id:`engineering`,name:`Engineering`,type:`Cost Center Hierarchy`,parentId:`bramblewick`},{id:`mobile-app-team`,name:`Mobile App Team`,type:`Supervisory`,parentId:`engineering`},{id:`ios-squad`,name:`iOS Squad`,type:`Supervisory`,parentId:`mobile-app-team`},{id:`build-release`,name:`Build & Release`,type:`Supervisory`,parentId:`ios-squad`},{id:`380-applications`,name:`380 Applications`,type:`Cost Center`,parentId:`engineering`},{id:`saas-product`,name:`SaaS Product`,type:`Company`,parentId:`reseller-a`},{id:`dept-1`,name:`Dept 1`,type:`Cost Center`,parentId:`saas-product`},{id:`dept-2`,name:`Dept 2`,type:`Cost Center`,parentId:`saas-product`},{id:`dept-3`,name:`Dept 3`,type:`Cost Center`,parentId:`saas-product`}],Hy=[{id:`adrian-whitlock`,name:`Adrian Whitlock`,type:`Agent`,title:`Head of Engineering`,orgIds:[`bramblewick`]},{id:`priya-raman`,name:`Priya Raman`,type:`Agent`,title:`IT Director`,orgIds:[`bramblewick`]},{id:`helen-osei`,name:`Helen Osei`,type:`End user`,title:`Registrar`,orgIds:[`bramblewick`]},{id:`rachel-martinez`,name:`Rachel Martinez`,type:`End user`,title:`Professor`,orgIds:[`computer-science`]},{id:`daniel-okafor`,name:`Daniel Okafor`,type:`End user`,title:`Associate Professor`,orgIds:[`computer-science`]},{id:`sofia-almeida`,name:`Sofia Almeida`,type:`End user`,title:`Lab Manager`,orgIds:[`computer-science`]},{id:`wei-zhang`,name:`Wei Zhang`,type:`End user`,title:`Teaching Assistant`,orgIds:[`computer-science`]},{id:`amara-diallo`,name:`Amara Diallo`,type:`End user`,title:`Graduate Researcher`,orgIds:[`computer-science`]},{id:`theodore-abiodun`,name:`Theodore Abiodun`,type:`End user`,title:`Research Director`,orgIds:[`artificial-intelligence`]},{id:`saoirse-flanagan`,name:`Saoirse Flanagan`,type:`End user`,title:`Senior Researcher`,orgIds:[`artificial-intelligence`]},{id:`hiroshi-nakamura`,name:`Hiroshi Nakamura`,type:`End user`,title:`Lecturer`,orgIds:[`artificial-intelligence`]},{id:`valentina-rossi`,name:`Valentina Rossi`,type:`End user`,title:`Lab Director`,orgIds:[`machine-learning-lab`]},{id:`obinna-eze`,name:`Obinna Eze`,type:`End user`,title:`Research Engineer`,orgIds:[`machine-learning-lab`]},{id:`freya-lindholm`,name:`Freya Lindholm`,type:`End user`,title:`Doctoral Candidate`,orgIds:[`machine-learning-lab`]},{id:`anneke-vos`,name:`Anneke Vos`,type:`End user`,title:`Group Lead`,orgIds:[`neural-networks-group`]},{id:`mateo-guerrero`,name:`Mateo Guerrero`,type:`End user`,title:`Research Scientist`,orgIds:[`neural-networks-group`]},{id:`lena-fischer`,name:`Lena Fischer`,type:`End user`,title:`Unit Lead`,orgIds:[`deep-learning-unit`]},{id:`kwame-asante`,name:`Kwame Asante`,type:`End user`,title:`ML Engineer`,orgIds:[`deep-learning-unit`]},{id:`siobhan-doherty`,name:`Siobhan Doherty`,type:`End user`,title:`Team Lead`,orgIds:[`computer-vision-team`]},{id:`raul-mendoza`,name:`Raul Mendoza`,type:`End user`,title:`Vision Researcher`,orgIds:[`computer-vision-team`]},{id:`thandiwe-mokoena`,name:`Thandiwe Mokoena`,type:`End user`,title:`Postdoctoral Researcher`,orgIds:[`computer-vision-team`]},{id:`georgi-ivanov`,name:`Georgi Ivanov`,type:`End user`,title:`Research Assistant`,orgIds:[`neural-networks-group`]},{id:`amelie-caron`,name:`Amelie Caron`,type:`End user`,title:`Doctoral Candidate`,orgIds:[`deep-learning-unit`]},{id:`chiara-bellini`,name:`Chiara Bellini`,type:`End user`,title:`Squad Lead`,orgIds:[`image-recognition-squad`]},{id:`tobias-lang`,name:`Tobias Lang`,type:`End user`,title:`Data Annotator`,orgIds:[`image-recognition-squad`]},{id:`nour-haddad`,name:`Nour Haddad`,type:`End user`,title:`Training Lead`,orgIds:[`model-training-pod`]},{id:`evgeni-petrov`,name:`Evgeni Petrov`,type:`End user`,title:`Pipeline Engineer`,orgIds:[`model-training-pod`]},{id:`marisol-reyes`,name:`Marisol Reyes`,type:`End user`,title:`Cluster Administrator`,orgIds:[`gpu-cluster-ops`]},{id:`declan-byrne`,name:`Declan Byrne`,type:`End user`,title:`Infrastructure Engineer`,orgIds:[`gpu-cluster-ops`]},{id:`ingrid-halvorsen`,name:`Ingrid Halvorsen`,type:`End user`,title:`Lab Director`,orgIds:[`natural-language-lab`]},{id:`oscar-delgado`,name:`Oscar Delgado`,type:`End user`,title:`Computational Linguist`,orgIds:[`natural-language-lab`]},{id:`yara-nasser`,name:`Yara Nasser`,type:`End user`,title:`Lab Director`,orgIds:[`robotics-lab`]},{id:`pavel-novak`,name:`Pavel Novak`,type:`End user`,title:`Robotics Engineer`,orgIds:[`robotics-lab`]},{id:`linnea-berg`,name:`Linnea Berg`,type:`End user`,title:`Group Lead`,orgIds:[`speech-processing-group`]},{id:`hassan-qureshi`,name:`Hassan Qureshi`,type:`End user`,title:`Speech Scientist`,orgIds:[`speech-processing-group`]},{id:`juliet-adeyinka`,name:`Juliet Adeyinka`,type:`End user`,title:`Transcription Lead`,orgIds:[`transcription-team`]},{id:`karin-lindgren`,name:`Karin Lindgren`,type:`End user`,title:`Team Lead`,orgIds:[`speech-recognition-team`]},{id:`diego-salazar`,name:`Diego Salazar`,type:`End user`,title:`Audio Engineer`,orgIds:[`speech-recognition-team`]},{id:`noor-rahman`,name:`Noor Rahman`,type:`End user`,title:`Curation Lead`,orgIds:[`dataset-curation-pod`]},{id:`esther-mwangi`,name:`Esther Mwangi`,type:`End user`,title:`Data Steward`,orgIds:[`dataset-curation-pod`]},{id:`viktor-sorensen`,name:`Viktor Sorensen`,type:`End user`,title:`Evaluation Lead`,orgIds:[`evaluation-pod`]},{id:`aria-behzadi`,name:`Aria Behzadi`,type:`End user`,title:`Serving Engineer`,orgIds:[`inference-serving-pod`]},{id:`ottoline-frank`,name:`Ottoline Frank`,type:`End user`,title:`Professor`,orgIds:[`pure-mathematics`]},{id:`mikael-sundberg`,name:`Mikael Sundberg`,type:`End user`,title:`Lecturer`,orgIds:[`pure-mathematics`]},{id:`chandra-iyer`,name:`Chandra Iyer`,type:`End user`,title:`Head of Statistics`,orgIds:[`statistics`]},{id:`lorna-fitzgerald`,name:`Lorna Fitzgerald`,type:`End user`,title:`Biostatistician`,orgIds:[`statistics`]},{id:`emeka-nwosu`,name:`Emeka Nwosu`,type:`End user`,title:`Group Lead`,orgIds:[`numerical-analysis-group`]},{id:`sanne-de-vries`,name:`Sanne de Vries`,type:`End user`,title:`Numerical Analyst`,orgIds:[`numerical-analysis-group`]},{id:`gustavo-pinto`,name:`Gustavo Pinto`,type:`End user`,title:`Simulation Engineer`,orgIds:[`simulation-team`]},{id:`jonas-lindqvist`,name:`Jonas Lindqvist`,type:`End user`,title:`Professor`,orgIds:[`mathematics`]},{id:`nadia-haddad`,name:`Nadia Haddad`,type:`End user`,title:`Lecturer`,orgIds:[`mathematics`]},{id:`tomas-varga`,name:`Tomas Varga`,type:`End user`,title:`Teaching Assistant`,orgIds:[`mathematics`]},{id:`grace-mbeki`,name:`Grace Mbeki`,type:`End user`,title:`Department Coordinator`,orgIds:[`mathematics`]},{id:`ruth-castellanos`,name:`Ruth Castellanos`,type:`End user`,title:`Research Fellow`,orgIds:[`applied-mathematics`]},{id:`benedikt-hofer`,name:`Benedikt Hofer`,type:`End user`,title:`Statistician`,orgIds:[`applied-mathematics`]},{id:`priscilla-adeyemi`,name:`Priscilla Adeyemi`,type:`End user`,title:`Postdoctoral Researcher`,orgIds:[`applied-mathematics`]},{id:`oliver-brandt`,name:`Oliver Brandt`,type:`End user`,title:`Department Administrator`,orgIds:[`engineering`]},{id:`dana-whitfield`,name:`Dana Whitfield`,type:`End user`,title:`Faculty Lead`,orgIds:[`engineering`]},{id:`samir-patel`,name:`Samir Patel`,type:`End user`,title:`Professor`,orgIds:[`engineering`]},{id:`tim-mclean`,name:`Tim McLean`,type:`End user`,title:`Engineering Manager`,orgIds:[`mobile-app-team`]},{id:`yuki-tanaka`,name:`Yuki Tanaka`,type:`End user`,title:`iOS Developer`,orgIds:[`mobile-app-team`]},{id:`lucas-ferreira`,name:`Lucas Ferreira`,type:`End user`,title:`Android Developer`,orgIds:[`mobile-app-team`]},{id:`hannah-mcgrath`,name:`Hannah McGrath`,type:`End user`,title:`QA Engineer`,orgIds:[`mobile-app-team`]},{id:`felix-nordstrom`,name:`Felix Nordstrom`,type:`End user`,title:`Squad Lead`,orgIds:[`ios-squad`]},{id:`rosalind-akana`,name:`Rosalind Akana`,type:`End user`,title:`Senior iOS Engineer`,orgIds:[`ios-squad`]},{id:`devon-marsh`,name:`Devon Marsh`,type:`End user`,title:`iOS Engineer`,orgIds:[`ios-squad`]},{id:`ingrid-solberg`,name:`Ingrid Solberg`,type:`End user`,title:`Release Manager`,orgIds:[`build-release`]},{id:`callum-baptiste`,name:`Callum Baptiste`,type:`End user`,title:`Build Engineer`,orgIds:[`build-release`]},{id:`ines-moreau`,name:`Ines Moreau`,type:`End user`,title:`Applications Analyst`,orgIds:[`380-applications`]},{id:`kofi-mensah`,name:`Kofi Mensah`,type:`End user`,title:`Systems Engineer`,orgIds:[`380-applications`]},{id:`elena-petrova`,name:`Elena Petrova`,type:`End user`,title:`Integrations Lead`,orgIds:[`380-applications`]},{id:`ryan-doyle`,name:`Ryan Doyle`,type:`End user`,title:`Support Analyst`,orgIds:[`380-applications`]},{id:`aisha-karim`,name:`Aisha Karim`,type:`End user`,title:`Database Administrator`,orgIds:[`380-applications`]},{id:`gordon-alvarez`,name:`Gordon Alvarez`,type:`Agent`,title:`Service Provider Support Engineer`,orgIds:[`reseller-a`]},{id:`beatrice-nowak`,name:`Beatrice Nowak`,type:`Agent`,title:`Account Manager`,orgIds:[`reseller-a`]},{id:`victor-hale`,name:`Victor Hale`,type:`End user`,title:`Operations Lead`,orgIds:[`saas-product`]},{id:`mei-lin`,name:`Mei Lin`,type:`End user`,title:`Product Owner`,orgIds:[`dept-1`]},{id:`andre-silva`,name:`Andre Silva`,type:`End user`,title:`Support Specialist`,orgIds:[`dept-1`]},{id:`claire-dubois`,name:`Claire Dubois`,type:`End user`,title:`Billing Analyst`,orgIds:[`dept-2`]},{id:`omar-farouk`,name:`Omar Farouk`,type:`End user`,title:`Implementation Consultant`,orgIds:[`dept-2`]},{id:`natalie-cross`,name:`Natalie Cross`,type:`End user`,title:`Customer Success Manager`,orgIds:[`dept-3`]},{id:`peter-shaw`,name:`Peter Shaw`,type:`End user`,title:`Technical Writer`,orgIds:[`dept-3`]}],Uy=e=>Vy.find(t=>t.id===e),Wy=e=>Vy.filter(t=>t.parentId===e),Gy=e=>Hy.filter(t=>t.orgIds.includes(e)),Ky=e=>Wy(e).flatMap(e=>[e.id,...Ky(e.id)]),qy=e=>{let t=Uy(e);return t?t.parentId?[...qy(t.parentId),t]:[t]:[]},Jy=e=>[e,...Ky(e)].reduce((e,t)=>e+Gy(t).length,0),Yy=24,Xy=10,Zy=4,Qy=20,$y=`#eae9e8`,eb=3,tb=e=>15+e*Yy+Qy+Zy,nb=V.div`
+`,Vy=[{id:`td-synnex`,name:`TD Synnex`,type:`Reseller Network`,parentId:null},{id:`reseller-a`,name:`Reseller A`,type:`Service Provider`,parentId:`td-synnex`},{id:`bramblewick`,name:`Bramblewick University`,type:`Company`,parentId:`reseller-a`},{id:`computer-science`,name:`Computer Science`,type:`Cost Center`,parentId:`bramblewick`},{id:`artificial-intelligence`,name:`Artificial Intelligence`,type:`Cost Center`,parentId:`computer-science`},{id:`machine-learning-lab`,name:`Machine Learning Lab`,type:`Supervisory`,parentId:`artificial-intelligence`},{id:`natural-language-lab`,name:`Natural Language Lab`,type:`Supervisory`,parentId:`artificial-intelligence`},{id:`robotics-lab`,name:`Robotics Lab`,type:`Supervisory`,parentId:`artificial-intelligence`},{id:`speech-processing-group`,name:`Speech Processing Group`,type:`Supervisory`,parentId:`natural-language-lab`},{id:`transcription-team`,name:`Transcription Team`,type:`Supervisory`,parentId:`speech-processing-group`},{id:`neural-networks-group`,name:`Neural Networks Group`,type:`Supervisory`,parentId:`machine-learning-lab`},{id:`deep-learning-unit`,name:`Deep Learning Unit`,type:`Supervisory`,parentId:`neural-networks-group`},{id:`computer-vision-team`,name:`Computer Vision Team`,type:`Supervisory`,parentId:`deep-learning-unit`},{id:`speech-recognition-team`,name:`Speech Recognition Team`,type:`Supervisory`,parentId:`deep-learning-unit`},{id:`image-recognition-squad`,name:`Image Recognition Squad`,type:`Supervisory`,parentId:`computer-vision-team`},{id:`model-training-pod`,name:`Model Training Pod`,type:`Supervisory`,parentId:`image-recognition-squad`},{id:`gpu-cluster-ops`,name:`GPU Cluster Ops`,type:`Supervisory`,parentId:`model-training-pod`},{id:`dataset-curation-pod`,name:`Dataset Curation Pod`,type:`Supervisory`,parentId:`model-training-pod`},{id:`evaluation-pod`,name:`Evaluation Pod`,type:`Supervisory`,parentId:`model-training-pod`},{id:`inference-serving-pod`,name:`Inference Serving Pod`,type:`Supervisory`,parentId:`model-training-pod`},{id:`mathematics`,name:`Mathematics`,type:`Cost Center`,parentId:`bramblewick`},{id:`applied-mathematics`,name:`Applied Mathematics`,type:`Cost Center`,parentId:`mathematics`},{id:`pure-mathematics`,name:`Pure Mathematics`,type:`Cost Center`,parentId:`mathematics`},{id:`statistics`,name:`Statistics`,type:`Cost Center`,parentId:`mathematics`},{id:`numerical-analysis-group`,name:`Numerical Analysis Group`,type:`Cost Center`,parentId:`applied-mathematics`},{id:`simulation-team`,name:`Simulation Team`,type:`Supervisory`,parentId:`numerical-analysis-group`},{id:`engineering`,name:`Engineering`,type:`Cost Center Hierarchy`,parentId:`bramblewick`},{id:`mobile-app-team`,name:`Mobile App Team`,type:`Supervisory`,parentId:`engineering`},{id:`ios-squad`,name:`iOS Squad`,type:`Supervisory`,parentId:`mobile-app-team`},{id:`build-release`,name:`Build & Release`,type:`Supervisory`,parentId:`ios-squad`},{id:`380-applications`,name:`380 Applications`,type:`Cost Center`,parentId:`engineering`},{id:`saas-product`,name:`SaaS Product`,type:`Company`,parentId:`reseller-a`},{id:`dept-1`,name:`Dept 1`,type:`Cost Center`,parentId:`saas-product`},{id:`dept-2`,name:`Dept 2`,type:`Cost Center`,parentId:`saas-product`},{id:`dept-3`,name:`Dept 3`,type:`Cost Center`,parentId:`saas-product`}],Hy=[{id:`adrian-whitlock`,name:`Adrian Whitlock`,type:`Agent`,title:`Head of Engineering`,orgIds:[`bramblewick`]},{id:`priya-raman`,name:`Priya Raman`,type:`Agent`,title:`IT Director`,orgIds:[`bramblewick`]},{id:`helen-osei`,name:`Helen Osei`,type:`End user`,title:`Registrar`,orgIds:[`bramblewick`]},{id:`rachel-martinez`,name:`Rachel Martinez`,type:`End user`,title:`Professor`,orgIds:[`computer-science`]},{id:`daniel-okafor`,name:`Daniel Okafor`,type:`End user`,title:`Associate Professor`,orgIds:[`computer-science`]},{id:`sofia-almeida`,name:`Sofia Almeida`,type:`End user`,title:`Lab Manager`,orgIds:[`computer-science`]},{id:`wei-zhang`,name:`Wei Zhang`,type:`End user`,title:`Teaching Assistant`,orgIds:[`computer-science`]},{id:`amara-diallo`,name:`Amara Diallo`,type:`End user`,title:`Graduate Researcher`,orgIds:[`computer-science`]},{id:`theodore-abiodun`,name:`Theodore Abiodun`,type:`End user`,title:`Research Director`,orgIds:[`artificial-intelligence`]},{id:`saoirse-flanagan`,name:`Saoirse Flanagan`,type:`End user`,title:`Senior Researcher`,orgIds:[`artificial-intelligence`]},{id:`hiroshi-nakamura`,name:`Hiroshi Nakamura`,type:`End user`,title:`Lecturer`,orgIds:[`artificial-intelligence`]},{id:`valentina-rossi`,name:`Valentina Rossi`,type:`End user`,title:`Lab Director`,orgIds:[`machine-learning-lab`]},{id:`obinna-eze`,name:`Obinna Eze`,type:`End user`,title:`Research Engineer`,orgIds:[`machine-learning-lab`]},{id:`freya-lindholm`,name:`Freya Lindholm`,type:`End user`,title:`Doctoral Candidate`,orgIds:[`machine-learning-lab`]},{id:`anneke-vos`,name:`Anneke Vos`,type:`End user`,title:`Group Lead`,orgIds:[`neural-networks-group`]},{id:`mateo-guerrero`,name:`Mateo Guerrero`,type:`End user`,title:`Research Scientist`,orgIds:[`neural-networks-group`]},{id:`lena-fischer`,name:`Lena Fischer`,type:`End user`,title:`Unit Lead`,orgIds:[`deep-learning-unit`]},{id:`kwame-asante`,name:`Kwame Asante`,type:`End user`,title:`ML Engineer`,orgIds:[`deep-learning-unit`]},{id:`siobhan-doherty`,name:`Siobhan Doherty`,type:`End user`,title:`Team Lead`,orgIds:[`computer-vision-team`]},{id:`raul-mendoza`,name:`Raul Mendoza`,type:`End user`,title:`Vision Researcher`,orgIds:[`computer-vision-team`]},{id:`thandiwe-mokoena`,name:`Thandiwe Mokoena`,type:`End user`,title:`Postdoctoral Researcher`,orgIds:[`computer-vision-team`]},{id:`georgi-ivanov`,name:`Georgi Ivanov`,type:`End user`,title:`Research Assistant`,orgIds:[`neural-networks-group`]},{id:`amelie-caron`,name:`Amelie Caron`,type:`End user`,title:`Doctoral Candidate`,orgIds:[`deep-learning-unit`]},{id:`chiara-bellini`,name:`Chiara Bellini`,type:`End user`,title:`Squad Lead`,orgIds:[`image-recognition-squad`]},{id:`tobias-lang`,name:`Tobias Lang`,type:`End user`,title:`Data Annotator`,orgIds:[`image-recognition-squad`]},{id:`nour-haddad`,name:`Nour Haddad`,type:`End user`,title:`Training Lead`,orgIds:[`model-training-pod`]},{id:`evgeni-petrov`,name:`Evgeni Petrov`,type:`End user`,title:`Pipeline Engineer`,orgIds:[`model-training-pod`]},{id:`marisol-reyes`,name:`Marisol Reyes`,type:`End user`,title:`Cluster Administrator`,orgIds:[`gpu-cluster-ops`]},{id:`declan-byrne`,name:`Declan Byrne`,type:`End user`,title:`Infrastructure Engineer`,orgIds:[`gpu-cluster-ops`]},{id:`ingrid-halvorsen`,name:`Ingrid Halvorsen`,type:`End user`,title:`Lab Director`,orgIds:[`natural-language-lab`]},{id:`oscar-delgado`,name:`Oscar Delgado`,type:`End user`,title:`Computational Linguist`,orgIds:[`natural-language-lab`]},{id:`yara-nasser`,name:`Yara Nasser`,type:`End user`,title:`Lab Director`,orgIds:[`robotics-lab`]},{id:`pavel-novak`,name:`Pavel Novak`,type:`End user`,title:`Robotics Engineer`,orgIds:[`robotics-lab`]},{id:`linnea-berg`,name:`Linnea Berg`,type:`End user`,title:`Group Lead`,orgIds:[`speech-processing-group`]},{id:`hassan-qureshi`,name:`Hassan Qureshi`,type:`End user`,title:`Speech Scientist`,orgIds:[`speech-processing-group`]},{id:`juliet-adeyinka`,name:`Juliet Adeyinka`,type:`End user`,title:`Transcription Lead`,orgIds:[`transcription-team`]},{id:`karin-lindgren`,name:`Karin Lindgren`,type:`End user`,title:`Team Lead`,orgIds:[`speech-recognition-team`]},{id:`diego-salazar`,name:`Diego Salazar`,type:`End user`,title:`Audio Engineer`,orgIds:[`speech-recognition-team`]},{id:`noor-rahman`,name:`Noor Rahman`,type:`End user`,title:`Curation Lead`,orgIds:[`dataset-curation-pod`]},{id:`esther-mwangi`,name:`Esther Mwangi`,type:`End user`,title:`Data Steward`,orgIds:[`dataset-curation-pod`]},{id:`viktor-sorensen`,name:`Viktor Sorensen`,type:`End user`,title:`Evaluation Lead`,orgIds:[`evaluation-pod`]},{id:`aria-behzadi`,name:`Aria Behzadi`,type:`End user`,title:`Serving Engineer`,orgIds:[`inference-serving-pod`]},{id:`ottoline-frank`,name:`Ottoline Frank`,type:`End user`,title:`Professor`,orgIds:[`pure-mathematics`]},{id:`mikael-sundberg`,name:`Mikael Sundberg`,type:`End user`,title:`Lecturer`,orgIds:[`pure-mathematics`]},{id:`chandra-iyer`,name:`Chandra Iyer`,type:`End user`,title:`Head of Statistics`,orgIds:[`statistics`]},{id:`lorna-fitzgerald`,name:`Lorna Fitzgerald`,type:`End user`,title:`Biostatistician`,orgIds:[`statistics`]},{id:`emeka-nwosu`,name:`Emeka Nwosu`,type:`End user`,title:`Group Lead`,orgIds:[`numerical-analysis-group`]},{id:`sanne-de-vries`,name:`Sanne de Vries`,type:`End user`,title:`Numerical Analyst`,orgIds:[`numerical-analysis-group`]},{id:`gustavo-pinto`,name:`Gustavo Pinto`,type:`End user`,title:`Simulation Engineer`,orgIds:[`simulation-team`]},{id:`jonas-lindqvist`,name:`Jonas Lindqvist`,type:`End user`,title:`Professor`,orgIds:[`mathematics`]},{id:`nadia-haddad`,name:`Nadia Haddad`,type:`End user`,title:`Lecturer`,orgIds:[`mathematics`]},{id:`tomas-varga`,name:`Tomas Varga`,type:`End user`,title:`Teaching Assistant`,orgIds:[`mathematics`]},{id:`grace-mbeki`,name:`Grace Mbeki`,type:`End user`,title:`Department Coordinator`,orgIds:[`mathematics`]},{id:`ruth-castellanos`,name:`Ruth Castellanos`,type:`End user`,title:`Research Fellow`,orgIds:[`applied-mathematics`]},{id:`benedikt-hofer`,name:`Benedikt Hofer`,type:`End user`,title:`Statistician`,orgIds:[`applied-mathematics`]},{id:`priscilla-adeyemi`,name:`Priscilla Adeyemi`,type:`End user`,title:`Postdoctoral Researcher`,orgIds:[`applied-mathematics`]},{id:`oliver-brandt`,name:`Oliver Brandt`,type:`End user`,title:`Department Administrator`,orgIds:[`engineering`]},{id:`dana-whitfield`,name:`Dana Whitfield`,type:`End user`,title:`Faculty Lead`,orgIds:[`engineering`]},{id:`samir-patel`,name:`Samir Patel`,type:`End user`,title:`Professor`,orgIds:[`engineering`]},{id:`tim-mclean`,name:`Tim McLean`,type:`End user`,title:`Engineering Manager`,orgIds:[`mobile-app-team`]},{id:`yuki-tanaka`,name:`Yuki Tanaka`,type:`End user`,title:`iOS Developer`,orgIds:[`mobile-app-team`]},{id:`lucas-ferreira`,name:`Lucas Ferreira`,type:`End user`,title:`Android Developer`,orgIds:[`mobile-app-team`]},{id:`hannah-mcgrath`,name:`Hannah McGrath`,type:`End user`,title:`QA Engineer`,orgIds:[`mobile-app-team`]},{id:`felix-nordstrom`,name:`Felix Nordstrom`,type:`End user`,title:`Squad Lead`,orgIds:[`ios-squad`]},{id:`rosalind-akana`,name:`Rosalind Akana`,type:`End user`,title:`Senior iOS Engineer`,orgIds:[`ios-squad`]},{id:`devon-marsh`,name:`Devon Marsh`,type:`End user`,title:`iOS Engineer`,orgIds:[`ios-squad`]},{id:`ingrid-solberg`,name:`Ingrid Solberg`,type:`End user`,title:`Release Manager`,orgIds:[`build-release`]},{id:`callum-baptiste`,name:`Callum Baptiste`,type:`End user`,title:`Build Engineer`,orgIds:[`build-release`]},{id:`ines-moreau`,name:`Ines Moreau`,type:`End user`,title:`Applications Analyst`,orgIds:[`380-applications`]},{id:`kofi-mensah`,name:`Kofi Mensah`,type:`End user`,title:`Systems Engineer`,orgIds:[`380-applications`]},{id:`elena-petrova`,name:`Elena Petrova`,type:`End user`,title:`Integrations Lead`,orgIds:[`380-applications`]},{id:`ryan-doyle`,name:`Ryan Doyle`,type:`End user`,title:`Support Analyst`,orgIds:[`380-applications`]},{id:`aisha-karim`,name:`Aisha Karim`,type:`End user`,title:`Database Administrator`,orgIds:[`380-applications`]},{id:`gordon-alvarez`,name:`Gordon Alvarez`,type:`Agent`,title:`Service Provider Support Engineer`,orgIds:[`reseller-a`]},{id:`beatrice-nowak`,name:`Beatrice Nowak`,type:`Agent`,title:`Account Manager`,orgIds:[`reseller-a`]},{id:`victor-hale`,name:`Victor Hale`,type:`End user`,title:`Operations Lead`,orgIds:[`saas-product`]},{id:`mei-lin`,name:`Mei Lin`,type:`End user`,title:`Product Owner`,orgIds:[`dept-1`]},{id:`andre-silva`,name:`Andre Silva`,type:`End user`,title:`Support Specialist`,orgIds:[`dept-1`]},{id:`claire-dubois`,name:`Claire Dubois`,type:`End user`,title:`Billing Analyst`,orgIds:[`dept-2`]},{id:`omar-farouk`,name:`Omar Farouk`,type:`End user`,title:`Implementation Consultant`,orgIds:[`dept-2`]},{id:`natalie-cross`,name:`Natalie Cross`,type:`End user`,title:`Customer Success Manager`,orgIds:[`dept-3`]},{id:`peter-shaw`,name:`Peter Shaw`,type:`End user`,title:`Technical Writer`,orgIds:[`dept-3`]}],Uy=e=>Vy.find(t=>t.id===e),Wy=e=>Vy.filter(t=>t.parentId===e),Gy=e=>Hy.filter(t=>t.orgIds.includes(e)),Ky=e=>Wy(e).flatMap(e=>[e.id,...Ky(e.id)]),qy=e=>{let t=Uy(e);return t?t.parentId?[...qy(t.parentId),t]:[t]:[]},Jy=e=>[e,...Ky(e)].reduce((e,t)=>e+Gy(t).length,0),Yy=24,Xy=10,Zy=4,Qy=20,$y=`#eae9e8`,eb=3,tb=`#f3f6fb`,nb=`#f7f7f7`,rb=e=>15+e*Yy+Qy+Zy,ib=V.div`
   padding: 24px 32px 40px;
   overflow-y: auto;
   flex: 1;
-`,rb=V(sm)`
+`,ab=V(sm)`
   width: 450px;
   margin-bottom: 20px;
 
@@ -1012,19 +1012,19 @@ Error generating stack: `+e.message+`
   [data-garden-id='forms.input'] {
     height: 100%;
   }
-`,ib=V(am)`
+`,ob=V(am)`
   font-size: 14px;
   font-weight: 600;
   color: #2f3130;
   margin-bottom: 4px;
-`,ab=V(Ko)`
+`,sb=V(Ko)`
   display: block;
   color: #646864;
   font-size: 14px;
   white-space: nowrap;
   margin-top: 0;
   margin-bottom: 8px;
-`,ob=V(zy)`
+`,cb=V(zy)`
   table-layout: fixed;
   font-size: 14px;
 
@@ -1036,13 +1036,16 @@ Error generating stack: `+e.message+`
   tbody td {
     border-bottom: none;
   }
-`,sb=V(Dy)`
-  &:hover {
-    background-color: #f7f7f7;
-  }
-
+`,lb=V(Dy)`
+  /* Set on the cells rather than the row: Garden gives its own cells a
+     background, which would paint over a colour set on the row itself. */
   td {
     position: relative;
+    background-color: ${e=>e.$selected?tb:`transparent`};
+  }
+
+  &:hover td {
+    background-color: ${e=>e.$selected?tb:nb};
   }
 
   ${e=>!e.$noRule&&`
@@ -1061,15 +1064,15 @@ Error generating stack: `+e.message+`
   }
   `}
 
-`,cb=V(vy)`
+`,ub=V(vy)`
   padding-top: 0;
   padding-bottom: 0;
-`,lb=V.div`
+`,db=V.div`
   position: relative;
   display: flex;
   align-items: stretch;
   min-height: 36px;
-`,ub=V.span`
+`,fb=V.span`
   width: 3px;
   min-width: 3px;
   flex-shrink: 0;
@@ -1077,37 +1080,37 @@ Error generating stack: `+e.message+`
   height: 24px;
   border-radius: 2px;
   background-color: #406cc4;
-`,db=V.span`
+`,pb=V.span`
   width: 3px;
   min-width: 3px;
   flex-shrink: 0;
-`,fb=V.span`
+`,mb=V.span`
   position: absolute;
   left: ${e=>eb+e.$depth*Yy+Xy}px;
   top: calc(50% + 5px);
   bottom: 0;
   width: 1px;
   background-color: #dcdcda;
-`,pb=V.div`
+`,hb=V.div`
   position: relative;
   width: ${Yy}px;
   min-width: ${Yy}px;
   flex-shrink: 0;
-`,mb=V.span`
+`,gb=V.span`
   position: absolute;
   left: ${Xy}px;
   top: 0;
   bottom: ${e=>e.$stopAtMiddle?`50%`:`0`};
   width: 1px;
   background-color: #dcdcda;
-`,hb=V.span`
+`,_b=V.span`
   position: absolute;
   left: ${Xy}px;
   top: 50%;
   width: ${10}px;
   height: 1px;
   background-color: #dcdcda;
-`,gb=V.div`
+`,vb=V.div`
   position: relative;
   width: ${Qy}px;
   min-width: ${Qy}px;
@@ -1122,7 +1125,7 @@ Error generating stack: `+e.message+`
     height: 1px;
     background-color: #dcdcda;
   }
-`,_b=V.button`
+`,yb=V.button`
   width: ${Qy}px;
   min-width: ${Qy}px;
   flex-shrink: 0;
@@ -1144,7 +1147,7 @@ Error generating stack: `+e.message+`
     outline-offset: 1px;
     border-radius: 2px;
   }
-`,vb=V.span`
+`,bb=V.span`
   width: ${Qy}px;
   min-width: ${Qy}px;
   flex-shrink: 0;
@@ -1152,13 +1155,13 @@ Error generating stack: `+e.message+`
   display: flex;
   align-items: center;
   justify-content: center;
-`,yb=V.div`
+`,xb=V.div`
   display: flex;
   align-items: center;
   gap: 8px;
   padding-left: ${Zy}px;
   min-width: 0;
-`,bb=V.a`
+`,Sb=V.a`
   color: #406cc4;
   text-decoration: underline;
   font-size: 14px;
@@ -1170,24 +1173,24 @@ Error generating stack: `+e.message+`
   &:hover {
     color: #284173;
   }
-`,xb=V.span`
+`,Cb=V.span`
   font-size: 14px;
   color: #2f3130;
   font-weight: ${e=>e.$current?700:400};
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-`,Sb=V.span`
-  font-size: 14px;
-  color: #646864;
-  white-space: nowrap;
-`,Cb=V.span`
-  color: #999b97;
 `,wb=V.span`
   font-size: 14px;
   color: #646864;
   white-space: nowrap;
-`,Tb=V(hy)`
+`,Tb=V.span`
+  color: #999b97;
+`,Eb=V.span`
+  font-size: 14px;
+  color: #646864;
+  white-space: nowrap;
+`,Db=V(hy)`
   position: absolute;
   width: 1px;
   height: 1px;
@@ -1197,40 +1200,40 @@ Error generating stack: `+e.message+`
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
   border: 0;
-`,Eb=()=>(0,K.jsxs)(`svg`,{width:`16`,height:`16`,viewBox:`0 0 16 16`,fill:`none`,stroke:`currentColor`,focusable:`false`,"aria-hidden":`true`,children:[(0,K.jsx)(`circle`,{cx:`6.5`,cy:`6.5`,r:`5`}),(0,K.jsx)(`path`,{strokeLinecap:`round`,d:`m10.5 10.5 4 4`})]}),Db={down:`none`,right:`rotate(-90deg)`,up:`rotate(180deg)`},Ob=({direction:e=`down`})=>(0,K.jsx)(`svg`,{width:`12`,height:`12`,viewBox:`0 0 12 12`,fill:`none`,stroke:`currentColor`,strokeWidth:`1.5`,strokeLinecap:`round`,strokeLinejoin:`round`,"aria-hidden":`true`,style:{transform:Db[e],transition:`transform 100ms ease`},children:(0,K.jsx)(`path`,{d:`M2.5 4.5 6 8l3.5-3.5`})}),kb=(e,t=!0)=>{let n=[],r=qy(e),i=r[r.length-1];if(!i)return n;let a=e=>Wy(e).length>0||t&&Gy(e).length>0,o=r.slice(0,-1),s=[],c=[];o.forEach((e,t)=>{s=[...s,!0],c=[...c,e.id],n.push({key:`org-${e.id}`,kind:`org`,node:e,depth:t,isLast:!0,ancestorIsLast:s,ancestorIds:c,isOpen:!0,hasChildren:!0,childOrgCount:Wy(e.id).length,peopleCount:Jy(e.id)})});let l=s,u=c,d=o.length,f=Wy(i.id),p=t?Gy(i.id):[],m=f.length>0||p.length>0,h=i.parentId?Wy(i.parentId):[i];return h.forEach((e,t)=>{let r=t===h.length-1,o=e.id===i.id,s=[...l,r],c=[...u,e.id];n.push({key:`org-${e.id}`,kind:`org`,node:e,depth:d,isLast:r,ancestorIsLast:s,ancestorIds:c,isOpen:o&&m,hasChildren:a(e.id),childOrgCount:Wy(e.id).length,peopleCount:Jy(e.id)}),o&&(f.forEach((e,t)=>{let r=t===f.length-1&&p.length===0;n.push({key:`org-${e.id}`,kind:`org`,node:e,depth:d+1,isLast:r,ancestorIsLast:[...s,r],ancestorIds:[...c,e.id],isOpen:!1,hasChildren:a(e.id),childOrgCount:Wy(e.id).length,peopleCount:Jy(e.id)})}),p.forEach((e,t)=>{let r=t===p.length-1;n.push({key:`person-${e.id}-${i.id}`,kind:`person`,node:e,depth:d+1,isLast:r,ancestorIsLast:[...s,r],ancestorIds:[...c,e.id],isOpen:!1,hasChildren:!1})}))}),n},Ab=({row:e})=>e.depth===0?null:(0,K.jsx)(K.Fragment,{children:Array.from({length:e.depth},(t,n)=>n===e.depth-1?(0,K.jsxs)(pb,{children:[(0,K.jsx)(mb,{$stopAtMiddle:e.isLast}),(0,K.jsx)(hb,{})]},n):(0,K.jsx)(pb,{children:!e.ancestorIsLast[n+1]&&(0,K.jsx)(mb,{})},n))});function jb({selectedId:e,onSelectOrganization:t,version:n=`v1`}){let r=n===`v2`,i=n===`v3`,a=(0,g.useMemo)(()=>kb(e,r),[e,r]),o=(0,g.useMemo)(()=>1+Ky(e).length,[e]),s=(0,g.useMemo)(()=>r?Jy(e):0,[e,r]),c=n=>{n!==e&&t?.(n)};return(0,K.jsxs)(nb,{children:[(0,K.jsxs)(rb,{children:[(0,K.jsx)(ib,{children:r?`Search organizations and users`:`Search organizations`}),(0,K.jsx)(hm,{start:(0,K.jsx)(Eb,{})})]}),(0,K.jsxs)(ab,{children:[o,` `,o===1?`organization`:`organizations`,r&&` · ${s} ${s===1?`person`:`people`}`]}),(0,K.jsxs)(ob,{children:[(0,K.jsx)(Tb,{children:`Hierarchy around the selected organization: its ancestors, direct children, and direct siblings`}),(0,K.jsx)(by,{children:(0,K.jsxs)(Sy,{children:[(0,K.jsx)(xy,{children:`Organization`}),r&&(0,K.jsx)(xy,{width:`22%`,children:`Organization type`}),!i&&(0,K.jsx)(xy,{width:`12%`,children:`Child orgs`}),r&&(0,K.jsx)(xy,{width:`10%`,children:`People`})]})}),(0,K.jsx)(my,{children:a.map(t=>{let n=t.kind===`person`,a=!n&&t.node.id===e;return(0,K.jsxs)(sb,{$ruleInset:tb(t.depth),$noRule:i,$selected:a,children:[(0,K.jsx)(cb,{children:(0,K.jsxs)(lb,{children:[a?(0,K.jsx)(ub,{"aria-hidden":`true`}):(0,K.jsx)(db,{"aria-hidden":`true`}),t.isOpen&&(0,K.jsx)(fb,{$depth:t.depth,"aria-hidden":`true`}),(0,K.jsx)(Ab,{row:t}),t.isOpen?(0,K.jsx)(vb,{"aria-hidden":`true`,children:(0,K.jsx)(Ob,{direction:`down`})}):t.hasChildren?(0,K.jsx)(_b,{type:`button`,onClick:()=>c(t.node.id),"aria-label":`Show the hierarchy around ${t.node.name}`,children:(0,K.jsx)(Ob,{direction:`right`})}):(0,K.jsx)(gb,{"aria-hidden":`true`}),(0,K.jsxs)(yb,{children:[n||a?(0,K.jsx)(xb,{$current:a,title:t.node.name,children:t.node.name}):(0,K.jsx)(bb,{href:`#`,onClick:e=>{e.preventDefault(),c(t.node.id)},title:t.node.name,children:t.node.name}),i&&!n&&t.childOrgCount>0&&(0,K.jsxs)(wb,{children:[`(`,t.childOrgCount,`)`]}),a&&(0,K.jsx)(By,{children:`current`}),n&&t.node.title&&(0,K.jsx)(Sb,{children:t.node.title})]})]})}),r&&(0,K.jsx)(vy,{children:t.node.type}),!i&&(0,K.jsx)(vy,{children:n?(0,K.jsx)(Cb,{children:`—`}):`${t.childOrgCount} child ${t.childOrgCount===1?`org`:`orgs`}`}),r&&(0,K.jsx)(vy,{children:n?(0,K.jsx)(Cb,{children:`—`}):t.peopleCount})]},t.key)})})]})]})}var Mb=V.div`
+`,Ob=()=>(0,K.jsxs)(`svg`,{width:`16`,height:`16`,viewBox:`0 0 16 16`,fill:`none`,stroke:`currentColor`,focusable:`false`,"aria-hidden":`true`,children:[(0,K.jsx)(`circle`,{cx:`6.5`,cy:`6.5`,r:`5`}),(0,K.jsx)(`path`,{strokeLinecap:`round`,d:`m10.5 10.5 4 4`})]}),kb={down:`none`,right:`rotate(-90deg)`,up:`rotate(180deg)`},Ab=({direction:e=`down`})=>(0,K.jsx)(`svg`,{width:`12`,height:`12`,viewBox:`0 0 12 12`,fill:`none`,stroke:`currentColor`,strokeWidth:`1.5`,strokeLinecap:`round`,strokeLinejoin:`round`,"aria-hidden":`true`,style:{transform:kb[e],transition:`transform 100ms ease`},children:(0,K.jsx)(`path`,{d:`M2.5 4.5 6 8l3.5-3.5`})}),jb=(e,t=!0)=>{let n=[],r=qy(e),i=r[r.length-1];if(!i)return n;let a=e=>Wy(e).length>0||t&&Gy(e).length>0,o=r.slice(0,-1),s=[],c=[];o.forEach((e,t)=>{s=[...s,!0],c=[...c,e.id],n.push({key:`org-${e.id}`,kind:`org`,node:e,depth:t,isLast:!0,ancestorIsLast:s,ancestorIds:c,isOpen:!0,hasChildren:!0,childOrgCount:Wy(e.id).length,peopleCount:Jy(e.id)})});let l=s,u=c,d=o.length,f=Wy(i.id),p=t?Gy(i.id):[],m=f.length>0||p.length>0,h=i.parentId?Wy(i.parentId):[i];return h.forEach((e,t)=>{let r=t===h.length-1,o=e.id===i.id,s=[...l,r],c=[...u,e.id];n.push({key:`org-${e.id}`,kind:`org`,node:e,depth:d,isLast:r,ancestorIsLast:s,ancestorIds:c,isOpen:o&&m,hasChildren:a(e.id),childOrgCount:Wy(e.id).length,peopleCount:Jy(e.id)}),o&&(f.forEach((e,t)=>{let r=t===f.length-1&&p.length===0;n.push({key:`org-${e.id}`,kind:`org`,node:e,depth:d+1,isLast:r,ancestorIsLast:[...s,r],ancestorIds:[...c,e.id],isOpen:!1,hasChildren:a(e.id),childOrgCount:Wy(e.id).length,peopleCount:Jy(e.id)})}),p.forEach((e,t)=>{let r=t===p.length-1;n.push({key:`person-${e.id}-${i.id}`,kind:`person`,node:e,depth:d+1,isLast:r,ancestorIsLast:[...s,r],ancestorIds:[...c,e.id],isOpen:!1,hasChildren:!1})}))}),n},Mb=({row:e})=>e.depth===0?null:(0,K.jsx)(K.Fragment,{children:Array.from({length:e.depth},(t,n)=>n===e.depth-1?(0,K.jsxs)(hb,{children:[(0,K.jsx)(gb,{$stopAtMiddle:e.isLast}),(0,K.jsx)(_b,{})]},n):(0,K.jsx)(hb,{children:!e.ancestorIsLast[n+1]&&(0,K.jsx)(gb,{})},n))});function Nb({selectedId:e,onSelectOrganization:t,version:n=`v1`}){let r=n===`v2`,i=n===`v3`,a=(0,g.useMemo)(()=>jb(e,r),[e,r]),o=(0,g.useMemo)(()=>1+Ky(e).length,[e]),s=(0,g.useMemo)(()=>r?Jy(e):0,[e,r]),c=n=>{n!==e&&t?.(n)};return(0,K.jsxs)(ib,{children:[(0,K.jsxs)(ab,{children:[(0,K.jsx)(ob,{children:r?`Search organizations and users`:`Search organizations`}),(0,K.jsx)(hm,{start:(0,K.jsx)(Ob,{})})]}),(0,K.jsxs)(sb,{children:[o,` `,o===1?`organization`:`organizations`,r&&` · ${s} ${s===1?`person`:`people`}`]}),(0,K.jsxs)(cb,{children:[(0,K.jsx)(Db,{children:`Hierarchy around the selected organization: its ancestors, direct children, and direct siblings`}),(0,K.jsx)(by,{children:(0,K.jsxs)(Sy,{children:[(0,K.jsx)(xy,{children:`Organization`}),r&&(0,K.jsx)(xy,{width:`22%`,children:`Organization type`}),!i&&(0,K.jsx)(xy,{width:`12%`,children:`Child orgs`}),r&&(0,K.jsx)(xy,{width:`10%`,children:`People`})]})}),(0,K.jsx)(my,{children:a.map(t=>{let n=t.kind===`person`,a=!n&&t.node.id===e;return(0,K.jsxs)(lb,{$ruleInset:rb(t.depth),$noRule:i,$selected:a,children:[(0,K.jsx)(ub,{children:(0,K.jsxs)(db,{children:[a?(0,K.jsx)(fb,{"aria-hidden":`true`}):(0,K.jsx)(pb,{"aria-hidden":`true`}),t.isOpen&&(0,K.jsx)(mb,{$depth:t.depth,"aria-hidden":`true`}),(0,K.jsx)(Mb,{row:t}),t.isOpen?(0,K.jsx)(bb,{"aria-hidden":`true`,children:(0,K.jsx)(Ab,{direction:`down`})}):t.hasChildren?(0,K.jsx)(yb,{type:`button`,onClick:()=>c(t.node.id),"aria-label":`Show the hierarchy around ${t.node.name}`,children:(0,K.jsx)(Ab,{direction:`right`})}):(0,K.jsx)(vb,{"aria-hidden":`true`}),(0,K.jsxs)(xb,{children:[n||a?(0,K.jsx)(Cb,{$current:a,title:t.node.name,children:t.node.name}):(0,K.jsx)(Sb,{href:`#`,onClick:e=>{e.preventDefault(),c(t.node.id)},title:t.node.name,children:t.node.name}),i&&!n&&t.childOrgCount>0&&(0,K.jsxs)(Eb,{children:[`(`,t.childOrgCount,`)`]}),a&&(0,K.jsx)(By,{children:`current`}),n&&t.node.title&&(0,K.jsx)(wb,{children:t.node.title})]})]})}),r&&(0,K.jsx)(vy,{children:t.node.type}),!i&&(0,K.jsx)(vy,{children:n?(0,K.jsx)(Tb,{children:`—`}):`${t.childOrgCount} child ${t.childOrgCount===1?`org`:`orgs`}`}),r&&(0,K.jsx)(vy,{children:n?(0,K.jsx)(Tb,{children:`—`}):t.peopleCount})]},t.key)})})]})]})}var Pb=V.div`
   display: flex;
   flex: 1;
   min-height: 0;
   overflow: hidden;
-`,Nb=V.aside`
+`,Fb=V.aside`
   width: 280px;
   min-width: 280px;
   padding: 16px;
   overflow-y: auto;
-`,Pb=V.div`
+`,Ib=V.div`
   border: 1px solid #eae9e8;
   border-radius: 8px;
   padding: 12px 12px 4px;
-`,Fb=V.div`
+`,Lb=V.div`
   display: flex;
   align-items: flex-start;
   gap: 12px;
   margin-bottom: 14px;
-`,Ib=V.div`
+`,Rb=V.div`
   width: 68px;
   min-width: 68px;
   font-size: 14px;
   color: #646864;
   text-align: right;
   padding-top: 3px;
-`,Lb=V.div`
+`,zb=V.div`
   flex: 1;
   min-width: 0;
   font-size: 14px;
   color: #2f3130;
   word-break: break-word;
   padding-top: 3px;
-`,Rb=V.div`
+`,Bb=V.div`
   flex: 1;
   min-width: 0;
   box-sizing: border-box;
@@ -1240,7 +1243,7 @@ Error generating stack: `+e.message+`
   border-radius: 4px;
   font-size: 14px;
   color: #2f3130;
-`,zb=V.div`
+`,Vb=V.div`
   flex: 1;
   min-width: 0;
   display: flex;
@@ -1252,48 +1255,48 @@ Error generating stack: `+e.message+`
   padding: 4px 0;
   font-size: 14px;
   color: #2f3130;
-`,Bb=V.span`
+`,Hb=V.span`
   color: #646864;
   flex-shrink: 0;
   display: inline-flex;
-`,Vb=V.div`
+`,Ub=V.div`
   margin-top: 16px;
   padding: 0 4px;
-`,Hb=V.div`
+`,Wb=V.div`
   display: flex;
   gap: 8px;
   margin-bottom: 4px;
   font-size: 14px;
-`,Ub=V.span`
+`,Gb=V.span`
   color: #646864;
-`,Wb=V.span`
+`,Kb=V.span`
   color: #999b97;
-`,Gb=V.div`
+`,qb=V.div`
   display: flex;
   flex-direction: column;
   flex: 1;
   min-width: 0;
   overflow: hidden;
-`,Kb=V.div`
+`,Jb=V.div`
   display: flex;
   align-items: center;
   gap: 16px;
   padding: 20px 32px 0;
   flex-shrink: 0;
-`,qb=V.div`
+`,Yb=V.div`
   display: flex;
   flex-direction: column;
   gap: 2px;
   margin-right: auto;
   min-width: 0;
-`,Jb=V.div`
+`,Xb=V.div`
   display: flex;
   gap: 4px;
   padding: 0 32px;
   border-bottom: 1px solid #eae9e8;
   margin-top: 16px;
   flex-shrink: 0;
-`,Yb=V.button`
+`,Zb=V.button`
   position: relative;
   border: none;
   background: transparent;
@@ -1317,7 +1320,7 @@ Error generating stack: `+e.message+`
   &:hover {
     color: #2f3130;
   }
-`,Xb=V.div`
+`,Qb=V.div`
   margin: 32px;
   padding: 32px;
   border: 1px dashed #dcdcda;
@@ -1326,13 +1329,13 @@ Error generating stack: `+e.message+`
   color: #646864;
   font-size: 14px;
   text-align: center;
-`,Zb=()=>(0,K.jsx)(`svg`,{width:`26`,height:`26`,viewBox:`0 0 16 16`,focusable:`false`,"aria-hidden":`true`,children:(0,K.jsxs)(`g`,{fill:`none`,stroke:`currentColor`,children:[(0,K.jsx)(`path`,{d:`M2.5 15.5V1.5a1 1 0 0 1 1-1h9a1 1 0 0 1 1 1v14`}),(0,K.jsx)(`path`,{strokeLinecap:`round`,d:`M.5 15.5h15`}),(0,K.jsx)(`path`,{d:`M5.5 3.5h2m1 0h2m-5 3h2m1 0h2m-5 3h2m1 0h2`,strokeLinecap:`round`}),(0,K.jsx)(`path`,{d:`M6.5 15.5v-3h3v3`})]})}),Qb=()=>(0,K.jsx)(`svg`,{width:`12`,height:`12`,viewBox:`0 0 12 12`,fill:`none`,stroke:`currentColor`,strokeWidth:`1.5`,strokeLinecap:`round`,strokeLinejoin:`round`,"aria-hidden":`true`,children:(0,K.jsx)(`path`,{d:`M2.5 4.5 6 8l3.5-3.5`})}),$b=e=>`${e.name.toLowerCase().replace(/\s+university$/,``).replace(/[^a-z0-9]+/g,``)}.edu`;function ex({orgId:e,onSelectOrganization:t,version:n=`v1`}){let[r,i]=(0,g.useState)(`hierarchy`),a=Uy(e),o=[{id:`tickets`,label:`Tickets (0)`},{id:`users`,label:`Users (${Gy(e).length})`},{id:`related`,label:`Related`},{id:`hierarchy`,label:`Organization hierarchy`}],s=o.find(e=>e.id===r)?.label;return(0,K.jsxs)(Mb,{children:[(0,K.jsxs)(Nb,{children:[(0,K.jsxs)(Pb,{children:[(0,K.jsxs)(Fb,{children:[(0,K.jsx)(Ib,{children:`Tags`}),(0,K.jsx)(Rb,{children:(0,K.jsx)(Wb,{children:`—`})})]}),(0,K.jsxs)(Fb,{children:[(0,K.jsx)(Ib,{children:`Domains`}),(0,K.jsx)(Lb,{children:$b(a)})]}),(0,K.jsxs)(Fb,{children:[(0,K.jsx)(Ib,{children:`Group`}),(0,K.jsxs)(zb,{children:[(0,K.jsx)(Wb,{children:`—`}),(0,K.jsx)(Bb,{children:(0,K.jsx)(Qb,{})})]})]}),(0,K.jsxs)(Fb,{children:[(0,K.jsx)(Ib,{children:`Users`}),(0,K.jsxs)(zb,{children:[(0,K.jsx)(`span`,{children:`Can view tickets in this org and below`}),(0,K.jsx)(Bb,{children:(0,K.jsx)(Qb,{})})]})]}),(0,K.jsxs)(Fb,{children:[(0,K.jsx)(Ib,{children:`Details`}),(0,K.jsx)(Lb,{children:(0,K.jsx)(Wb,{children:`—`})})]}),(0,K.jsxs)(Fb,{children:[(0,K.jsx)(Ib,{children:`Notes`}),(0,K.jsx)(Lb,{children:(0,K.jsx)(Wb,{children:`—`})})]})]}),(0,K.jsxs)(Vb,{children:[(0,K.jsxs)(Hb,{children:[(0,K.jsx)(Ub,{children:`Created`}),(0,K.jsx)(`span`,{children:`1 minute ago`})]}),(0,K.jsxs)(Hb,{children:[(0,K.jsx)(Ub,{children:`Updated`}),(0,K.jsx)(`span`,{children:`1 minute ago`})]})]})]}),(0,K.jsxs)(Gb,{children:[(0,K.jsxs)(Kb,{children:[(0,K.jsx)(Ws,{isSystem:!0,size:`large`,backgroundColor:`#646864`,foregroundColor:`#ffffff`,children:(0,K.jsx)(Zb,{})}),(0,K.jsx)(qb,{children:(0,K.jsx)(qo,{tag:`h1`,style:{color:`#2f3130`},children:a.name})}),(0,K.jsxs)(Fv,{children:[`Actions`,(0,K.jsx)(`span`,{style:{marginLeft:8,display:`inline-flex`,verticalAlign:`middle`},children:(0,K.jsx)(Qb,{})})]})]}),(0,K.jsx)(Jb,{children:o.map(e=>(0,K.jsx)(Yb,{$active:e.id===r,onClick:()=>i(e.id),children:e.label},e.id))}),r===`hierarchy`?(0,K.jsx)(jb,{selectedId:e,onSelectOrganization:t,version:n}):(0,K.jsxs)(Xb,{children:[s,` is out of scope for this prototype — the exploration lives in the Organization hierarchy tab.`]})]})]})}var tx=V.div`
+`,$b=()=>(0,K.jsx)(`svg`,{width:`26`,height:`26`,viewBox:`0 0 16 16`,focusable:`false`,"aria-hidden":`true`,children:(0,K.jsxs)(`g`,{fill:`none`,stroke:`currentColor`,children:[(0,K.jsx)(`path`,{d:`M2.5 15.5V1.5a1 1 0 0 1 1-1h9a1 1 0 0 1 1 1v14`}),(0,K.jsx)(`path`,{strokeLinecap:`round`,d:`M.5 15.5h15`}),(0,K.jsx)(`path`,{d:`M5.5 3.5h2m1 0h2m-5 3h2m1 0h2m-5 3h2m1 0h2`,strokeLinecap:`round`}),(0,K.jsx)(`path`,{d:`M6.5 15.5v-3h3v3`})]})}),ex=()=>(0,K.jsx)(`svg`,{width:`12`,height:`12`,viewBox:`0 0 12 12`,fill:`none`,stroke:`currentColor`,strokeWidth:`1.5`,strokeLinecap:`round`,strokeLinejoin:`round`,"aria-hidden":`true`,children:(0,K.jsx)(`path`,{d:`M2.5 4.5 6 8l3.5-3.5`})}),tx=e=>`${e.name.toLowerCase().replace(/\s+university$/,``).replace(/[^a-z0-9]+/g,``)}.edu`;function nx({orgId:e,onSelectOrganization:t,version:n=`v1`}){let[r,i]=(0,g.useState)(`hierarchy`),a=Uy(e),o=[{id:`tickets`,label:`Tickets (0)`},{id:`users`,label:`Users (${Gy(e).length})`},{id:`related`,label:`Related`},{id:`hierarchy`,label:`Organization hierarchy`}],s=o.find(e=>e.id===r)?.label;return(0,K.jsxs)(Pb,{children:[(0,K.jsxs)(Fb,{children:[(0,K.jsxs)(Ib,{children:[(0,K.jsxs)(Lb,{children:[(0,K.jsx)(Rb,{children:`Tags`}),(0,K.jsx)(Bb,{children:(0,K.jsx)(Kb,{children:`—`})})]}),(0,K.jsxs)(Lb,{children:[(0,K.jsx)(Rb,{children:`Domains`}),(0,K.jsx)(zb,{children:tx(a)})]}),(0,K.jsxs)(Lb,{children:[(0,K.jsx)(Rb,{children:`Group`}),(0,K.jsxs)(Vb,{children:[(0,K.jsx)(Kb,{children:`—`}),(0,K.jsx)(Hb,{children:(0,K.jsx)(ex,{})})]})]}),(0,K.jsxs)(Lb,{children:[(0,K.jsx)(Rb,{children:`Users`}),(0,K.jsxs)(Vb,{children:[(0,K.jsx)(`span`,{children:`Can view tickets in this org and below`}),(0,K.jsx)(Hb,{children:(0,K.jsx)(ex,{})})]})]}),(0,K.jsxs)(Lb,{children:[(0,K.jsx)(Rb,{children:`Details`}),(0,K.jsx)(zb,{children:(0,K.jsx)(Kb,{children:`—`})})]}),(0,K.jsxs)(Lb,{children:[(0,K.jsx)(Rb,{children:`Notes`}),(0,K.jsx)(zb,{children:(0,K.jsx)(Kb,{children:`—`})})]})]}),(0,K.jsxs)(Ub,{children:[(0,K.jsxs)(Wb,{children:[(0,K.jsx)(Gb,{children:`Created`}),(0,K.jsx)(`span`,{children:`1 minute ago`})]}),(0,K.jsxs)(Wb,{children:[(0,K.jsx)(Gb,{children:`Updated`}),(0,K.jsx)(`span`,{children:`1 minute ago`})]})]})]}),(0,K.jsxs)(qb,{children:[(0,K.jsxs)(Jb,{children:[(0,K.jsx)(Ws,{isSystem:!0,size:`large`,backgroundColor:`#646864`,foregroundColor:`#ffffff`,children:(0,K.jsx)($b,{})}),(0,K.jsx)(Yb,{children:(0,K.jsx)(qo,{tag:`h1`,style:{color:`#2f3130`},children:a.name})}),(0,K.jsxs)(Fv,{children:[`Actions`,(0,K.jsx)(`span`,{style:{marginLeft:8,display:`inline-flex`,verticalAlign:`middle`},children:(0,K.jsx)(ex,{})})]})]}),(0,K.jsx)(Xb,{children:o.map(e=>(0,K.jsx)(Zb,{$active:e.id===r,onClick:()=>i(e.id),children:e.label},e.id))}),r===`hierarchy`?(0,K.jsx)(Nb,{selectedId:e,onSelectOrganization:t,version:n}):(0,K.jsxs)(Qb,{children:[s,` is out of scope for this prototype — the exploration lives in the Organization hierarchy tab.`]})]})]})}var rx=V.div`
   display: flex;
   align-items: center;
   height: 100%;
   padding: 0 8px;
   gap: 8px;
-`,nx=V.div`
+`,ix=V.div`
   display: flex;
   align-items: center;
   gap: 8px;
@@ -1346,11 +1349,11 @@ Error generating stack: `+e.message+`
   font-size: 12px;
   font-weight: 600;
   white-space: nowrap;
-`,rx=V.span`
+`,ax=V.span`
   display: inline-flex;
   align-items: center;
   justify-content: center;
-`,ix=V.button`
+`,ox=V.button`
   width: 32px;
   height: 32px;
   border: none;
@@ -1367,20 +1370,20 @@ Error generating stack: `+e.message+`
     background: #eae9e8;
     color: #2f3130;
   }
-`;function ax({title:e}){return(0,K.jsxs)(tx,{children:[(0,K.jsxs)(nx,{children:[(0,K.jsx)(rx,{children:(0,K.jsxs)(`svg`,{width:`14`,height:`14`,viewBox:`0 0 16 16`,fill:`none`,stroke:`currentColor`,strokeWidth:`1.3`,"aria-hidden":`true`,children:[(0,K.jsx)(`path`,{d:`M3 14.5V2a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v12.5`}),(0,K.jsx)(`path`,{d:`M1.5 14.5h13`,strokeLinecap:`round`}),(0,K.jsx)(`path`,{d:`M5.75 4h1.5m1.5 0h1.5m-4.5 3h1.5m1.5 0h1.5`,strokeLinecap:`round`}),(0,K.jsx)(`path`,{d:`M6.75 14.5v-2.5h2.5v2.5`})]})}),(0,K.jsx)(`span`,{children:e})]}),(0,K.jsx)(ix,{type:`button`,"aria-label":`Add tab`,children:`+`})]})}var ox=`bramblewick`,sx=V.div`
+`;function sx({title:e}){return(0,K.jsxs)(rx,{children:[(0,K.jsxs)(ix,{children:[(0,K.jsx)(ax,{children:(0,K.jsxs)(`svg`,{width:`14`,height:`14`,viewBox:`0 0 16 16`,fill:`none`,stroke:`currentColor`,strokeWidth:`1.3`,"aria-hidden":`true`,children:[(0,K.jsx)(`path`,{d:`M3 14.5V2a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v12.5`}),(0,K.jsx)(`path`,{d:`M1.5 14.5h13`,strokeLinecap:`round`}),(0,K.jsx)(`path`,{d:`M5.75 4h1.5m1.5 0h1.5m-4.5 3h1.5m1.5 0h1.5`,strokeLinecap:`round`}),(0,K.jsx)(`path`,{d:`M6.75 14.5v-2.5h2.5v2.5`})]})}),(0,K.jsx)(`span`,{children:e})]}),(0,K.jsx)(ox,{type:`button`,"aria-label":`Add tab`,children:`+`})]})}var cx=`bramblewick`,lx=V.div`
   display: flex;
   flex-direction: column;
   height: 100vh;
   width: 100vw;
   background-color: #f8f9f9;
   overflow: hidden;
-`,cx=V.div`
+`,ux=V.div`
   display: flex;
   flex: 1;
   min-height: 0;
   width: 100%;
   overflow: hidden;
-`,lx=V.main`
+`,dx=V.main`
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
@@ -1390,10 +1393,10 @@ Error generating stack: `+e.message+`
   border-radius: 8px 0px 0px 0px;
   box-shadow: 0px 0px 4px rgba(10, 13, 14, 0.16);
   overflow: hidden;
-`,ux=V.div`
+`,fx=V.div`
   position: relative;
   flex-shrink: 0;
-`,dx=V.div`
+`,px=V.div`
   position: absolute;
   top: 0;
   left: 140px;
@@ -1401,7 +1404,7 @@ Error generating stack: `+e.message+`
   display: flex;
   align-items: center;
   z-index: 10;
-`,fx=V.div`
+`,mx=V.div`
   position: absolute;
   top: 0;
   right: 428px;
@@ -1409,6 +1412,6 @@ Error generating stack: `+e.message+`
   display: flex;
   align-items: center;
   z-index: 10;
-`,px=V.div`
+`,hx=V.div`
   min-width: 200px;
-`,mx=[{id:`v1`,label:`V1 MVP`},{id:`v2`,label:`V2 with end-users`},{id:`v3`,label:`V3 Sans lines`}];function hx(){let[e,t]=(0,g.useState)(`support`),[n,r]=(0,g.useState)(2),[i,a]=(0,g.useState)(!1),[o,s]=(0,g.useState)(`v1`),c=mx.find(e=>e.id===o)?.label,[l,u]=(0,g.useState)(ox),d=Uy(l);return(0,g.useEffect)(()=>{document.title=`${d.name} — Organization hierarchy`},[d.name]),(0,K.jsx)(Lo,{children:(0,K.jsxs)(sx,{children:[(0,K.jsxs)(ux,{children:[(0,K.jsx)(sl,{currentProduct:e,onProductChange:t}),(0,K.jsx)(dx,{children:(0,K.jsx)(ax,{title:d.name})}),(0,K.jsx)(fx,{children:(0,K.jsx)(px,{children:(0,K.jsx)(W_,{children:(0,K.jsx)(z_,{isCompact:!0,isEditable:!1,inputValue:c,selectionValue:o,onChange:({selectionValue:e})=>{e&&s(e)},children:mx.map(e=>(0,K.jsx)(fv,{value:e.id,label:e.label,children:e.label},e.id))})})})})]}),(0,K.jsxs)(cx,{children:[(0,K.jsx)(wl,{currentProduct:`support`,activeNavItem:n,setActiveNavItem:r,isSubnavExpanded:i,setIsSubnavExpanded:a}),(0,K.jsx)(lx,{children:(0,K.jsx)(ex,{orgId:l,onSelectOrganization:u,version:o})})]})]})})}(0,_.createRoot)(document.getElementById(`root`)).render((0,K.jsx)(g.StrictMode,{children:(0,K.jsx)(hx,{})}));
+`,gx=[{id:`v1`,label:`V1 MVP`},{id:`v2`,label:`V2 with end-users`},{id:`v3`,label:`V3 Sans lines`}];function _x(){let[e,t]=(0,g.useState)(`support`),[n,r]=(0,g.useState)(2),[i,a]=(0,g.useState)(!1),[o,s]=(0,g.useState)(`v1`),c=gx.find(e=>e.id===o)?.label,[l,u]=(0,g.useState)(cx),d=Uy(l);return(0,g.useEffect)(()=>{document.title=`${d.name} — Organization hierarchy`},[d.name]),(0,K.jsx)(Lo,{children:(0,K.jsxs)(lx,{children:[(0,K.jsxs)(fx,{children:[(0,K.jsx)(sl,{currentProduct:e,onProductChange:t}),(0,K.jsx)(px,{children:(0,K.jsx)(sx,{title:d.name})}),(0,K.jsx)(mx,{children:(0,K.jsx)(hx,{children:(0,K.jsx)(W_,{children:(0,K.jsx)(z_,{isCompact:!0,isEditable:!1,inputValue:c,selectionValue:o,onChange:({selectionValue:e})=>{e&&s(e)},children:gx.map(e=>(0,K.jsx)(fv,{value:e.id,label:e.label,children:e.label},e.id))})})})})]}),(0,K.jsxs)(ux,{children:[(0,K.jsx)(wl,{currentProduct:`support`,activeNavItem:n,setActiveNavItem:r,isSubnavExpanded:i,setIsSubnavExpanded:a}),(0,K.jsx)(dx,{children:(0,K.jsx)(nx,{orgId:l,onSelectOrganization:u,version:o})})]})]})})}(0,_.createRoot)(document.getElementById(`root`)).render((0,K.jsx)(g.StrictMode,{children:(0,K.jsx)(_x,{})}));
