@@ -33,10 +33,14 @@ const CHEVRON_SLOT = 20
    which is measured from the cell's border box, not its content box. */
 const CELL_PADDING = 12
 const RULE_COLOR = '#eae9e8'
+/* The selection bar at the start of every row (drawn on the selected one, an
+   empty spacer everywhere else), so the rails sit at the same x on both. */
+const SELECTION_BAR_SLOT = 3
 
 /* Where a row's name text begins, measured from the left edge of the name
    cell — the point its horizontal rule starts from. */
-const ruleInsetFor = (depth) => CELL_PADDING + depth * INDENT_STEP + CHEVRON_SLOT + ARM_GAP
+const ruleInsetFor = (depth) =>
+  CELL_PADDING + SELECTION_BAR_SLOT + depth * INDENT_STEP + CHEVRON_SLOT + ARM_GAP
 
 /* Rails are *attached*: a row with children in view draws a descender from its
    own chevron down to its children's rail, so the guide line runs unbroken from
@@ -150,24 +154,6 @@ const TreeRow = styled(Row)`
   }
   `}
 
-  /* The one piece of blue in the table: a bar down the left edge marking which
-     row the view is centred on. It sits outside the tree's indentation, at the
-     very left of the table, so it reads as "this row" rather than as part of the
-     structure — and because the selected row stays where it is in its sibling
-     group, this is what tells you where you are. */
-  ${(props) =>
-    props.$selected &&
-    `
-  td:first-child::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 0;
-    bottom: 0;
-    width: 3px;
-    background-color: #406cc4;
-  }
-  `}
 `
 
 const NameCell = styled(Cell)`
@@ -182,6 +168,30 @@ const RowInner = styled.div`
   min-height: 36px;
 `
 
+/* The selection marker: a short blue bar at the left edge of the selected row.
+   A real element inside that row's own flex line rather than an absolutely
+   positioned pseudo-element — the pseudo-element resolved its height against
+   whichever ancestor happened to be positioned, so it could run the height of
+   the tree instead of the one row. As a flex child it cannot be taller than the
+   row that contains it. */
+const SelectionBar = styled.span`
+  width: 3px;
+  min-width: 3px;
+  flex-shrink: 0;
+  align-self: center;
+  height: 24px;
+  border-radius: 2px;
+  background-color: #406cc4;
+`
+
+/* Keeps unselected rows' content on the same x as the selected row's, so the
+   3px bar doesn't shift the whole tree sideways by one row. */
+const SelectionBarSpacer = styled.span`
+  width: 3px;
+  min-width: 3px;
+  flex-shrink: 0;
+`
+
 /* The attached treatment. Runs from just below the row's own chevron to the
    bottom of the row, where the first child's rail picks it up — closing the
    half-row gap the detached treatment leaves. It lands on the same x as that
@@ -189,7 +199,7 @@ const RowInner = styled.div`
    centre. */
 const ParentDescender = styled.span`
   position: absolute;
-  left: ${(props) => props.$depth * INDENT_STEP + RAIL_LINE_OFFSET}px;
+  left: ${(props) => SELECTION_BAR_SLOT + props.$depth * INDENT_STEP + RAIL_LINE_OFFSET}px;
   top: calc(50% + 5px);
   bottom: 0;
   width: 1px;
@@ -647,6 +657,11 @@ export default function OrganizationHierarchyTab({
               >
                 <NameCell>
                   <RowInner>
+                    {isCurrent ? (
+                      <SelectionBar aria-hidden="true" />
+                    ) : (
+                      <SelectionBarSpacer aria-hidden="true" />
+                    )}
                     {row.isOpen && <ParentDescender $depth={row.depth} aria-hidden="true" />}
                     <TreeGutter row={row} />
 
