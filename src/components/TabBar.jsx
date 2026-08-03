@@ -1,7 +1,8 @@
 import styled from 'styled-components'
 
 /* Support's tab strip, overlaid on the global TopBar. This prototype only ever
-   shows one tab — the profile being viewed — so it is not closeable. */
+   shows one tab — the organization profile being viewed — so it is not
+   closeable. */
 
 const Bar = styled.div`
   display: flex;
@@ -57,17 +58,21 @@ export default function TabBar({ title }) {
     <Bar>
       <TabItem>
         <TabIcon>
+          {/* An organization, not a person — the tab's subject changed with the
+              page. */}
           <svg
             width="14"
             height="14"
             viewBox="0 0 16 16"
             fill="none"
             stroke="currentColor"
-            strokeWidth="1.5"
+            strokeWidth="1.3"
             aria-hidden="true"
           >
-            <circle cx="8" cy="5.5" r="2.5" />
-            <path d="M3 13c0-2.2 2.2-3.5 5-3.5s5 1.3 5 3.5" strokeLinecap="round" />
+            <path d="M3 14.5V2a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v12.5" />
+            <path d="M1.5 14.5h13" strokeLinecap="round" />
+            <path d="M5.75 4h1.5m1.5 0h1.5m-4.5 3h1.5m1.5 0h1.5" strokeLinecap="round" />
+            <path d="M6.75 14.5v-2.5h2.5v2.5" />
           </svg>
         </TabIcon>
         <span>{title}</span>

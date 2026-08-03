@@ -1,7 +1,7 @@
 # Organization hierarchy
 
-Design prototype for a new **Organization hierarchy** tab on the user profile in
-Zendesk Support. Built for PM review and customer interviews.
+Design prototype for a new **Organization hierarchy** tab on the organization
+profile in Zendesk Support. Built for PM review and customer interviews.
 
 ## The problem
 
@@ -55,32 +55,64 @@ TD Synnex                                       (Reseller Network)
       ├─ Dept 1 / Dept 2 / Dept 3
 ```
 
-Each persona is attached to exactly **one** organization. Their visible tree is
-that node plus every descendant — the cascade the feature is meant to deliver.
+Access granted at any node reaches that node plus every descendant — the cascade
+the feature is meant to deliver.
 
 The Computer Science branch runs **ten levels deep** counting Bramblewick as
 level 1, and widens to four siblings at its deepest point. That is deliberate:
-the hard question for this UI is whether the tree stays readable at the depth and
-breadth a real reseller hierarchy reaches, not whether it works at three levels.
+the hard question for this UI is whether the hierarchy stays readable at the depth
+and breadth a real reseller hierarchy reaches, not whether it works at three
+levels.
 
 ## What's in it
 
-- **Tree table** of organizations *and* the people inside them. People are the
-  last level under any organization, each visibly connected by an elbow line to
-  the organization node it sits under.
-- **Bulk expand control** — the bordered chevron in the top-left header cell,
-  directly above the column of row chevrons. Opens a menu with *Open all* and
-  *Collapse all*. The tree starts fully open.
-- **Persona switcher** in the top bar, since the interesting question is what
-  each level of the hierarchy sees:
-  - *Head of Engineering* (Adrian Whitlock) — attached at Bramblewick
-    University, reaches 3 departments, 2 sub-teams, and everyone in them
-  - *Service Provider Support Engineer* (Gordon Alvarez) — attached at Reseller
-    A, the widest tree: both Bramblewick University and SaaS Product
-  - *Professor, Computer Science* (Rachel Martinez) — attached at one
-    department, for contrast
-- **Version switcher**, left of the persona menu — three treatments of the same
-  data, for side-by-side review:
+The tab is a **focused view on one organization**, not a browsable tree. For the
+organization whose profile you're on it shows exactly three things:
+
+1. **Its ancestors**, as a single path down from the top-level organization
+2. **Its direct children** (and, in V2, the people who sit directly in it)
+3. **Its direct siblings**
+
+Nothing else expands. A sibling's children, an ancestor's other branches, and
+anything more than one level below stay out of view until you ask for them, and
+the way you ask is to click — **clicking any organization re-centres the whole
+page on it**: the browser title, tab strip, profile header, properties, and tab
+counts all move with it, because in Support that click opens that organization's
+own profile.
+
+The selected organization **stays where it sits in its sibling group**. Clicking
+the third of four pods doesn't hoist it to the top of the group — the rows hold
+still and only the marking moves, so a click reads as selecting a row rather than
+as the list rearranging itself. It's marked three ways: a 3px blue bar at the
+table's left edge, the name in foreground.default and bold instead of a link, and
+the `current` tag beside it. The bar sits outside the tree's indentation so it
+reads as "this row," not as part of the structure.
+
+That is the answer to the depth problem. Bramblewick's Computer Science branch
+runs ten levels deep and four wide at the bottom; rendered recursively that is
+one screen of tree you have to read past to find anything. Centred, any node in
+it is the same size view — path above, one level below — and reaching the deepest
+pod is a series of clicks, each of which lands on a page you can scan.
+
+Two consequences worth naming:
+
+- **No expand/collapse.** A row's chevron points right when it has a subtree the
+  view is holding back — clicking it drills in, same as clicking the name — and
+  down when its children are already listed below. The *Open all / Collapse all*
+  bulk control is gone; there is nothing left to open in bulk.
+- **The counter still reports reach, not rows.** "29 organizations" is how far
+  access cascades below the selected node, which is exactly the number the
+  focused view no longer shows you. Worth a look in review: it is the one place
+  the page states something the tree doesn't demonstrate.
+
+Rails are drawn **attached** — a descender runs from a node's chevron down to its
+children's rail, so the ancestor path reads as one continuous spine. The detached
+alternative was the other half of a comparison this layout can't stage any more:
+only the path and the selected node ever have children on screen, so there is no
+second branch to contrast against.
+
+- **Version switcher** in the top bar — three treatments of the same data, for
+  side-by-side review:
 
 | Version | People rows | Columns beside Organization | Row dividers |
 | --- | --- | --- | --- |
@@ -89,16 +121,16 @@ breadth a real reseller hierarchy reaches, not whether it works at three levels.
 | **V3 Sans lines** | — | none — count moves inline as `(4)` | no |
 
 V1 is the MVP scope: organizations only, one supporting column. V2 adds the
-people inside each organization and the columns that describe them. V3 asks
-whether the table furniture is needed at all — the child count becomes a
-parenthetical after the name, the Child orgs column goes away, and the only
-horizontal line left is the one under the header, so the tree's own vertical
+people who sit directly in the selected organization and the columns that
+describe them. V3 asks whether the table furniture is needed at all — the child
+count becomes a parenthetical after the name, the Child orgs column goes away,
+and the only horizontal line left is the one under the header, so the vertical
 guides carry the structure.
 
 Visual treatment responds to the engineering mockup: row rules inset to each
 row's name rather than running full width (a full-width rule cuts through the
-tree's vertical guides), vertical guide lines with `├`/`└` elbows, names as blue
-underlined links, and no icons beyond the disclosure chevrons.
+vertical guides), vertical guide lines with `├`/`└` elbows, names as blue
+underlined links, and no icons beyond the chevrons.
 
 ## Running it
 
@@ -119,20 +151,29 @@ Deliberately out of scope for this pass, worth a PM conversation first:
 
 - Admin UI for setting an organization's parent
 - A ticket list scoped to the hierarchy
-- Search or filter within the tree — the search field is present but inert
-- Drilling into an organization: clicking a name should open that org in its own
-  Admin Center tab, rooted there, with everything above it collapsed but visible
-- Lazy loading / virtualization for the "hundreds wide" case
+- Search or filter — the search field is present but inert. It is the obvious
+  companion to a focused view: re-centring by click is fine for neighbours,
+  but jumping across the tree wants search.
+- Real navigation. Re-centring swaps the page contents in place; there is no
+  back, no history, and no second tab. Support would open a new tab per
+  organization.
+- Lazy loading for the "hundreds wide" case — a focused view bounds depth, not
+  the width of one node's child list
 - The org-chart / node-graph visualization from the FigJam board
 
 ## Open questions
 
-- Should the tree distinguish **direct membership** from **inherited access**?
-  Right now only the persona's own node is marked `current`.
+- Should the view distinguish **direct membership** from **inherited access**?
+  Right now only the selected node is marked `current`.
 - Does *People* belong as a column, or is a count link into a separate list
   better once a department has 100+ users?
-- Do the row dividers help or hurt? V3 removes them to find out. At ten levels
-  deep the dividers add a second grid competing with the tree's verticals.
-- Does this need a dedicated full-width page for wide trees, or is the profile
-  tab enough real estate?
+- Do the row dividers help or hurt? V3 removes them to find out.
+- Is one level down enough? A focused view is scannable but makes reaching a
+  deep node an eight-click trip. Two levels of children, or a breadcrumb of the
+  path you clicked through, are the obvious mitigations.
+- Is the blue selection bar enough on its own, or does the selected row want a
+  tinted background too? Three markers (bar, bold, tag) may already be one too
+  many.
+- Does this need a dedicated full-width page, or is the profile tab enough real
+  estate?
 - Is "Organization hierarchy" the right tab label, or something like "Access"?

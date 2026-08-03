@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useMemo } from 'react'
 import styled from 'styled-components'
 import {
   Table,
@@ -10,14 +10,13 @@ import {
   Cell,
   Caption,
 } from '@zendeskgarden/react-tables'
-import { Menu, Item } from '@zendeskgarden/react-dropdowns'
 import { Field, Label, MediaInput } from '@zendeskgarden/react-forms'
 import { SM } from '@zendeskgarden/react-typography'
 import SubtleTag from './SubtleTag'
 import {
-  getOrganization,
   getChildren,
   getPeopleIn,
+  getPath,
   getDescendantIds,
   countPeopleAtOrBelow,
 } from '../data/hierarchy'
@@ -39,20 +38,14 @@ const RULE_COLOR = '#eae9e8'
    cell — the point its horizontal rule starts from. */
 const ruleInsetFor = (depth) => CELL_PADDING + depth * INDENT_STEP + CHEVRON_SLOT + ARM_GAP
 
-/**
- * Side-by-side comparison of the two rail treatments, so the difference can be
- * judged in one screenshot rather than two.
- *
- * Listed here → *attached*: the row draws a descender from its own chevron down
- * to its children's rail, so the guide line runs unbroken from parent node to
- * last descendant. Not listed → *detached*: the children's rail begins at the
- * top of the first child row, leaving a half-row gap under the parent chevron.
- *
- * Bramblewick and Computer Science are attached (a continuous line from the
- * university down to Amara Diallo); Mathematics is deliberately left detached
- * as the contrast case. Temporary — collapses to one treatment once picked.
- */
-const ATTACHED_ORG_IDS = new Set(['bramblewick', 'computer-science'])
+/* Rails are *attached*: a row with children in view draws a descender from its
+   own chevron down to its children's rail, so the guide line runs unbroken from
+   node to node. The detached alternative — the rail starting at the top of the
+   first child row, leaving a half-row gap under the parent chevron — was the
+   other half of a side-by-side comparison that the focused view can no longer
+   stage: only the path and the selected node ever have children on screen, so
+   there is no second branch to contrast against. The ancestor path is the spine
+   of this layout, and attached is what keeps it continuous. */
 
 
 const Wrapper = styled.div`
@@ -156,6 +149,25 @@ const TreeRow = styled(Row)`
     left: ${props.$ruleInset}px;
   }
   `}
+
+  /* The one piece of blue in the table: a bar down the left edge marking which
+     row the view is centred on. It sits outside the tree's indentation, at the
+     very left of the table, so it reads as "this row" rather than as part of the
+     structure — and because the selected row stays where it is in its sibling
+     group, this is what tells you where you are. */
+  ${(props) =>
+    props.$selected &&
+    `
+  td:first-child::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background-color: #406cc4;
+  }
+  `}
 `
 
 const NameCell = styled(Cell)`
@@ -234,6 +246,9 @@ const LeafArmContinuation = styled.div`
   }
 `
 
+/* The chevron on a row whose subtree is out of view. It drills in rather than
+   expanding in place — same destination as clicking the name, so the whole left
+   edge of the row is a way into that organization's context. */
 const ChevronButton = styled.button`
   width: ${CHEVRON_SLOT}px;
   min-width: ${CHEVRON_SLOT}px;
@@ -258,6 +273,18 @@ const ChevronButton = styled.button`
   }
 `
 
+/* The same slot, inert: on the path and the selected node the children are
+   already below, so the chevron is state, not a control. */
+const ChevronSlot = styled.span`
+  width: ${CHEVRON_SLOT}px;
+  min-width: ${CHEVRON_SLOT}px;
+  flex-shrink: 0;
+  color: #646864;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`
+
 const NameArea = styled.div`
   display: flex;
   align-items: center;
@@ -278,6 +305,18 @@ const NameLink = styled.a`
   &:hover {
     color: #284173;
   }
+`
+
+/* Names that aren't links: the selected organization (already here) and people
+   (no context of their own to open). The selected one is foreground.default and
+   bold — it's the one row in the table that isn't somewhere to go. */
+const NodeName = styled.span`
+  font-size: 14px;
+  color: #2f3130;
+  font-weight: ${(props) => (props.$current ? 700 : 400)};
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 `
 
 /* foreground.subtle — grey.700. Secondary to the name it follows, but a real
@@ -301,39 +340,10 @@ const ChildCount = styled.span`
   white-space: nowrap;
 `
 
-/* The bulk control: a bordered chevron box in the header, sitting directly
-   above the depth-0 rows' chevrons so it reads as the master switch for that
-   column of disclosures. */
-const BulkButton = styled.button`
-  width: 24px;
-  height: 24px;
-  padding: 0;
-  border: 1px solid #dcdcda;
-  border-radius: 4px;
-  background: #ffffff;
-  cursor: pointer;
-  color: #646864;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-
-  &:hover {
-    border-color: #b7b7b3;
-    color: #2f3130;
-  }
-
-  &:focus-visible {
-    outline: 2px solid #406cc4;
-    outline-offset: 1px;
-  }
-`
-
-const HeaderCellInner = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 8px;
-`
+/* The Open all / Collapse all control that used to sit in the header cell is
+   gone with the recursive tree: there is nothing left to open in bulk. Every row
+   is either on the path, a direct child, or a direct sibling, and the way deeper
+   is to drill in. */
 
 const HiddenCaption = styled(Caption)`
   position: absolute;
@@ -391,8 +401,18 @@ const Chevron = ({ direction = 'down' }) => (
 )
 
 /**
- * Walks the tree from `rootId`, emitting only rows that are currently visible,
- * and carrying the geometry each row needs to draw its guide lines:
+ * Builds the focused context for one organization. Deliberately NOT a recursive
+ * walk: the view shows exactly one organization's neighbourhood, so it renders
+ *
+ *   - every ancestor, as a single path above the selected organization
+ *   - the selected organization itself, tagged `current`
+ *   - its direct children (and, in V2, its direct people)
+ *   - its direct siblings
+ *
+ * and nothing else. No sibling's children, no ancestor's other branches. Drilling
+ * into any of those means clicking it, which re-centres the page there.
+ *
+ * Each row carries the geometry its guide lines need:
  *
  *   depth          how far to indent
  *   isLast         terminate the parent's vertical with an elbow, not a tee
@@ -400,68 +420,122 @@ const Chevron = ({ direction = 'down' }) => (
  *                  that depth its own parent's last child? Where it was, the
  *                  vertical above it has already closed, so the corresponding
  *                  rail draws nothing. Index `depth` is the row itself.
+ *   isOpen         its children are visible below it — drives the descender
+ *   hasChildren    it has a subtree this view is holding back — drives the
+ *                  right-pointing chevron that drills into it
  */
-const buildRows = (rootId, expandedIds, showPeople = true) => {
+const buildFocusedRows = (selectedId, showPeople = true) => {
   const rows = []
+  const path = getPath(selectedId)
+  const selected = path[path.length - 1]
+  if (!selected) return rows
 
-  const walk = (orgId, depth, isLast, ancestorIsLast, ancestorIds) => {
-    const org = getOrganization(orgId)
-    if (!org) return
+  const hasChildren = (orgId) =>
+    getChildren(orgId).length > 0 || (showPeople && getPeopleIn(orgId).length > 0)
 
-    const childOrgs = getChildren(orgId)
-    // V1 MVP is an organizations-only view, so people never enter the tree.
-    const people = showPeople ? getPeopleIn(orgId) : []
-    const isExpandable = childOrgs.length > 0 || people.length > 0
-    const isExpanded = expandedIds.has(orgId)
+  const ancestors = path.slice(0, -1)
 
-    // This row's own chain: everything above it, plus whether it is itself a
-    // last child. Children inherit this as their ancestor chain.
-    const chain = [...ancestorIsLast, isLast]
-    // Parallel chain of ids, so a row can tell which branch it sits in — used
-    // by the row-rule comparison below.
-    const idChain = [...ancestorIds, orgId]
-
+  // Every ancestor is an only child in this view — its siblings are out of
+  // context — so each one closes its parent's vertical with an elbow, and no
+  // pass-through verticals are needed alongside the path.
+  let chain = []
+  let idChain = []
+  ancestors.forEach((org, depth) => {
+    chain = [...chain, true]
+    idChain = [...idChain, org.id]
     rows.push({
-      key: `org-${orgId}`,
+      key: `org-${org.id}`,
       kind: 'org',
       node: org,
       depth,
-      isLast,
+      isLast: true,
       ancestorIsLast: chain,
       ancestorIds: idChain,
-      isExpandable,
-      isExpanded,
-      childOrgCount: childOrgs.length,
-      peopleCount: countPeopleAtOrBelow(orgId),
+      isOpen: true,
+      hasChildren: true,
+      childOrgCount: getChildren(org.id).length,
+      peopleCount: countPeopleAtOrBelow(org.id),
+    })
+  })
+
+  const ancestorChain = chain
+  const ancestorIdChain = idChain
+  const selectedDepth = ancestors.length
+
+  const childOrgs = getChildren(selected.id)
+  // V1 MVP and V3 are organizations-only views, so people never enter the tree.
+  const people = showPeople ? getPeopleIn(selected.id) : []
+  const isOpen = childOrgs.length > 0 || people.length > 0
+
+  // The whole sibling group in its own order, with the selected organization
+  // sitting wherever it actually sits. Hoisting it to the top of the group would
+  // make a click reorder the rows around it — you click the third of four pods
+  // and it jumps to first, which reads as the list rearranging itself rather
+  // than as one row being selected. The tree holds still; only the highlight and
+  // the `current` tag move.
+  const siblingGroup = selected.parentId ? getChildren(selected.parentId) : [selected]
+
+  siblingGroup.forEach((org, index) => {
+    const isLast = index === siblingGroup.length - 1
+    const isSelected = org.id === selected.id
+    const chainHere = [...ancestorChain, isLast]
+    const idChainHere = [...ancestorIdChain, org.id]
+
+    rows.push({
+      key: `org-${org.id}`,
+      kind: 'org',
+      node: org,
+      depth: selectedDepth,
+      isLast,
+      ancestorIsLast: chainHere,
+      ancestorIds: idChainHere,
+      // Only the selected organization is opened out; its siblings keep their
+      // subtrees folded away until they're clicked in turn.
+      isOpen: isSelected && isOpen,
+      hasChildren: hasChildren(org.id),
+      childOrgCount: getChildren(org.id).length,
+      peopleCount: countPeopleAtOrBelow(org.id),
     })
 
-    if (!isExpanded) return
+    if (!isSelected) return
 
-    // Child organizations first so the structure reads as a skeleton, then the
-    // people who sit directly at this level — people are always the last
-    // group under an org, so only they can close the subtree.
-    childOrgs.forEach((child, index) => {
-      const isLastChild = index === childOrgs.length - 1 && people.length === 0
-      walk(child.id, depth + 1, isLastChild, chain, idChain)
-    })
-
-    people.forEach((person, index) => {
-      const isLastPerson = index === people.length - 1
+    // Direct children, nested under the selected organization. Each is a leaf
+    // *here* — whatever hangs below it stays out of the view until it is clicked.
+    childOrgs.forEach((child, childIndex) => {
+      const isLastChild = childIndex === childOrgs.length - 1 && people.length === 0
       rows.push({
-        key: `person-${person.id}-${orgId}`,
-        kind: 'person',
-        node: person,
-        depth: depth + 1,
-        isLast: isLastPerson,
-        ancestorIsLast: [...chain, isLastPerson],
-        ancestorIds: [...idChain, person.id],
-        isExpandable: false,
-        isExpanded: false,
+        key: `org-${child.id}`,
+        kind: 'org',
+        node: child,
+        depth: selectedDepth + 1,
+        isLast: isLastChild,
+        ancestorIsLast: [...chainHere, isLastChild],
+        ancestorIds: [...idChainHere, child.id],
+        isOpen: false,
+        hasChildren: hasChildren(child.id),
+        childOrgCount: getChildren(child.id).length,
+        peopleCount: countPeopleAtOrBelow(child.id),
       })
     })
-  }
 
-  walk(rootId, 0, true, [], [])
+    // People sit directly under the organization they belong to, always after
+    // the child organizations, so only they can close the subtree.
+    people.forEach((person, personIndex) => {
+      const isLastPerson = personIndex === people.length - 1
+      rows.push({
+        key: `person-${person.id}-${selected.id}`,
+        kind: 'person',
+        node: person,
+        depth: selectedDepth + 1,
+        isLast: isLastPerson,
+        ancestorIsLast: [...chainHere, isLastPerson],
+        ancestorIds: [...idChainHere, person.id],
+        isOpen: false,
+        hasChildren: false,
+      })
+    })
+  })
+
   return rows
 }
 
@@ -496,58 +570,38 @@ const TreeGutter = ({ row }) => {
   )
 }
 
-export default function OrganizationHierarchyTab({ persona, initialExpandedIds, version = 'v1' }) {
+/* Centred on `selectedId` — the organization whose profile this tab is on.
+   Clicking another organization re-centres the whole page, so selection lives
+   above this component rather than being tracked here. */
+export default function OrganizationHierarchyTab({
+  selectedId,
+  onSelectOrganization,
+  version = 'v1',
+}) {
   // V1 MVP and V3: organizations only — no people rows, no type/people columns.
   const showPeople = version === 'v2'
   // V3 Sans lines: no row dividers, and the child count moves out of its own
   // column into a parenthetical beside each organization's name.
   const isSansLines = version === 'v3'
-  const rootId = persona.attachedOrgId
-  const accessibleOrgIds = useMemo(() => [rootId, ...getDescendantIds(rootId)], [rootId])
 
-  // Fully expanded on load, so the shape of the tree — and the reach the
-  // cascade grants — is the first thing you see. `initialExpandedIds` overrides
-  // it (pass `[]` for the collapsed state).
-  const [expandedIds, setExpandedIds] = useState(
-    () => new Set(initialExpandedIds ?? accessibleOrgIds),
-  )
+  const rows = useMemo(() => buildFocusedRows(selectedId, showPeople), [selectedId, showPeople])
+
+  // The counter still describes reach, not the rows on screen: the point of the
+  // feature is how far access cascades below the selected organization, and that
+  // is a number the focused view no longer shows in full.
+  const reachOrgCount = useMemo(() => 1 + getDescendantIds(selectedId).length, [selectedId])
   const peopleReach = useMemo(
-    () => (showPeople ? countPeopleAtOrBelow(rootId) : 0),
-    [rootId, showPeople],
-  )
-  const rows = useMemo(
-    () => buildRows(rootId, expandedIds, showPeople),
-    [rootId, expandedIds, showPeople],
+    () => (showPeople ? countPeopleAtOrBelow(selectedId) : 0),
+    [selectedId, showPeople],
   )
 
-  const toggle = (orgId) => {
-    setExpandedIds((previous) => {
-      const next = new Set(previous)
-      if (next.has(orgId)) {
-        next.delete(orgId)
-      } else {
-        next.add(orgId)
-      }
-      return next
-    })
+  // Drill-in. Every organization in the view is a link to its own context; the
+  // page re-centres and the row set is rebuilt from that node's perspective.
+  const select = (orgId) => {
+    if (orgId !== selectedId) onSelectOrganization?.(orgId)
   }
 
-  // Open all / Collapse all are always available. If the tree is already fully
-  // open, Open all simply lands on the same state — no disabled states to
-  // reason about, and nothing breaks.
-  //
-  // Garden reports the chosen item as `value` on the change object for both
-  // click and keyboard selection (`selectedItems` is only populated for
-  // radio/checkbox items), so switching on `value` covers both paths.
-  const handleBulkChange = ({ value }) => {
-    if (value === 'open-all') {
-      setExpandedIds(new Set(accessibleOrgIds))
-    } else if (value === 'collapse-all') {
-      setExpandedIds(new Set())
-    }
-  }
-
-  const orgLabel = accessibleOrgIds.length === 1 ? 'organization' : 'organizations'
+  const orgLabel = reachOrgCount === 1 ? 'organization' : 'organizations'
   const peopleLabel = peopleReach === 1 ? 'person' : 'people'
 
   return (
@@ -562,39 +616,18 @@ export default function OrganizationHierarchyTab({ persona, initialExpandedIds, 
       </SearchField>
 
       <Counts>
-        {accessibleOrgIds.length} {orgLabel}
+        {reachOrgCount} {orgLabel}
         {showPeople && ` · ${peopleReach} ${peopleLabel}`}
       </Counts>
 
       <TreeTable>
-        <HiddenCaption>Organizations and people this user can access</HiddenCaption>
+        <HiddenCaption>
+          Hierarchy around the selected organization: its ancestors, direct children, and
+          direct siblings
+        </HiddenCaption>
         <Head>
           <HeaderRow>
-            <HeaderCell>
-              <HeaderCellInner>
-                <Menu
-                  placement="bottom-start"
-                  onChange={handleBulkChange}
-                  button={(props) => (
-                    <BulkButton
-                      {...props}
-                      type="button"
-                      aria-label="Expand or collapse the whole hierarchy"
-                    >
-                      {/* Flips up while the menu is open, back down when it
-                          closes — the chevron reports the menu's state, which is
-                          what the click acts on. Garden puts `aria-expanded` on
-                          the trigger props, so no second copy of that state. */}
-                      <Chevron direction={props['aria-expanded'] ? 'up' : 'down'} />
-                    </BulkButton>
-                  )}
-                >
-                  <Item value="open-all">Open all</Item>
-                  <Item value="collapse-all">Collapse all</Item>
-                </Menu>
-                <span>Organization</span>
-              </HeaderCellInner>
-            </HeaderCell>
+            <HeaderCell>Organization</HeaderCell>
             {showPeople && <HeaderCell width="22%">Organization type</HeaderCell>}
             {!isSansLines && <HeaderCell width="12%">Child orgs</HeaderCell>}
             {showPeople && <HeaderCell width="10%">People</HeaderCell>}
@@ -603,42 +636,59 @@ export default function OrganizationHierarchyTab({ persona, initialExpandedIds, 
         <Body>
           {rows.map((row) => {
             const isPerson = row.kind === 'person'
-            const isCurrent = !isPerson && row.node.id === rootId
+            const isCurrent = !isPerson && row.node.id === selectedId
 
             return (
               <TreeRow
                 key={row.key}
                 $ruleInset={ruleInsetFor(row.depth)}
                 $noRule={isSansLines}
+                $selected={isCurrent}
               >
                 <NameCell>
                   <RowInner>
-                    {row.isExpanded && ATTACHED_ORG_IDS.has(row.node.id) && (
-                      <ParentDescender $depth={row.depth} aria-hidden="true" />
-                    )}
+                    {row.isOpen && <ParentDescender $depth={row.depth} aria-hidden="true" />}
                     <TreeGutter row={row} />
 
-                    {row.isExpandable ? (
+                    {/* Three states, no expand/collapse: a down chevron on the
+                        rows whose children are already in view (the path and the
+                        selected node), a clickable right chevron on rows with a
+                        subtree the focused view is holding back, and the plain
+                        arm on true leaves. */}
+                    {row.isOpen ? (
+                      <ChevronSlot aria-hidden="true">
+                        <Chevron direction="down" />
+                      </ChevronSlot>
+                    ) : row.hasChildren ? (
                       <ChevronButton
                         type="button"
-                        onClick={() => toggle(row.node.id)}
-                        aria-expanded={row.isExpanded}
-                        aria-label={`${row.isExpanded ? 'Collapse' : 'Expand'} ${row.node.name}`}
+                        onClick={() => select(row.node.id)}
+                        aria-label={`Show the hierarchy around ${row.node.name}`}
                       >
-                        <Chevron direction={row.isExpanded ? 'down' : 'right'} />
+                        <Chevron direction="right" />
                       </ChevronButton>
                     ) : (
                       <LeafArmContinuation aria-hidden="true" />
                     )}
 
                     <NameArea>
-                      <NameLink
-                        href="#"
-                        onClick={(event) => event.preventDefault()}
-                        title={row.node.name}
-                      >
-                        {row.node.name}
-                      </NameLink>
+                      {isPerson || isCurrent ? (
+                        /* The centre of the view is not a link to itself. */
+                        <NodeName $current={isCurrent} title={row.node.name}>
+                          {row.node.name}
+                        </NodeName>
+                      ) : (
+                        <NameLink
+                          href="#"
+                          onClick={(event) => {
+                            event.preventDefault()
+                            select(row.node.id)
+                          }}
+                          title={row.node.name}
+                        >
+                          {row.node.name}
+                        </NameLink>
+                      )}
                       {isSansLines && !isPerson && row.childOrgCount > 0 && (
                         <ChildCount>({row.childOrgCount})</ChildCount>
                       )}

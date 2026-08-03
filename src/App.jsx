@@ -1,12 +1,16 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { ThemeProvider } from './flora-theme/elements/ThemeProvider'
 import { TopBar, MainNav } from 'zendesk-globalnav-template'
 import { Combobox, Field, Option } from '@zendeskgarden/react-dropdowns'
 import styled from 'styled-components'
-import UserProfile from './components/UserProfile'
+import OrganizationProfile from './components/OrganizationProfile'
 import TabBar from './components/TabBar'
-import { PERSONAS, getPersona } from './data/hierarchy'
+import { getOrganization } from './data/hierarchy'
 import './App.css'
+
+// The organization whose profile this prototype opens on. Clicking through the
+// hierarchy moves off it.
+const INITIAL_ORG_ID = 'bramblewick'
 
 const PageContainer = styled.div`
   display: flex;
@@ -52,29 +56,13 @@ const TabBarOverlay = styled.div`
   z-index: 10;
 `
 
-// Persona switcher overlaid on the top bar, positioned the same way as the
-// version menus in our other prototypes: the TopBar search box (320px) starts
-// 404px from the right edge, so 428px leaves a 24px gap beside it.
-const PersonaOverlay = styled.div`
-  position: absolute;
-  top: 0;
-  right: 428px;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  z-index: 10;
-`
-
-const PersonaFieldWrapper = styled.div`
-  min-width: 260px;
-`
-
-// Version switcher sits immediately left of the persona menu, so the two
-// prototype controls read as one group.
+// Version switcher overlaid on the top bar, positioned the way the version menus
+// in our other prototypes are: the TopBar search box (320px) starts 404px from
+// the right edge, so 428px leaves a 24px gap beside it.
 const VersionOverlay = styled.div`
   position: absolute;
   top: 0;
-  right: 712px;
+  right: 428px;
   height: 100%;
   display: flex;
   align-items: center;
@@ -97,15 +85,20 @@ export default function App() {
   const [activeNavItem, setActiveNavItem] = useState(2)
   const [isSubnavExpanded, setIsSubnavExpanded] = useState(false)
 
-  // Which person's profile we are looking at. Each persona is attached to a
-  // different level of the hierarchy, so switching re-roots the tree.
-  const [personaId, setPersonaId] = useState(PERSONAS[0].id)
-  const persona = getPersona(personaId)
-
   // V1 MVP shows organizations only; V2 adds the end users inside them; V3 is
   // V1 without row dividers, with the child count moved beside each name.
   const [version, setVersion] = useState('v1')
   const versionLabel = VERSIONS.find((option) => option.id === version)?.label
+
+  // Which organization's profile is open. Lives here because the tab strip and
+  // the profile header both name it, and the hierarchy tab re-points it.
+  const [orgId, setOrgId] = useState(INITIAL_ORG_ID)
+  const org = getOrganization(orgId)
+
+  // Browser tab follows the organization, the way a real Support tab does.
+  useEffect(() => {
+    document.title = `${org.name} — Organization hierarchy`
+  }, [org.name])
 
   return (
     <ThemeProvider>
@@ -113,7 +106,7 @@ export default function App() {
         <TopBarRow>
           <TopBar currentProduct={currentProduct} onProductChange={setCurrentProduct} />
           <TabBarOverlay>
-            <TabBar title={persona.name} />
+            <TabBar title={org.name} />
           </TabBarOverlay>
           <VersionOverlay>
             <VersionFieldWrapper>
@@ -136,27 +129,6 @@ export default function App() {
               </Field>
             </VersionFieldWrapper>
           </VersionOverlay>
-          <PersonaOverlay>
-            <PersonaFieldWrapper>
-              <Field>
-                <Combobox
-                  isCompact
-                  isEditable={false}
-                  inputValue={persona.role}
-                  selectionValue={personaId}
-                  onChange={({ selectionValue }) => {
-                    if (selectionValue) setPersonaId(selectionValue)
-                  }}
-                >
-                  {PERSONAS.map((option) => (
-                    <Option key={option.id} value={option.id} label={option.role}>
-                      {option.role}
-                    </Option>
-                  ))}
-                </Combobox>
-              </Field>
-            </PersonaFieldWrapper>
-          </PersonaOverlay>
         </TopBarRow>
         <ContentRow>
           <MainNav
@@ -167,9 +139,11 @@ export default function App() {
             setIsSubnavExpanded={setIsSubnavExpanded}
           />
           <MainContent>
-            {/* Remount on persona change so the tree's expand state resets to
-                fully-open for the new person's subtree. */}
-            <UserProfile key={`${persona.id}-${version}`} persona={persona} version={version} />
+            <OrganizationProfile
+              orgId={orgId}
+              onSelectOrganization={setOrgId}
+              version={version}
+            />
           </MainContent>
         </ContentRow>
       </PageContainer>
