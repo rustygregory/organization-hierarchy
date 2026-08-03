@@ -995,7 +995,7 @@ Error generating stack: `+e.message+`
   line-height: 1;
   white-space: nowrap;
   flex-shrink: 0;
-`,Vy=[{id:`td-synnex`,name:`TD Synnex`,type:`Reseller Network`,parentId:null},{id:`reseller-a`,name:`Reseller A`,type:`Service Provider`,parentId:`td-synnex`},{id:`bramblewick`,name:`Bramblewick University`,type:`Company`,parentId:`reseller-a`},{id:`computer-science`,name:`Computer Science`,type:`Cost Center`,parentId:`bramblewick`},{id:`artificial-intelligence`,name:`Artificial Intelligence`,type:`Cost Center`,parentId:`computer-science`},{id:`machine-learning-lab`,name:`Machine Learning Lab`,type:`Supervisory`,parentId:`artificial-intelligence`},{id:`natural-language-lab`,name:`Natural Language Lab`,type:`Supervisory`,parentId:`artificial-intelligence`},{id:`robotics-lab`,name:`Robotics Lab`,type:`Supervisory`,parentId:`artificial-intelligence`},{id:`speech-processing-group`,name:`Speech Processing Group`,type:`Supervisory`,parentId:`natural-language-lab`},{id:`transcription-team`,name:`Transcription Team`,type:`Supervisory`,parentId:`speech-processing-group`},{id:`neural-networks-group`,name:`Neural Networks Group`,type:`Supervisory`,parentId:`machine-learning-lab`},{id:`deep-learning-unit`,name:`Deep Learning Unit`,type:`Supervisory`,parentId:`neural-networks-group`},{id:`computer-vision-team`,name:`Computer Vision Team`,type:`Supervisory`,parentId:`deep-learning-unit`},{id:`speech-recognition-team`,name:`Speech Recognition Team`,type:`Supervisory`,parentId:`deep-learning-unit`},{id:`image-recognition-squad`,name:`Image Recognition Squad`,type:`Supervisory`,parentId:`computer-vision-team`},{id:`model-training-pod`,name:`Model Training Pod`,type:`Supervisory`,parentId:`image-recognition-squad`},{id:`gpu-cluster-ops`,name:`GPU Cluster Ops`,type:`Supervisory`,parentId:`model-training-pod`},{id:`dataset-curation-pod`,name:`Dataset Curation Pod`,type:`Supervisory`,parentId:`model-training-pod`},{id:`evaluation-pod`,name:`Evaluation Pod`,type:`Supervisory`,parentId:`model-training-pod`},{id:`inference-serving-pod`,name:`Inference Serving Pod`,type:`Supervisory`,parentId:`model-training-pod`},{id:`mathematics`,name:`Mathematics`,type:`Cost Center`,parentId:`bramblewick`},{id:`applied-mathematics`,name:`Applied Mathematics`,type:`Cost Center`,parentId:`mathematics`},{id:`pure-mathematics`,name:`Pure Mathematics`,type:`Cost Center`,parentId:`mathematics`},{id:`statistics`,name:`Statistics`,type:`Cost Center`,parentId:`mathematics`},{id:`numerical-analysis-group`,name:`Numerical Analysis Group`,type:`Cost Center`,parentId:`applied-mathematics`},{id:`simulation-team`,name:`Simulation Team`,type:`Supervisory`,parentId:`numerical-analysis-group`},{id:`engineering`,name:`Engineering`,type:`Cost Center Hierarchy`,parentId:`bramblewick`},{id:`mobile-app-team`,name:`Mobile App Team`,type:`Supervisory`,parentId:`engineering`},{id:`ios-squad`,name:`iOS Squad`,type:`Supervisory`,parentId:`mobile-app-team`},{id:`build-release`,name:`Build & Release`,type:`Supervisory`,parentId:`ios-squad`},{id:`380-applications`,name:`380 Applications`,type:`Cost Center`,parentId:`engineering`},{id:`saas-product`,name:`SaaS Product`,type:`Company`,parentId:`reseller-a`},{id:`dept-1`,name:`Dept 1`,type:`Cost Center`,parentId:`saas-product`},{id:`dept-2`,name:`Dept 2`,type:`Cost Center`,parentId:`saas-product`},{id:`dept-3`,name:`Dept 3`,type:`Cost Center`,parentId:`saas-product`}],Hy=[{id:`adrian-whitlock`,name:`Adrian Whitlock`,type:`Agent`,title:`Head of Engineering`,orgIds:[`bramblewick`]},{id:`priya-raman`,name:`Priya Raman`,type:`Agent`,title:`IT Director`,orgIds:[`bramblewick`]},{id:`helen-osei`,name:`Helen Osei`,type:`End user`,title:`Registrar`,orgIds:[`bramblewick`]},{id:`rachel-martinez`,name:`Rachel Martinez`,type:`End user`,title:`Professor`,orgIds:[`computer-science`]},{id:`daniel-okafor`,name:`Daniel Okafor`,type:`End user`,title:`Associate Professor`,orgIds:[`computer-science`]},{id:`sofia-almeida`,name:`Sofia Almeida`,type:`End user`,title:`Lab Manager`,orgIds:[`computer-science`]},{id:`wei-zhang`,name:`Wei Zhang`,type:`End user`,title:`Teaching Assistant`,orgIds:[`computer-science`]},{id:`amara-diallo`,name:`Amara Diallo`,type:`End user`,title:`Graduate Researcher`,orgIds:[`computer-science`]},{id:`theodore-abiodun`,name:`Theodore Abiodun`,type:`End user`,title:`Research Director`,orgIds:[`artificial-intelligence`]},{id:`saoirse-flanagan`,name:`Saoirse Flanagan`,type:`End user`,title:`Senior Researcher`,orgIds:[`artificial-intelligence`]},{id:`hiroshi-nakamura`,name:`Hiroshi Nakamura`,type:`End user`,title:`Lecturer`,orgIds:[`artificial-intelligence`]},{id:`valentina-rossi`,name:`Valentina Rossi`,type:`End user`,title:`Lab Director`,orgIds:[`machine-learning-lab`]},{id:`obinna-eze`,name:`Obinna Eze`,type:`End user`,title:`Research Engineer`,orgIds:[`machine-learning-lab`]},{id:`freya-lindholm`,name:`Freya Lindholm`,type:`End user`,title:`Doctoral Candidate`,orgIds:[`machine-learning-lab`]},{id:`anneke-vos`,name:`Anneke Vos`,type:`End user`,title:`Group Lead`,orgIds:[`neural-networks-group`]},{id:`mateo-guerrero`,name:`Mateo Guerrero`,type:`End user`,title:`Research Scientist`,orgIds:[`neural-networks-group`]},{id:`lena-fischer`,name:`Lena Fischer`,type:`End user`,title:`Unit Lead`,orgIds:[`deep-learning-unit`]},{id:`kwame-asante`,name:`Kwame Asante`,type:`End user`,title:`ML Engineer`,orgIds:[`deep-learning-unit`]},{id:`siobhan-doherty`,name:`Siobhan Doherty`,type:`End user`,title:`Team Lead`,orgIds:[`computer-vision-team`]},{id:`raul-mendoza`,name:`Raul Mendoza`,type:`End user`,title:`Vision Researcher`,orgIds:[`computer-vision-team`]},{id:`thandiwe-mokoena`,name:`Thandiwe Mokoena`,type:`End user`,title:`Postdoctoral Researcher`,orgIds:[`computer-vision-team`]},{id:`georgi-ivanov`,name:`Georgi Ivanov`,type:`End user`,title:`Research Assistant`,orgIds:[`neural-networks-group`]},{id:`amelie-caron`,name:`Amelie Caron`,type:`End user`,title:`Doctoral Candidate`,orgIds:[`deep-learning-unit`]},{id:`chiara-bellini`,name:`Chiara Bellini`,type:`End user`,title:`Squad Lead`,orgIds:[`image-recognition-squad`]},{id:`tobias-lang`,name:`Tobias Lang`,type:`End user`,title:`Data Annotator`,orgIds:[`image-recognition-squad`]},{id:`nour-haddad`,name:`Nour Haddad`,type:`End user`,title:`Training Lead`,orgIds:[`model-training-pod`]},{id:`evgeni-petrov`,name:`Evgeni Petrov`,type:`End user`,title:`Pipeline Engineer`,orgIds:[`model-training-pod`]},{id:`marisol-reyes`,name:`Marisol Reyes`,type:`End user`,title:`Cluster Administrator`,orgIds:[`gpu-cluster-ops`]},{id:`declan-byrne`,name:`Declan Byrne`,type:`End user`,title:`Infrastructure Engineer`,orgIds:[`gpu-cluster-ops`]},{id:`ingrid-halvorsen`,name:`Ingrid Halvorsen`,type:`End user`,title:`Lab Director`,orgIds:[`natural-language-lab`]},{id:`oscar-delgado`,name:`Oscar Delgado`,type:`End user`,title:`Computational Linguist`,orgIds:[`natural-language-lab`]},{id:`yara-nasser`,name:`Yara Nasser`,type:`End user`,title:`Lab Director`,orgIds:[`robotics-lab`]},{id:`pavel-novak`,name:`Pavel Novak`,type:`End user`,title:`Robotics Engineer`,orgIds:[`robotics-lab`]},{id:`linnea-berg`,name:`Linnea Berg`,type:`End user`,title:`Group Lead`,orgIds:[`speech-processing-group`]},{id:`hassan-qureshi`,name:`Hassan Qureshi`,type:`End user`,title:`Speech Scientist`,orgIds:[`speech-processing-group`]},{id:`juliet-adeyinka`,name:`Juliet Adeyinka`,type:`End user`,title:`Transcription Lead`,orgIds:[`transcription-team`]},{id:`karin-lindgren`,name:`Karin Lindgren`,type:`End user`,title:`Team Lead`,orgIds:[`speech-recognition-team`]},{id:`diego-salazar`,name:`Diego Salazar`,type:`End user`,title:`Audio Engineer`,orgIds:[`speech-recognition-team`]},{id:`noor-rahman`,name:`Noor Rahman`,type:`End user`,title:`Curation Lead`,orgIds:[`dataset-curation-pod`]},{id:`esther-mwangi`,name:`Esther Mwangi`,type:`End user`,title:`Data Steward`,orgIds:[`dataset-curation-pod`]},{id:`viktor-sorensen`,name:`Viktor Sorensen`,type:`End user`,title:`Evaluation Lead`,orgIds:[`evaluation-pod`]},{id:`aria-behzadi`,name:`Aria Behzadi`,type:`End user`,title:`Serving Engineer`,orgIds:[`inference-serving-pod`]},{id:`ottoline-frank`,name:`Ottoline Frank`,type:`End user`,title:`Professor`,orgIds:[`pure-mathematics`]},{id:`mikael-sundberg`,name:`Mikael Sundberg`,type:`End user`,title:`Lecturer`,orgIds:[`pure-mathematics`]},{id:`chandra-iyer`,name:`Chandra Iyer`,type:`End user`,title:`Head of Statistics`,orgIds:[`statistics`]},{id:`lorna-fitzgerald`,name:`Lorna Fitzgerald`,type:`End user`,title:`Biostatistician`,orgIds:[`statistics`]},{id:`emeka-nwosu`,name:`Emeka Nwosu`,type:`End user`,title:`Group Lead`,orgIds:[`numerical-analysis-group`]},{id:`sanne-de-vries`,name:`Sanne de Vries`,type:`End user`,title:`Numerical Analyst`,orgIds:[`numerical-analysis-group`]},{id:`gustavo-pinto`,name:`Gustavo Pinto`,type:`End user`,title:`Simulation Engineer`,orgIds:[`simulation-team`]},{id:`jonas-lindqvist`,name:`Jonas Lindqvist`,type:`End user`,title:`Professor`,orgIds:[`mathematics`]},{id:`nadia-haddad`,name:`Nadia Haddad`,type:`End user`,title:`Lecturer`,orgIds:[`mathematics`]},{id:`tomas-varga`,name:`Tomas Varga`,type:`End user`,title:`Teaching Assistant`,orgIds:[`mathematics`]},{id:`grace-mbeki`,name:`Grace Mbeki`,type:`End user`,title:`Department Coordinator`,orgIds:[`mathematics`]},{id:`ruth-castellanos`,name:`Ruth Castellanos`,type:`End user`,title:`Research Fellow`,orgIds:[`applied-mathematics`]},{id:`benedikt-hofer`,name:`Benedikt Hofer`,type:`End user`,title:`Statistician`,orgIds:[`applied-mathematics`]},{id:`priscilla-adeyemi`,name:`Priscilla Adeyemi`,type:`End user`,title:`Postdoctoral Researcher`,orgIds:[`applied-mathematics`]},{id:`oliver-brandt`,name:`Oliver Brandt`,type:`End user`,title:`Department Administrator`,orgIds:[`engineering`]},{id:`dana-whitfield`,name:`Dana Whitfield`,type:`End user`,title:`Faculty Lead`,orgIds:[`engineering`]},{id:`samir-patel`,name:`Samir Patel`,type:`End user`,title:`Professor`,orgIds:[`engineering`]},{id:`tim-mclean`,name:`Tim McLean`,type:`End user`,title:`Engineering Manager`,orgIds:[`mobile-app-team`]},{id:`yuki-tanaka`,name:`Yuki Tanaka`,type:`End user`,title:`iOS Developer`,orgIds:[`mobile-app-team`]},{id:`lucas-ferreira`,name:`Lucas Ferreira`,type:`End user`,title:`Android Developer`,orgIds:[`mobile-app-team`]},{id:`hannah-mcgrath`,name:`Hannah McGrath`,type:`End user`,title:`QA Engineer`,orgIds:[`mobile-app-team`]},{id:`felix-nordstrom`,name:`Felix Nordstrom`,type:`End user`,title:`Squad Lead`,orgIds:[`ios-squad`]},{id:`rosalind-akana`,name:`Rosalind Akana`,type:`End user`,title:`Senior iOS Engineer`,orgIds:[`ios-squad`]},{id:`devon-marsh`,name:`Devon Marsh`,type:`End user`,title:`iOS Engineer`,orgIds:[`ios-squad`]},{id:`ingrid-solberg`,name:`Ingrid Solberg`,type:`End user`,title:`Release Manager`,orgIds:[`build-release`]},{id:`callum-baptiste`,name:`Callum Baptiste`,type:`End user`,title:`Build Engineer`,orgIds:[`build-release`]},{id:`ines-moreau`,name:`Ines Moreau`,type:`End user`,title:`Applications Analyst`,orgIds:[`380-applications`]},{id:`kofi-mensah`,name:`Kofi Mensah`,type:`End user`,title:`Systems Engineer`,orgIds:[`380-applications`]},{id:`elena-petrova`,name:`Elena Petrova`,type:`End user`,title:`Integrations Lead`,orgIds:[`380-applications`]},{id:`ryan-doyle`,name:`Ryan Doyle`,type:`End user`,title:`Support Analyst`,orgIds:[`380-applications`]},{id:`aisha-karim`,name:`Aisha Karim`,type:`End user`,title:`Database Administrator`,orgIds:[`380-applications`]},{id:`gordon-alvarez`,name:`Gordon Alvarez`,type:`Agent`,title:`Service Provider Support Engineer`,orgIds:[`reseller-a`]},{id:`beatrice-nowak`,name:`Beatrice Nowak`,type:`Agent`,title:`Account Manager`,orgIds:[`reseller-a`]},{id:`victor-hale`,name:`Victor Hale`,type:`End user`,title:`Operations Lead`,orgIds:[`saas-product`]},{id:`mei-lin`,name:`Mei Lin`,type:`End user`,title:`Product Owner`,orgIds:[`dept-1`]},{id:`andre-silva`,name:`Andre Silva`,type:`End user`,title:`Support Specialist`,orgIds:[`dept-1`]},{id:`claire-dubois`,name:`Claire Dubois`,type:`End user`,title:`Billing Analyst`,orgIds:[`dept-2`]},{id:`omar-farouk`,name:`Omar Farouk`,type:`End user`,title:`Implementation Consultant`,orgIds:[`dept-2`]},{id:`natalie-cross`,name:`Natalie Cross`,type:`End user`,title:`Customer Success Manager`,orgIds:[`dept-3`]},{id:`peter-shaw`,name:`Peter Shaw`,type:`End user`,title:`Technical Writer`,orgIds:[`dept-3`]}],Uy=e=>Vy.find(t=>t.id===e),Wy=e=>Vy.filter(t=>t.parentId===e),Gy=e=>Hy.filter(t=>t.orgIds.includes(e)),Ky=e=>Wy(e).flatMap(e=>[e.id,...Ky(e.id)]),qy=e=>{let t=Uy(e);return t?t.parentId?[...qy(t.parentId),t]:[t]:[]},Jy=e=>[e,...Ky(e)].reduce((e,t)=>e+Gy(t).length,0),Yy=24,Xy=10,Zy=4,Qy=20,$y=12,eb=`#eae9e8`,tb=e=>$y+e*Yy+Qy+Zy,nb=V.div`
+`,Vy=[{id:`td-synnex`,name:`TD Synnex`,type:`Reseller Network`,parentId:null},{id:`reseller-a`,name:`Reseller A`,type:`Service Provider`,parentId:`td-synnex`},{id:`bramblewick`,name:`Bramblewick University`,type:`Company`,parentId:`reseller-a`},{id:`computer-science`,name:`Computer Science`,type:`Cost Center`,parentId:`bramblewick`},{id:`artificial-intelligence`,name:`Artificial Intelligence`,type:`Cost Center`,parentId:`computer-science`},{id:`machine-learning-lab`,name:`Machine Learning Lab`,type:`Supervisory`,parentId:`artificial-intelligence`},{id:`natural-language-lab`,name:`Natural Language Lab`,type:`Supervisory`,parentId:`artificial-intelligence`},{id:`robotics-lab`,name:`Robotics Lab`,type:`Supervisory`,parentId:`artificial-intelligence`},{id:`speech-processing-group`,name:`Speech Processing Group`,type:`Supervisory`,parentId:`natural-language-lab`},{id:`transcription-team`,name:`Transcription Team`,type:`Supervisory`,parentId:`speech-processing-group`},{id:`neural-networks-group`,name:`Neural Networks Group`,type:`Supervisory`,parentId:`machine-learning-lab`},{id:`deep-learning-unit`,name:`Deep Learning Unit`,type:`Supervisory`,parentId:`neural-networks-group`},{id:`computer-vision-team`,name:`Computer Vision Team`,type:`Supervisory`,parentId:`deep-learning-unit`},{id:`speech-recognition-team`,name:`Speech Recognition Team`,type:`Supervisory`,parentId:`deep-learning-unit`},{id:`image-recognition-squad`,name:`Image Recognition Squad`,type:`Supervisory`,parentId:`computer-vision-team`},{id:`model-training-pod`,name:`Model Training Pod`,type:`Supervisory`,parentId:`image-recognition-squad`},{id:`gpu-cluster-ops`,name:`GPU Cluster Ops`,type:`Supervisory`,parentId:`model-training-pod`},{id:`dataset-curation-pod`,name:`Dataset Curation Pod`,type:`Supervisory`,parentId:`model-training-pod`},{id:`evaluation-pod`,name:`Evaluation Pod`,type:`Supervisory`,parentId:`model-training-pod`},{id:`inference-serving-pod`,name:`Inference Serving Pod`,type:`Supervisory`,parentId:`model-training-pod`},{id:`mathematics`,name:`Mathematics`,type:`Cost Center`,parentId:`bramblewick`},{id:`applied-mathematics`,name:`Applied Mathematics`,type:`Cost Center`,parentId:`mathematics`},{id:`pure-mathematics`,name:`Pure Mathematics`,type:`Cost Center`,parentId:`mathematics`},{id:`statistics`,name:`Statistics`,type:`Cost Center`,parentId:`mathematics`},{id:`numerical-analysis-group`,name:`Numerical Analysis Group`,type:`Cost Center`,parentId:`applied-mathematics`},{id:`simulation-team`,name:`Simulation Team`,type:`Supervisory`,parentId:`numerical-analysis-group`},{id:`engineering`,name:`Engineering`,type:`Cost Center Hierarchy`,parentId:`bramblewick`},{id:`mobile-app-team`,name:`Mobile App Team`,type:`Supervisory`,parentId:`engineering`},{id:`ios-squad`,name:`iOS Squad`,type:`Supervisory`,parentId:`mobile-app-team`},{id:`build-release`,name:`Build & Release`,type:`Supervisory`,parentId:`ios-squad`},{id:`380-applications`,name:`380 Applications`,type:`Cost Center`,parentId:`engineering`},{id:`saas-product`,name:`SaaS Product`,type:`Company`,parentId:`reseller-a`},{id:`dept-1`,name:`Dept 1`,type:`Cost Center`,parentId:`saas-product`},{id:`dept-2`,name:`Dept 2`,type:`Cost Center`,parentId:`saas-product`},{id:`dept-3`,name:`Dept 3`,type:`Cost Center`,parentId:`saas-product`}],Hy=[{id:`adrian-whitlock`,name:`Adrian Whitlock`,type:`Agent`,title:`Head of Engineering`,orgIds:[`bramblewick`]},{id:`priya-raman`,name:`Priya Raman`,type:`Agent`,title:`IT Director`,orgIds:[`bramblewick`]},{id:`helen-osei`,name:`Helen Osei`,type:`End user`,title:`Registrar`,orgIds:[`bramblewick`]},{id:`rachel-martinez`,name:`Rachel Martinez`,type:`End user`,title:`Professor`,orgIds:[`computer-science`]},{id:`daniel-okafor`,name:`Daniel Okafor`,type:`End user`,title:`Associate Professor`,orgIds:[`computer-science`]},{id:`sofia-almeida`,name:`Sofia Almeida`,type:`End user`,title:`Lab Manager`,orgIds:[`computer-science`]},{id:`wei-zhang`,name:`Wei Zhang`,type:`End user`,title:`Teaching Assistant`,orgIds:[`computer-science`]},{id:`amara-diallo`,name:`Amara Diallo`,type:`End user`,title:`Graduate Researcher`,orgIds:[`computer-science`]},{id:`theodore-abiodun`,name:`Theodore Abiodun`,type:`End user`,title:`Research Director`,orgIds:[`artificial-intelligence`]},{id:`saoirse-flanagan`,name:`Saoirse Flanagan`,type:`End user`,title:`Senior Researcher`,orgIds:[`artificial-intelligence`]},{id:`hiroshi-nakamura`,name:`Hiroshi Nakamura`,type:`End user`,title:`Lecturer`,orgIds:[`artificial-intelligence`]},{id:`valentina-rossi`,name:`Valentina Rossi`,type:`End user`,title:`Lab Director`,orgIds:[`machine-learning-lab`]},{id:`obinna-eze`,name:`Obinna Eze`,type:`End user`,title:`Research Engineer`,orgIds:[`machine-learning-lab`]},{id:`freya-lindholm`,name:`Freya Lindholm`,type:`End user`,title:`Doctoral Candidate`,orgIds:[`machine-learning-lab`]},{id:`anneke-vos`,name:`Anneke Vos`,type:`End user`,title:`Group Lead`,orgIds:[`neural-networks-group`]},{id:`mateo-guerrero`,name:`Mateo Guerrero`,type:`End user`,title:`Research Scientist`,orgIds:[`neural-networks-group`]},{id:`lena-fischer`,name:`Lena Fischer`,type:`End user`,title:`Unit Lead`,orgIds:[`deep-learning-unit`]},{id:`kwame-asante`,name:`Kwame Asante`,type:`End user`,title:`ML Engineer`,orgIds:[`deep-learning-unit`]},{id:`siobhan-doherty`,name:`Siobhan Doherty`,type:`End user`,title:`Team Lead`,orgIds:[`computer-vision-team`]},{id:`raul-mendoza`,name:`Raul Mendoza`,type:`End user`,title:`Vision Researcher`,orgIds:[`computer-vision-team`]},{id:`thandiwe-mokoena`,name:`Thandiwe Mokoena`,type:`End user`,title:`Postdoctoral Researcher`,orgIds:[`computer-vision-team`]},{id:`georgi-ivanov`,name:`Georgi Ivanov`,type:`End user`,title:`Research Assistant`,orgIds:[`neural-networks-group`]},{id:`amelie-caron`,name:`Amelie Caron`,type:`End user`,title:`Doctoral Candidate`,orgIds:[`deep-learning-unit`]},{id:`chiara-bellini`,name:`Chiara Bellini`,type:`End user`,title:`Squad Lead`,orgIds:[`image-recognition-squad`]},{id:`tobias-lang`,name:`Tobias Lang`,type:`End user`,title:`Data Annotator`,orgIds:[`image-recognition-squad`]},{id:`nour-haddad`,name:`Nour Haddad`,type:`End user`,title:`Training Lead`,orgIds:[`model-training-pod`]},{id:`evgeni-petrov`,name:`Evgeni Petrov`,type:`End user`,title:`Pipeline Engineer`,orgIds:[`model-training-pod`]},{id:`marisol-reyes`,name:`Marisol Reyes`,type:`End user`,title:`Cluster Administrator`,orgIds:[`gpu-cluster-ops`]},{id:`declan-byrne`,name:`Declan Byrne`,type:`End user`,title:`Infrastructure Engineer`,orgIds:[`gpu-cluster-ops`]},{id:`ingrid-halvorsen`,name:`Ingrid Halvorsen`,type:`End user`,title:`Lab Director`,orgIds:[`natural-language-lab`]},{id:`oscar-delgado`,name:`Oscar Delgado`,type:`End user`,title:`Computational Linguist`,orgIds:[`natural-language-lab`]},{id:`yara-nasser`,name:`Yara Nasser`,type:`End user`,title:`Lab Director`,orgIds:[`robotics-lab`]},{id:`pavel-novak`,name:`Pavel Novak`,type:`End user`,title:`Robotics Engineer`,orgIds:[`robotics-lab`]},{id:`linnea-berg`,name:`Linnea Berg`,type:`End user`,title:`Group Lead`,orgIds:[`speech-processing-group`]},{id:`hassan-qureshi`,name:`Hassan Qureshi`,type:`End user`,title:`Speech Scientist`,orgIds:[`speech-processing-group`]},{id:`juliet-adeyinka`,name:`Juliet Adeyinka`,type:`End user`,title:`Transcription Lead`,orgIds:[`transcription-team`]},{id:`karin-lindgren`,name:`Karin Lindgren`,type:`End user`,title:`Team Lead`,orgIds:[`speech-recognition-team`]},{id:`diego-salazar`,name:`Diego Salazar`,type:`End user`,title:`Audio Engineer`,orgIds:[`speech-recognition-team`]},{id:`noor-rahman`,name:`Noor Rahman`,type:`End user`,title:`Curation Lead`,orgIds:[`dataset-curation-pod`]},{id:`esther-mwangi`,name:`Esther Mwangi`,type:`End user`,title:`Data Steward`,orgIds:[`dataset-curation-pod`]},{id:`viktor-sorensen`,name:`Viktor Sorensen`,type:`End user`,title:`Evaluation Lead`,orgIds:[`evaluation-pod`]},{id:`aria-behzadi`,name:`Aria Behzadi`,type:`End user`,title:`Serving Engineer`,orgIds:[`inference-serving-pod`]},{id:`ottoline-frank`,name:`Ottoline Frank`,type:`End user`,title:`Professor`,orgIds:[`pure-mathematics`]},{id:`mikael-sundberg`,name:`Mikael Sundberg`,type:`End user`,title:`Lecturer`,orgIds:[`pure-mathematics`]},{id:`chandra-iyer`,name:`Chandra Iyer`,type:`End user`,title:`Head of Statistics`,orgIds:[`statistics`]},{id:`lorna-fitzgerald`,name:`Lorna Fitzgerald`,type:`End user`,title:`Biostatistician`,orgIds:[`statistics`]},{id:`emeka-nwosu`,name:`Emeka Nwosu`,type:`End user`,title:`Group Lead`,orgIds:[`numerical-analysis-group`]},{id:`sanne-de-vries`,name:`Sanne de Vries`,type:`End user`,title:`Numerical Analyst`,orgIds:[`numerical-analysis-group`]},{id:`gustavo-pinto`,name:`Gustavo Pinto`,type:`End user`,title:`Simulation Engineer`,orgIds:[`simulation-team`]},{id:`jonas-lindqvist`,name:`Jonas Lindqvist`,type:`End user`,title:`Professor`,orgIds:[`mathematics`]},{id:`nadia-haddad`,name:`Nadia Haddad`,type:`End user`,title:`Lecturer`,orgIds:[`mathematics`]},{id:`tomas-varga`,name:`Tomas Varga`,type:`End user`,title:`Teaching Assistant`,orgIds:[`mathematics`]},{id:`grace-mbeki`,name:`Grace Mbeki`,type:`End user`,title:`Department Coordinator`,orgIds:[`mathematics`]},{id:`ruth-castellanos`,name:`Ruth Castellanos`,type:`End user`,title:`Research Fellow`,orgIds:[`applied-mathematics`]},{id:`benedikt-hofer`,name:`Benedikt Hofer`,type:`End user`,title:`Statistician`,orgIds:[`applied-mathematics`]},{id:`priscilla-adeyemi`,name:`Priscilla Adeyemi`,type:`End user`,title:`Postdoctoral Researcher`,orgIds:[`applied-mathematics`]},{id:`oliver-brandt`,name:`Oliver Brandt`,type:`End user`,title:`Department Administrator`,orgIds:[`engineering`]},{id:`dana-whitfield`,name:`Dana Whitfield`,type:`End user`,title:`Faculty Lead`,orgIds:[`engineering`]},{id:`samir-patel`,name:`Samir Patel`,type:`End user`,title:`Professor`,orgIds:[`engineering`]},{id:`tim-mclean`,name:`Tim McLean`,type:`End user`,title:`Engineering Manager`,orgIds:[`mobile-app-team`]},{id:`yuki-tanaka`,name:`Yuki Tanaka`,type:`End user`,title:`iOS Developer`,orgIds:[`mobile-app-team`]},{id:`lucas-ferreira`,name:`Lucas Ferreira`,type:`End user`,title:`Android Developer`,orgIds:[`mobile-app-team`]},{id:`hannah-mcgrath`,name:`Hannah McGrath`,type:`End user`,title:`QA Engineer`,orgIds:[`mobile-app-team`]},{id:`felix-nordstrom`,name:`Felix Nordstrom`,type:`End user`,title:`Squad Lead`,orgIds:[`ios-squad`]},{id:`rosalind-akana`,name:`Rosalind Akana`,type:`End user`,title:`Senior iOS Engineer`,orgIds:[`ios-squad`]},{id:`devon-marsh`,name:`Devon Marsh`,type:`End user`,title:`iOS Engineer`,orgIds:[`ios-squad`]},{id:`ingrid-solberg`,name:`Ingrid Solberg`,type:`End user`,title:`Release Manager`,orgIds:[`build-release`]},{id:`callum-baptiste`,name:`Callum Baptiste`,type:`End user`,title:`Build Engineer`,orgIds:[`build-release`]},{id:`ines-moreau`,name:`Ines Moreau`,type:`End user`,title:`Applications Analyst`,orgIds:[`380-applications`]},{id:`kofi-mensah`,name:`Kofi Mensah`,type:`End user`,title:`Systems Engineer`,orgIds:[`380-applications`]},{id:`elena-petrova`,name:`Elena Petrova`,type:`End user`,title:`Integrations Lead`,orgIds:[`380-applications`]},{id:`ryan-doyle`,name:`Ryan Doyle`,type:`End user`,title:`Support Analyst`,orgIds:[`380-applications`]},{id:`aisha-karim`,name:`Aisha Karim`,type:`End user`,title:`Database Administrator`,orgIds:[`380-applications`]},{id:`gordon-alvarez`,name:`Gordon Alvarez`,type:`Agent`,title:`Service Provider Support Engineer`,orgIds:[`reseller-a`]},{id:`beatrice-nowak`,name:`Beatrice Nowak`,type:`Agent`,title:`Account Manager`,orgIds:[`reseller-a`]},{id:`victor-hale`,name:`Victor Hale`,type:`End user`,title:`Operations Lead`,orgIds:[`saas-product`]},{id:`mei-lin`,name:`Mei Lin`,type:`End user`,title:`Product Owner`,orgIds:[`dept-1`]},{id:`andre-silva`,name:`Andre Silva`,type:`End user`,title:`Support Specialist`,orgIds:[`dept-1`]},{id:`claire-dubois`,name:`Claire Dubois`,type:`End user`,title:`Billing Analyst`,orgIds:[`dept-2`]},{id:`omar-farouk`,name:`Omar Farouk`,type:`End user`,title:`Implementation Consultant`,orgIds:[`dept-2`]},{id:`natalie-cross`,name:`Natalie Cross`,type:`End user`,title:`Customer Success Manager`,orgIds:[`dept-3`]},{id:`peter-shaw`,name:`Peter Shaw`,type:`End user`,title:`Technical Writer`,orgIds:[`dept-3`]}],Uy=e=>Vy.find(t=>t.id===e),Wy=e=>Vy.filter(t=>t.parentId===e),Gy=e=>Hy.filter(t=>t.orgIds.includes(e)),Ky=e=>Wy(e).flatMap(e=>[e.id,...Ky(e.id)]),qy=e=>{let t=Uy(e);return t?t.parentId?[...qy(t.parentId),t]:[t]:[]},Jy=e=>[e,...Ky(e)].reduce((e,t)=>e+Gy(t).length,0),Yy=24,Xy=10,Zy=4,Qy=20,$y=`#eae9e8`,eb=3,tb=e=>15+e*Yy+Qy+Zy,nb=V.div`
   padding: 24px 32px 40px;
   overflow-y: auto;
   flex: 1;
@@ -1053,7 +1053,7 @@ Error generating stack: `+e.message+`
     right: 0;
     bottom: 0;
     height: 1px;
-    background-color: ${eb};
+    background-color: ${$y};
   }
 
   td:first-child::after {
@@ -1061,22 +1061,6 @@ Error generating stack: `+e.message+`
   }
   `}
 
-  /* The one piece of blue in the table: a bar down the left edge marking which
-     row the view is centred on. It sits outside the tree's indentation, at the
-     very left of the table, so it reads as "this row" rather than as part of the
-     structure — and because the selected row stays where it is in its sibling
-     group, this is what tells you where you are. */
-  ${e=>e.$selected&&`
-  td:first-child::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 0;
-    bottom: 0;
-    width: 3px;
-    background-color: #406cc4;
-  }
-  `}
 `,cb=V(vy)`
   padding-top: 0;
   padding-bottom: 0;
@@ -1086,32 +1070,44 @@ Error generating stack: `+e.message+`
   align-items: stretch;
   min-height: 36px;
 `,ub=V.span`
+  width: 3px;
+  min-width: 3px;
+  flex-shrink: 0;
+  align-self: center;
+  height: 24px;
+  border-radius: 2px;
+  background-color: #406cc4;
+`,db=V.span`
+  width: 3px;
+  min-width: 3px;
+  flex-shrink: 0;
+`,fb=V.span`
   position: absolute;
-  left: ${e=>e.$depth*Yy+Xy}px;
+  left: ${e=>eb+e.$depth*Yy+Xy}px;
   top: calc(50% + 5px);
   bottom: 0;
   width: 1px;
   background-color: #dcdcda;
-`,db=V.div`
+`,pb=V.div`
   position: relative;
   width: ${Yy}px;
   min-width: ${Yy}px;
   flex-shrink: 0;
-`,fb=V.span`
+`,mb=V.span`
   position: absolute;
   left: ${Xy}px;
   top: 0;
   bottom: ${e=>e.$stopAtMiddle?`50%`:`0`};
   width: 1px;
   background-color: #dcdcda;
-`,pb=V.span`
+`,hb=V.span`
   position: absolute;
   left: ${Xy}px;
   top: 50%;
   width: ${10}px;
   height: 1px;
   background-color: #dcdcda;
-`,mb=V.div`
+`,gb=V.div`
   position: relative;
   width: ${Qy}px;
   min-width: ${Qy}px;
@@ -1126,7 +1122,7 @@ Error generating stack: `+e.message+`
     height: 1px;
     background-color: #dcdcda;
   }
-`,hb=V.button`
+`,_b=V.button`
   width: ${Qy}px;
   min-width: ${Qy}px;
   flex-shrink: 0;
@@ -1148,7 +1144,7 @@ Error generating stack: `+e.message+`
     outline-offset: 1px;
     border-radius: 2px;
   }
-`,gb=V.span`
+`,vb=V.span`
   width: ${Qy}px;
   min-width: ${Qy}px;
   flex-shrink: 0;
@@ -1156,13 +1152,13 @@ Error generating stack: `+e.message+`
   display: flex;
   align-items: center;
   justify-content: center;
-`,_b=V.div`
+`,yb=V.div`
   display: flex;
   align-items: center;
   gap: 8px;
   padding-left: ${Zy}px;
   min-width: 0;
-`,vb=V.a`
+`,bb=V.a`
   color: #406cc4;
   text-decoration: underline;
   font-size: 14px;
@@ -1174,24 +1170,24 @@ Error generating stack: `+e.message+`
   &:hover {
     color: #284173;
   }
-`,yb=V.span`
+`,xb=V.span`
   font-size: 14px;
   color: #2f3130;
   font-weight: ${e=>e.$current?700:400};
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-`,bb=V.span`
-  font-size: 14px;
-  color: #646864;
-  white-space: nowrap;
-`,xb=V.span`
-  color: #999b97;
 `,Sb=V.span`
   font-size: 14px;
   color: #646864;
   white-space: nowrap;
-`,Cb=V(hy)`
+`,Cb=V.span`
+  color: #999b97;
+`,wb=V.span`
+  font-size: 14px;
+  color: #646864;
+  white-space: nowrap;
+`,Tb=V(hy)`
   position: absolute;
   width: 1px;
   height: 1px;
@@ -1201,40 +1197,40 @@ Error generating stack: `+e.message+`
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
   border: 0;
-`,wb=()=>(0,K.jsxs)(`svg`,{width:`16`,height:`16`,viewBox:`0 0 16 16`,fill:`none`,stroke:`currentColor`,focusable:`false`,"aria-hidden":`true`,children:[(0,K.jsx)(`circle`,{cx:`6.5`,cy:`6.5`,r:`5`}),(0,K.jsx)(`path`,{strokeLinecap:`round`,d:`m10.5 10.5 4 4`})]}),Tb={down:`none`,right:`rotate(-90deg)`,up:`rotate(180deg)`},Eb=({direction:e=`down`})=>(0,K.jsx)(`svg`,{width:`12`,height:`12`,viewBox:`0 0 12 12`,fill:`none`,stroke:`currentColor`,strokeWidth:`1.5`,strokeLinecap:`round`,strokeLinejoin:`round`,"aria-hidden":`true`,style:{transform:Tb[e],transition:`transform 100ms ease`},children:(0,K.jsx)(`path`,{d:`M2.5 4.5 6 8l3.5-3.5`})}),Db=(e,t=!0)=>{let n=[],r=qy(e),i=r[r.length-1];if(!i)return n;let a=e=>Wy(e).length>0||t&&Gy(e).length>0,o=r.slice(0,-1),s=[],c=[];o.forEach((e,t)=>{s=[...s,!0],c=[...c,e.id],n.push({key:`org-${e.id}`,kind:`org`,node:e,depth:t,isLast:!0,ancestorIsLast:s,ancestorIds:c,isOpen:!0,hasChildren:!0,childOrgCount:Wy(e.id).length,peopleCount:Jy(e.id)})});let l=s,u=c,d=o.length,f=Wy(i.id),p=t?Gy(i.id):[],m=f.length>0||p.length>0,h=i.parentId?Wy(i.parentId):[i];return h.forEach((e,t)=>{let r=t===h.length-1,o=e.id===i.id,s=[...l,r],c=[...u,e.id];n.push({key:`org-${e.id}`,kind:`org`,node:e,depth:d,isLast:r,ancestorIsLast:s,ancestorIds:c,isOpen:o&&m,hasChildren:a(e.id),childOrgCount:Wy(e.id).length,peopleCount:Jy(e.id)}),o&&(f.forEach((e,t)=>{let r=t===f.length-1&&p.length===0;n.push({key:`org-${e.id}`,kind:`org`,node:e,depth:d+1,isLast:r,ancestorIsLast:[...s,r],ancestorIds:[...c,e.id],isOpen:!1,hasChildren:a(e.id),childOrgCount:Wy(e.id).length,peopleCount:Jy(e.id)})}),p.forEach((e,t)=>{let r=t===p.length-1;n.push({key:`person-${e.id}-${i.id}`,kind:`person`,node:e,depth:d+1,isLast:r,ancestorIsLast:[...s,r],ancestorIds:[...c,e.id],isOpen:!1,hasChildren:!1})}))}),n},Ob=({row:e})=>e.depth===0?null:(0,K.jsx)(K.Fragment,{children:Array.from({length:e.depth},(t,n)=>n===e.depth-1?(0,K.jsxs)(db,{children:[(0,K.jsx)(fb,{$stopAtMiddle:e.isLast}),(0,K.jsx)(pb,{})]},n):(0,K.jsx)(db,{children:!e.ancestorIsLast[n+1]&&(0,K.jsx)(fb,{})},n))});function kb({selectedId:e,onSelectOrganization:t,version:n=`v1`}){let r=n===`v2`,i=n===`v3`,a=(0,g.useMemo)(()=>Db(e,r),[e,r]),o=(0,g.useMemo)(()=>1+Ky(e).length,[e]),s=(0,g.useMemo)(()=>r?Jy(e):0,[e,r]),c=n=>{n!==e&&t?.(n)};return(0,K.jsxs)(nb,{children:[(0,K.jsxs)(rb,{children:[(0,K.jsx)(ib,{children:r?`Search organizations and users`:`Search organizations`}),(0,K.jsx)(hm,{start:(0,K.jsx)(wb,{})})]}),(0,K.jsxs)(ab,{children:[o,` `,o===1?`organization`:`organizations`,r&&` · ${s} ${s===1?`person`:`people`}`]}),(0,K.jsxs)(ob,{children:[(0,K.jsx)(Cb,{children:`Hierarchy around the selected organization: its ancestors, direct children, and direct siblings`}),(0,K.jsx)(by,{children:(0,K.jsxs)(Sy,{children:[(0,K.jsx)(xy,{children:`Organization`}),r&&(0,K.jsx)(xy,{width:`22%`,children:`Organization type`}),!i&&(0,K.jsx)(xy,{width:`12%`,children:`Child orgs`}),r&&(0,K.jsx)(xy,{width:`10%`,children:`People`})]})}),(0,K.jsx)(my,{children:a.map(t=>{let n=t.kind===`person`,a=!n&&t.node.id===e;return(0,K.jsxs)(sb,{$ruleInset:tb(t.depth),$noRule:i,$selected:a,children:[(0,K.jsx)(cb,{children:(0,K.jsxs)(lb,{children:[t.isOpen&&(0,K.jsx)(ub,{$depth:t.depth,"aria-hidden":`true`}),(0,K.jsx)(Ob,{row:t}),t.isOpen?(0,K.jsx)(gb,{"aria-hidden":`true`,children:(0,K.jsx)(Eb,{direction:`down`})}):t.hasChildren?(0,K.jsx)(hb,{type:`button`,onClick:()=>c(t.node.id),"aria-label":`Show the hierarchy around ${t.node.name}`,children:(0,K.jsx)(Eb,{direction:`right`})}):(0,K.jsx)(mb,{"aria-hidden":`true`}),(0,K.jsxs)(_b,{children:[n||a?(0,K.jsx)(yb,{$current:a,title:t.node.name,children:t.node.name}):(0,K.jsx)(vb,{href:`#`,onClick:e=>{e.preventDefault(),c(t.node.id)},title:t.node.name,children:t.node.name}),i&&!n&&t.childOrgCount>0&&(0,K.jsxs)(Sb,{children:[`(`,t.childOrgCount,`)`]}),a&&(0,K.jsx)(By,{children:`current`}),n&&t.node.title&&(0,K.jsx)(bb,{children:t.node.title})]})]})}),r&&(0,K.jsx)(vy,{children:t.node.type}),!i&&(0,K.jsx)(vy,{children:n?(0,K.jsx)(xb,{children:`—`}):`${t.childOrgCount} child ${t.childOrgCount===1?`org`:`orgs`}`}),r&&(0,K.jsx)(vy,{children:n?(0,K.jsx)(xb,{children:`—`}):t.peopleCount})]},t.key)})})]})]})}var Ab=V.div`
+`,Eb=()=>(0,K.jsxs)(`svg`,{width:`16`,height:`16`,viewBox:`0 0 16 16`,fill:`none`,stroke:`currentColor`,focusable:`false`,"aria-hidden":`true`,children:[(0,K.jsx)(`circle`,{cx:`6.5`,cy:`6.5`,r:`5`}),(0,K.jsx)(`path`,{strokeLinecap:`round`,d:`m10.5 10.5 4 4`})]}),Db={down:`none`,right:`rotate(-90deg)`,up:`rotate(180deg)`},Ob=({direction:e=`down`})=>(0,K.jsx)(`svg`,{width:`12`,height:`12`,viewBox:`0 0 12 12`,fill:`none`,stroke:`currentColor`,strokeWidth:`1.5`,strokeLinecap:`round`,strokeLinejoin:`round`,"aria-hidden":`true`,style:{transform:Db[e],transition:`transform 100ms ease`},children:(0,K.jsx)(`path`,{d:`M2.5 4.5 6 8l3.5-3.5`})}),kb=(e,t=!0)=>{let n=[],r=qy(e),i=r[r.length-1];if(!i)return n;let a=e=>Wy(e).length>0||t&&Gy(e).length>0,o=r.slice(0,-1),s=[],c=[];o.forEach((e,t)=>{s=[...s,!0],c=[...c,e.id],n.push({key:`org-${e.id}`,kind:`org`,node:e,depth:t,isLast:!0,ancestorIsLast:s,ancestorIds:c,isOpen:!0,hasChildren:!0,childOrgCount:Wy(e.id).length,peopleCount:Jy(e.id)})});let l=s,u=c,d=o.length,f=Wy(i.id),p=t?Gy(i.id):[],m=f.length>0||p.length>0,h=i.parentId?Wy(i.parentId):[i];return h.forEach((e,t)=>{let r=t===h.length-1,o=e.id===i.id,s=[...l,r],c=[...u,e.id];n.push({key:`org-${e.id}`,kind:`org`,node:e,depth:d,isLast:r,ancestorIsLast:s,ancestorIds:c,isOpen:o&&m,hasChildren:a(e.id),childOrgCount:Wy(e.id).length,peopleCount:Jy(e.id)}),o&&(f.forEach((e,t)=>{let r=t===f.length-1&&p.length===0;n.push({key:`org-${e.id}`,kind:`org`,node:e,depth:d+1,isLast:r,ancestorIsLast:[...s,r],ancestorIds:[...c,e.id],isOpen:!1,hasChildren:a(e.id),childOrgCount:Wy(e.id).length,peopleCount:Jy(e.id)})}),p.forEach((e,t)=>{let r=t===p.length-1;n.push({key:`person-${e.id}-${i.id}`,kind:`person`,node:e,depth:d+1,isLast:r,ancestorIsLast:[...s,r],ancestorIds:[...c,e.id],isOpen:!1,hasChildren:!1})}))}),n},Ab=({row:e})=>e.depth===0?null:(0,K.jsx)(K.Fragment,{children:Array.from({length:e.depth},(t,n)=>n===e.depth-1?(0,K.jsxs)(pb,{children:[(0,K.jsx)(mb,{$stopAtMiddle:e.isLast}),(0,K.jsx)(hb,{})]},n):(0,K.jsx)(pb,{children:!e.ancestorIsLast[n+1]&&(0,K.jsx)(mb,{})},n))});function jb({selectedId:e,onSelectOrganization:t,version:n=`v1`}){let r=n===`v2`,i=n===`v3`,a=(0,g.useMemo)(()=>kb(e,r),[e,r]),o=(0,g.useMemo)(()=>1+Ky(e).length,[e]),s=(0,g.useMemo)(()=>r?Jy(e):0,[e,r]),c=n=>{n!==e&&t?.(n)};return(0,K.jsxs)(nb,{children:[(0,K.jsxs)(rb,{children:[(0,K.jsx)(ib,{children:r?`Search organizations and users`:`Search organizations`}),(0,K.jsx)(hm,{start:(0,K.jsx)(Eb,{})})]}),(0,K.jsxs)(ab,{children:[o,` `,o===1?`organization`:`organizations`,r&&` · ${s} ${s===1?`person`:`people`}`]}),(0,K.jsxs)(ob,{children:[(0,K.jsx)(Tb,{children:`Hierarchy around the selected organization: its ancestors, direct children, and direct siblings`}),(0,K.jsx)(by,{children:(0,K.jsxs)(Sy,{children:[(0,K.jsx)(xy,{children:`Organization`}),r&&(0,K.jsx)(xy,{width:`22%`,children:`Organization type`}),!i&&(0,K.jsx)(xy,{width:`12%`,children:`Child orgs`}),r&&(0,K.jsx)(xy,{width:`10%`,children:`People`})]})}),(0,K.jsx)(my,{children:a.map(t=>{let n=t.kind===`person`,a=!n&&t.node.id===e;return(0,K.jsxs)(sb,{$ruleInset:tb(t.depth),$noRule:i,$selected:a,children:[(0,K.jsx)(cb,{children:(0,K.jsxs)(lb,{children:[a?(0,K.jsx)(ub,{"aria-hidden":`true`}):(0,K.jsx)(db,{"aria-hidden":`true`}),t.isOpen&&(0,K.jsx)(fb,{$depth:t.depth,"aria-hidden":`true`}),(0,K.jsx)(Ab,{row:t}),t.isOpen?(0,K.jsx)(vb,{"aria-hidden":`true`,children:(0,K.jsx)(Ob,{direction:`down`})}):t.hasChildren?(0,K.jsx)(_b,{type:`button`,onClick:()=>c(t.node.id),"aria-label":`Show the hierarchy around ${t.node.name}`,children:(0,K.jsx)(Ob,{direction:`right`})}):(0,K.jsx)(gb,{"aria-hidden":`true`}),(0,K.jsxs)(yb,{children:[n||a?(0,K.jsx)(xb,{$current:a,title:t.node.name,children:t.node.name}):(0,K.jsx)(bb,{href:`#`,onClick:e=>{e.preventDefault(),c(t.node.id)},title:t.node.name,children:t.node.name}),i&&!n&&t.childOrgCount>0&&(0,K.jsxs)(wb,{children:[`(`,t.childOrgCount,`)`]}),a&&(0,K.jsx)(By,{children:`current`}),n&&t.node.title&&(0,K.jsx)(Sb,{children:t.node.title})]})]})}),r&&(0,K.jsx)(vy,{children:t.node.type}),!i&&(0,K.jsx)(vy,{children:n?(0,K.jsx)(Cb,{children:`—`}):`${t.childOrgCount} child ${t.childOrgCount===1?`org`:`orgs`}`}),r&&(0,K.jsx)(vy,{children:n?(0,K.jsx)(Cb,{children:`—`}):t.peopleCount})]},t.key)})})]})]})}var Mb=V.div`
   display: flex;
   flex: 1;
   min-height: 0;
   overflow: hidden;
-`,jb=V.aside`
+`,Nb=V.aside`
   width: 280px;
   min-width: 280px;
   padding: 16px;
   overflow-y: auto;
-`,Mb=V.div`
+`,Pb=V.div`
   border: 1px solid #eae9e8;
   border-radius: 8px;
   padding: 12px 12px 4px;
-`,Nb=V.div`
+`,Fb=V.div`
   display: flex;
   align-items: flex-start;
   gap: 12px;
   margin-bottom: 14px;
-`,Pb=V.div`
+`,Ib=V.div`
   width: 68px;
   min-width: 68px;
   font-size: 14px;
   color: #646864;
   text-align: right;
   padding-top: 3px;
-`,Fb=V.div`
+`,Lb=V.div`
   flex: 1;
   min-width: 0;
   font-size: 14px;
   color: #2f3130;
   word-break: break-word;
   padding-top: 3px;
-`,Ib=V.div`
+`,Rb=V.div`
   flex: 1;
   min-width: 0;
   box-sizing: border-box;
@@ -1244,7 +1240,7 @@ Error generating stack: `+e.message+`
   border-radius: 4px;
   font-size: 14px;
   color: #2f3130;
-`,Lb=V.div`
+`,zb=V.div`
   flex: 1;
   min-width: 0;
   display: flex;
@@ -1256,48 +1252,48 @@ Error generating stack: `+e.message+`
   padding: 4px 0;
   font-size: 14px;
   color: #2f3130;
-`,Rb=V.span`
+`,Bb=V.span`
   color: #646864;
   flex-shrink: 0;
   display: inline-flex;
-`,zb=V.div`
+`,Vb=V.div`
   margin-top: 16px;
   padding: 0 4px;
-`,Bb=V.div`
+`,Hb=V.div`
   display: flex;
   gap: 8px;
   margin-bottom: 4px;
   font-size: 14px;
-`,Vb=V.span`
+`,Ub=V.span`
   color: #646864;
-`,Hb=V.span`
+`,Wb=V.span`
   color: #999b97;
-`,Ub=V.div`
+`,Gb=V.div`
   display: flex;
   flex-direction: column;
   flex: 1;
   min-width: 0;
   overflow: hidden;
-`,Wb=V.div`
+`,Kb=V.div`
   display: flex;
   align-items: center;
   gap: 16px;
   padding: 20px 32px 0;
   flex-shrink: 0;
-`,Gb=V.div`
+`,qb=V.div`
   display: flex;
   flex-direction: column;
   gap: 2px;
   margin-right: auto;
   min-width: 0;
-`,Kb=V.div`
+`,Jb=V.div`
   display: flex;
   gap: 4px;
   padding: 0 32px;
   border-bottom: 1px solid #eae9e8;
   margin-top: 16px;
   flex-shrink: 0;
-`,qb=V.button`
+`,Yb=V.button`
   position: relative;
   border: none;
   background: transparent;
@@ -1321,7 +1317,7 @@ Error generating stack: `+e.message+`
   &:hover {
     color: #2f3130;
   }
-`,Jb=V.div`
+`,Xb=V.div`
   margin: 32px;
   padding: 32px;
   border: 1px dashed #dcdcda;
@@ -1330,13 +1326,13 @@ Error generating stack: `+e.message+`
   color: #646864;
   font-size: 14px;
   text-align: center;
-`,Yb=()=>(0,K.jsx)(`svg`,{width:`26`,height:`26`,viewBox:`0 0 16 16`,focusable:`false`,"aria-hidden":`true`,children:(0,K.jsxs)(`g`,{fill:`none`,stroke:`currentColor`,children:[(0,K.jsx)(`path`,{d:`M2.5 15.5V1.5a1 1 0 0 1 1-1h9a1 1 0 0 1 1 1v14`}),(0,K.jsx)(`path`,{strokeLinecap:`round`,d:`M.5 15.5h15`}),(0,K.jsx)(`path`,{d:`M5.5 3.5h2m1 0h2m-5 3h2m1 0h2m-5 3h2m1 0h2`,strokeLinecap:`round`}),(0,K.jsx)(`path`,{d:`M6.5 15.5v-3h3v3`})]})}),Xb=()=>(0,K.jsx)(`svg`,{width:`12`,height:`12`,viewBox:`0 0 12 12`,fill:`none`,stroke:`currentColor`,strokeWidth:`1.5`,strokeLinecap:`round`,strokeLinejoin:`round`,"aria-hidden":`true`,children:(0,K.jsx)(`path`,{d:`M2.5 4.5 6 8l3.5-3.5`})}),Zb=e=>`${e.name.toLowerCase().replace(/\s+university$/,``).replace(/[^a-z0-9]+/g,``)}.edu`;function Qb({orgId:e,onSelectOrganization:t,version:n=`v1`}){let[r,i]=(0,g.useState)(`hierarchy`),a=Uy(e),o=[{id:`tickets`,label:`Tickets (0)`},{id:`users`,label:`Users (${Gy(e).length})`},{id:`related`,label:`Related`},{id:`hierarchy`,label:`Organization hierarchy`}],s=o.find(e=>e.id===r)?.label;return(0,K.jsxs)(Ab,{children:[(0,K.jsxs)(jb,{children:[(0,K.jsxs)(Mb,{children:[(0,K.jsxs)(Nb,{children:[(0,K.jsx)(Pb,{children:`Tags`}),(0,K.jsx)(Ib,{children:(0,K.jsx)(Hb,{children:`—`})})]}),(0,K.jsxs)(Nb,{children:[(0,K.jsx)(Pb,{children:`Domains`}),(0,K.jsx)(Fb,{children:Zb(a)})]}),(0,K.jsxs)(Nb,{children:[(0,K.jsx)(Pb,{children:`Group`}),(0,K.jsxs)(Lb,{children:[(0,K.jsx)(Hb,{children:`—`}),(0,K.jsx)(Rb,{children:(0,K.jsx)(Xb,{})})]})]}),(0,K.jsxs)(Nb,{children:[(0,K.jsx)(Pb,{children:`Users`}),(0,K.jsxs)(Lb,{children:[(0,K.jsx)(`span`,{children:`Can view tickets in this org and below`}),(0,K.jsx)(Rb,{children:(0,K.jsx)(Xb,{})})]})]}),(0,K.jsxs)(Nb,{children:[(0,K.jsx)(Pb,{children:`Details`}),(0,K.jsx)(Fb,{children:(0,K.jsx)(Hb,{children:`—`})})]}),(0,K.jsxs)(Nb,{children:[(0,K.jsx)(Pb,{children:`Notes`}),(0,K.jsx)(Fb,{children:(0,K.jsx)(Hb,{children:`—`})})]})]}),(0,K.jsxs)(zb,{children:[(0,K.jsxs)(Bb,{children:[(0,K.jsx)(Vb,{children:`Created`}),(0,K.jsx)(`span`,{children:`1 minute ago`})]}),(0,K.jsxs)(Bb,{children:[(0,K.jsx)(Vb,{children:`Updated`}),(0,K.jsx)(`span`,{children:`1 minute ago`})]})]})]}),(0,K.jsxs)(Ub,{children:[(0,K.jsxs)(Wb,{children:[(0,K.jsx)(Ws,{isSystem:!0,size:`large`,backgroundColor:`#646864`,foregroundColor:`#ffffff`,children:(0,K.jsx)(Yb,{})}),(0,K.jsx)(Gb,{children:(0,K.jsx)(qo,{tag:`h1`,style:{color:`#2f3130`},children:a.name})}),(0,K.jsxs)(Fv,{children:[`Actions`,(0,K.jsx)(`span`,{style:{marginLeft:8,display:`inline-flex`,verticalAlign:`middle`},children:(0,K.jsx)(Xb,{})})]})]}),(0,K.jsx)(Kb,{children:o.map(e=>(0,K.jsx)(qb,{$active:e.id===r,onClick:()=>i(e.id),children:e.label},e.id))}),r===`hierarchy`?(0,K.jsx)(kb,{selectedId:e,onSelectOrganization:t,version:n}):(0,K.jsxs)(Jb,{children:[s,` is out of scope for this prototype — the exploration lives in the Organization hierarchy tab.`]})]})]})}var $b=V.div`
+`,Zb=()=>(0,K.jsx)(`svg`,{width:`26`,height:`26`,viewBox:`0 0 16 16`,focusable:`false`,"aria-hidden":`true`,children:(0,K.jsxs)(`g`,{fill:`none`,stroke:`currentColor`,children:[(0,K.jsx)(`path`,{d:`M2.5 15.5V1.5a1 1 0 0 1 1-1h9a1 1 0 0 1 1 1v14`}),(0,K.jsx)(`path`,{strokeLinecap:`round`,d:`M.5 15.5h15`}),(0,K.jsx)(`path`,{d:`M5.5 3.5h2m1 0h2m-5 3h2m1 0h2m-5 3h2m1 0h2`,strokeLinecap:`round`}),(0,K.jsx)(`path`,{d:`M6.5 15.5v-3h3v3`})]})}),Qb=()=>(0,K.jsx)(`svg`,{width:`12`,height:`12`,viewBox:`0 0 12 12`,fill:`none`,stroke:`currentColor`,strokeWidth:`1.5`,strokeLinecap:`round`,strokeLinejoin:`round`,"aria-hidden":`true`,children:(0,K.jsx)(`path`,{d:`M2.5 4.5 6 8l3.5-3.5`})}),$b=e=>`${e.name.toLowerCase().replace(/\s+university$/,``).replace(/[^a-z0-9]+/g,``)}.edu`;function ex({orgId:e,onSelectOrganization:t,version:n=`v1`}){let[r,i]=(0,g.useState)(`hierarchy`),a=Uy(e),o=[{id:`tickets`,label:`Tickets (0)`},{id:`users`,label:`Users (${Gy(e).length})`},{id:`related`,label:`Related`},{id:`hierarchy`,label:`Organization hierarchy`}],s=o.find(e=>e.id===r)?.label;return(0,K.jsxs)(Mb,{children:[(0,K.jsxs)(Nb,{children:[(0,K.jsxs)(Pb,{children:[(0,K.jsxs)(Fb,{children:[(0,K.jsx)(Ib,{children:`Tags`}),(0,K.jsx)(Rb,{children:(0,K.jsx)(Wb,{children:`—`})})]}),(0,K.jsxs)(Fb,{children:[(0,K.jsx)(Ib,{children:`Domains`}),(0,K.jsx)(Lb,{children:$b(a)})]}),(0,K.jsxs)(Fb,{children:[(0,K.jsx)(Ib,{children:`Group`}),(0,K.jsxs)(zb,{children:[(0,K.jsx)(Wb,{children:`—`}),(0,K.jsx)(Bb,{children:(0,K.jsx)(Qb,{})})]})]}),(0,K.jsxs)(Fb,{children:[(0,K.jsx)(Ib,{children:`Users`}),(0,K.jsxs)(zb,{children:[(0,K.jsx)(`span`,{children:`Can view tickets in this org and below`}),(0,K.jsx)(Bb,{children:(0,K.jsx)(Qb,{})})]})]}),(0,K.jsxs)(Fb,{children:[(0,K.jsx)(Ib,{children:`Details`}),(0,K.jsx)(Lb,{children:(0,K.jsx)(Wb,{children:`—`})})]}),(0,K.jsxs)(Fb,{children:[(0,K.jsx)(Ib,{children:`Notes`}),(0,K.jsx)(Lb,{children:(0,K.jsx)(Wb,{children:`—`})})]})]}),(0,K.jsxs)(Vb,{children:[(0,K.jsxs)(Hb,{children:[(0,K.jsx)(Ub,{children:`Created`}),(0,K.jsx)(`span`,{children:`1 minute ago`})]}),(0,K.jsxs)(Hb,{children:[(0,K.jsx)(Ub,{children:`Updated`}),(0,K.jsx)(`span`,{children:`1 minute ago`})]})]})]}),(0,K.jsxs)(Gb,{children:[(0,K.jsxs)(Kb,{children:[(0,K.jsx)(Ws,{isSystem:!0,size:`large`,backgroundColor:`#646864`,foregroundColor:`#ffffff`,children:(0,K.jsx)(Zb,{})}),(0,K.jsx)(qb,{children:(0,K.jsx)(qo,{tag:`h1`,style:{color:`#2f3130`},children:a.name})}),(0,K.jsxs)(Fv,{children:[`Actions`,(0,K.jsx)(`span`,{style:{marginLeft:8,display:`inline-flex`,verticalAlign:`middle`},children:(0,K.jsx)(Qb,{})})]})]}),(0,K.jsx)(Jb,{children:o.map(e=>(0,K.jsx)(Yb,{$active:e.id===r,onClick:()=>i(e.id),children:e.label},e.id))}),r===`hierarchy`?(0,K.jsx)(jb,{selectedId:e,onSelectOrganization:t,version:n}):(0,K.jsxs)(Xb,{children:[s,` is out of scope for this prototype — the exploration lives in the Organization hierarchy tab.`]})]})]})}var tx=V.div`
   display: flex;
   align-items: center;
   height: 100%;
   padding: 0 8px;
   gap: 8px;
-`,ex=V.div`
+`,nx=V.div`
   display: flex;
   align-items: center;
   gap: 8px;
@@ -1350,11 +1346,11 @@ Error generating stack: `+e.message+`
   font-size: 12px;
   font-weight: 600;
   white-space: nowrap;
-`,tx=V.span`
+`,rx=V.span`
   display: inline-flex;
   align-items: center;
   justify-content: center;
-`,nx=V.button`
+`,ix=V.button`
   width: 32px;
   height: 32px;
   border: none;
@@ -1371,20 +1367,20 @@ Error generating stack: `+e.message+`
     background: #eae9e8;
     color: #2f3130;
   }
-`;function rx({title:e}){return(0,K.jsxs)($b,{children:[(0,K.jsxs)(ex,{children:[(0,K.jsx)(tx,{children:(0,K.jsxs)(`svg`,{width:`14`,height:`14`,viewBox:`0 0 16 16`,fill:`none`,stroke:`currentColor`,strokeWidth:`1.3`,"aria-hidden":`true`,children:[(0,K.jsx)(`path`,{d:`M3 14.5V2a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v12.5`}),(0,K.jsx)(`path`,{d:`M1.5 14.5h13`,strokeLinecap:`round`}),(0,K.jsx)(`path`,{d:`M5.75 4h1.5m1.5 0h1.5m-4.5 3h1.5m1.5 0h1.5`,strokeLinecap:`round`}),(0,K.jsx)(`path`,{d:`M6.75 14.5v-2.5h2.5v2.5`})]})}),(0,K.jsx)(`span`,{children:e})]}),(0,K.jsx)(nx,{type:`button`,"aria-label":`Add tab`,children:`+`})]})}var ix=`bramblewick`,ax=V.div`
+`;function ax({title:e}){return(0,K.jsxs)(tx,{children:[(0,K.jsxs)(nx,{children:[(0,K.jsx)(rx,{children:(0,K.jsxs)(`svg`,{width:`14`,height:`14`,viewBox:`0 0 16 16`,fill:`none`,stroke:`currentColor`,strokeWidth:`1.3`,"aria-hidden":`true`,children:[(0,K.jsx)(`path`,{d:`M3 14.5V2a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v12.5`}),(0,K.jsx)(`path`,{d:`M1.5 14.5h13`,strokeLinecap:`round`}),(0,K.jsx)(`path`,{d:`M5.75 4h1.5m1.5 0h1.5m-4.5 3h1.5m1.5 0h1.5`,strokeLinecap:`round`}),(0,K.jsx)(`path`,{d:`M6.75 14.5v-2.5h2.5v2.5`})]})}),(0,K.jsx)(`span`,{children:e})]}),(0,K.jsx)(ix,{type:`button`,"aria-label":`Add tab`,children:`+`})]})}var ox=`bramblewick`,sx=V.div`
   display: flex;
   flex-direction: column;
   height: 100vh;
   width: 100vw;
   background-color: #f8f9f9;
   overflow: hidden;
-`,ox=V.div`
+`,cx=V.div`
   display: flex;
   flex: 1;
   min-height: 0;
   width: 100%;
   overflow: hidden;
-`,sx=V.main`
+`,lx=V.main`
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
@@ -1394,10 +1390,10 @@ Error generating stack: `+e.message+`
   border-radius: 8px 0px 0px 0px;
   box-shadow: 0px 0px 4px rgba(10, 13, 14, 0.16);
   overflow: hidden;
-`,cx=V.div`
+`,ux=V.div`
   position: relative;
   flex-shrink: 0;
-`,lx=V.div`
+`,dx=V.div`
   position: absolute;
   top: 0;
   left: 140px;
@@ -1405,7 +1401,7 @@ Error generating stack: `+e.message+`
   display: flex;
   align-items: center;
   z-index: 10;
-`,ux=V.div`
+`,fx=V.div`
   position: absolute;
   top: 0;
   right: 428px;
@@ -1413,6 +1409,6 @@ Error generating stack: `+e.message+`
   display: flex;
   align-items: center;
   z-index: 10;
-`,dx=V.div`
+`,px=V.div`
   min-width: 200px;
-`,fx=[{id:`v1`,label:`V1 MVP`},{id:`v2`,label:`V2 with end-users`},{id:`v3`,label:`V3 Sans lines`}];function px(){let[e,t]=(0,g.useState)(`support`),[n,r]=(0,g.useState)(2),[i,a]=(0,g.useState)(!1),[o,s]=(0,g.useState)(`v1`),c=fx.find(e=>e.id===o)?.label,[l,u]=(0,g.useState)(ix),d=Uy(l);return(0,g.useEffect)(()=>{document.title=`${d.name} — Organization hierarchy`},[d.name]),(0,K.jsx)(Lo,{children:(0,K.jsxs)(ax,{children:[(0,K.jsxs)(cx,{children:[(0,K.jsx)(sl,{currentProduct:e,onProductChange:t}),(0,K.jsx)(lx,{children:(0,K.jsx)(rx,{title:d.name})}),(0,K.jsx)(ux,{children:(0,K.jsx)(dx,{children:(0,K.jsx)(W_,{children:(0,K.jsx)(z_,{isCompact:!0,isEditable:!1,inputValue:c,selectionValue:o,onChange:({selectionValue:e})=>{e&&s(e)},children:fx.map(e=>(0,K.jsx)(fv,{value:e.id,label:e.label,children:e.label},e.id))})})})})]}),(0,K.jsxs)(ox,{children:[(0,K.jsx)(wl,{currentProduct:`support`,activeNavItem:n,setActiveNavItem:r,isSubnavExpanded:i,setIsSubnavExpanded:a}),(0,K.jsx)(sx,{children:(0,K.jsx)(Qb,{orgId:l,onSelectOrganization:u,version:o})})]})]})})}(0,_.createRoot)(document.getElementById(`root`)).render((0,K.jsx)(g.StrictMode,{children:(0,K.jsx)(px,{})}));
+`,mx=[{id:`v1`,label:`V1 MVP`},{id:`v2`,label:`V2 with end-users`},{id:`v3`,label:`V3 Sans lines`}];function hx(){let[e,t]=(0,g.useState)(`support`),[n,r]=(0,g.useState)(2),[i,a]=(0,g.useState)(!1),[o,s]=(0,g.useState)(`v1`),c=mx.find(e=>e.id===o)?.label,[l,u]=(0,g.useState)(ox),d=Uy(l);return(0,g.useEffect)(()=>{document.title=`${d.name} — Organization hierarchy`},[d.name]),(0,K.jsx)(Lo,{children:(0,K.jsxs)(sx,{children:[(0,K.jsxs)(ux,{children:[(0,K.jsx)(sl,{currentProduct:e,onProductChange:t}),(0,K.jsx)(dx,{children:(0,K.jsx)(ax,{title:d.name})}),(0,K.jsx)(fx,{children:(0,K.jsx)(px,{children:(0,K.jsx)(W_,{children:(0,K.jsx)(z_,{isCompact:!0,isEditable:!1,inputValue:c,selectionValue:o,onChange:({selectionValue:e})=>{e&&s(e)},children:mx.map(e=>(0,K.jsx)(fv,{value:e.id,label:e.label,children:e.label},e.id))})})})})]}),(0,K.jsxs)(cx,{children:[(0,K.jsx)(wl,{currentProduct:`support`,activeNavItem:n,setActiveNavItem:r,isSubnavExpanded:i,setIsSubnavExpanded:a}),(0,K.jsx)(lx,{children:(0,K.jsx)(ex,{orgId:l,onSelectOrganization:u,version:o})})]})]})})}(0,_.createRoot)(document.getElementById(`root`)).render((0,K.jsx)(g.StrictMode,{children:(0,K.jsx)(hx,{})}));
