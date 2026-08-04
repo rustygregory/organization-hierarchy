@@ -85,10 +85,19 @@ the third of four pods doesn't hoist it to the top of the group — the rows hol
 still and only the marking moves, so a click reads as selecting a row rather than
 as the list rearranging itself. It's marked three ways: a blue.100 tint across
 the row, the name in foreground.default and bold instead of a link, and the
-`current` tag beside it. A 3px blue bar at the table's left edge was a fourth;
-it came out because two blue marks for one state competed with each other, and
-the tint is the one that reads at a glance down a ten-level path. Hover stays
-grey.100, so hovering a row never imitates selection.
+`current` tag beside it. Hover stays grey.100, so hovering a row never imitates
+selection.
+
+The table is `isReadOnly`, which is load-bearing rather than cosmetic. Garden's
+`Row` gives every row `tabIndex={-1}` and paints
+`box-shadow: inset 3px 0 0 0 border.primaryEmphasis` on the first cell of a
+focused row, so clicking a name left a blue bar down that row's left edge — and
+because rows are keyed by organization id, the focused DOM node survived the
+re-render and the bars accumulated as you drilled down. `isReadOnly` turns off
+Garden's row interaction model entirely (no tabIndex, no focus tracking, no
+shadow), and a `box-shadow: none` override covers the `&:focus` half of Garden's
+rule, which is unconditional. Worth knowing before adding any row selection to
+this table: Garden already has an opinion about what a clicked row looks like.
 
 That is the answer to the depth problem. Bramblewick's Computer Science branch
 runs ten levels deep and four wide at the bottom; rendered recursively that is

@@ -116,7 +116,17 @@ const Counts = styled(SM)`
    rule cuts straight through the tree's vertical guides.
 
    Everything in the table sits at 14px: Garden's default for cells, but its
-   header cells inherit a smaller size, so it's set on the table to cover both. */
+   header cells inherit a smaller size, so it's set on the table to cover both.
+
+   `isReadOnly` is what turns off Garden's own row interaction styling. Garden's
+   Row draws `box-shadow: inset 3px 0 0 0 border.primaryEmphasis` on its first
+   cell whenever the row is focused, and it gives every row `tabIndex={-1}`, so
+   clicking a row focuses it and leaves a blue bar down its left edge. The bar
+   then persists — a click on a name re-renders the tree, and because rows are
+   keyed by organization id the focused DOM node is reused, so old marks stack up
+   as you drill down. That is the "growing blue line", and it was never the
+   prototype's own marker. isReadOnly makes Garden treat rows as static content:
+   no tabIndex, no focus tracking, no box-shadow. */
 const TreeTable = styled(Table)`
   table-layout: fixed;
   font-size: 14px;
@@ -128,6 +138,14 @@ const TreeTable = styled(Table)`
   tbody tr,
   tbody td {
     border-bottom: none;
+  }
+
+  /* Belt and braces: isReadOnly stops Garden setting its focused flag, but the
+     :focus half of its rule is unconditional, so a row focused any other way
+     (a click landing on the td, programmatic focus) could still paint the bar. */
+  tbody tr td:first-of-type,
+  tbody tr:focus td:first-of-type {
+    box-shadow: none;
   }
 `
 
@@ -618,7 +636,7 @@ export default function OrganizationHierarchyTab({
         {showPeople && ` · ${peopleReach} ${peopleLabel}`}
       </Counts>
 
-      <TreeTable>
+      <TreeTable isReadOnly>
         <HiddenCaption>
           Hierarchy around the selected organization: its ancestors, direct children, and
           direct siblings
