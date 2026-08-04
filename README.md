@@ -83,14 +83,12 @@ own profile.
 The selected organization **stays where it sits in its sibling group**. Clicking
 the third of four pods doesn't hoist it to the top of the group — the rows hold
 still and only the marking moves, so a click reads as selecting a row rather than
-as the list rearranging itself. It's marked four ways: a 3px blue bar at the
-table's left edge, a blue.100 tint across the row, the name in
-foreground.default and bold instead of a link, and the `current` tag beside it.
-The bar sits outside the tree's indentation so it reads as "this row," not as
-part of the structure, and **only the selected row is ever blue** — the tree's
-own guide lines show the path, so a second blue mark anywhere else would compete
-with the one that matters. Hover stays grey.100, so hovering a row never
-imitates selection.
+as the list rearranging itself. It's marked three ways: a blue.100 tint across
+the row, the name in foreground.default and bold instead of a link, and the
+`current` tag beside it. A 3px blue bar at the table's left edge was a fourth;
+it came out because two blue marks for one state competed with each other, and
+the tint is the one that reads at a glance down a ten-level path. Hover stays
+grey.100, so hovering a row never imitates selection.
 
 That is the answer to the depth problem. Bramblewick's Computer Science branch
 runs ten levels deep and four wide at the bottom; rendered recursively that is
@@ -175,10 +173,10 @@ Deliberately out of scope for this pass, worth a PM conversation first:
 - Is one level down enough? A focused view is scannable but makes reaching a
   deep node an eight-click trip. Two levels of children, or a breadcrumb of the
   path you clicked through, are the obvious mitigations.
-- Four markers on the selected row (bar, tint, bold, tag) may be one or two too
-  many. The tint is the newest and the most legible at a glance; the `current`
-  tag is the most redundant once the row is visibly picked out. Worth deciding in
-  review which two carry it.
+- Three markers on the selected row (tint, bold, tag) may still be one too many.
+  The tint does the work; the `current` tag is the most redundant once the row is
+  visibly picked out, and it's the obvious next thing to drop if review says the
+  marking is still loud.
 - Does this need a dedicated full-width page, or is the profile tab enough real
   estate?
 - Is "Organization hierarchy" the right tab label, or something like "Access"?
