@@ -214,6 +214,85 @@ export const PEOPLE = [
 ]
 
 /**
+ * The at-scale department: an oversized roster in Dept 1, for V4.
+ *
+ * Kept out of PEOPLE and layered in only when the view asks for it, so V2 keeps
+ * the small hand-written set that makes its treatment readable. V4 is the stress
+ * test — the "hundreds wide" case the focused view doesn't bound, since centring
+ * on a node caps how *deep* the tree goes but not how many people sit in it.
+ *
+ * The roster runs past one page on purpose. V4 shows up to 100 end users at a
+ * time and paginates beyond that, so a roster of exactly 100 would sit on the
+ * boundary and never draw the pager — there'd be nothing to stress test. These
+ * first 100 names are the ones page one has always shown, so screenshots taken
+ * before pagination existed still line up.
+ *
+ * Names and titles are zipped from fixed lists rather than randomised: the row
+ * count is the variable under test, and a list that reshuffles every render would
+ * make screenshots from a review meeting impossible to compare.
+ */
+const AT_SCALE_NAMES = [
+  'Aaliyah Bennett', 'Adrian Cole', 'Aiko Watanabe', 'Amara Osei', 'Anton Kovac',
+  'Ariana Fuentes', 'Arjun Malhotra', 'Astrid Lund', 'Ayodele Bakare', 'Beatriz Campos',
+  'Bilal Chaudhry', 'Bronwyn Price', 'Camille Roussel', 'Carlos Ibarra', 'Cecelia Nagy',
+  'Chidi Okonkwo', 'Clara Vogt', 'Cormac Sheehan', 'Dagny Olsen', 'Damaris Leon',
+  'Darius Petrescu', 'Delphine Marchand', 'Dmitri Volkov', 'Eartha Simmons', 'Edwin Baptiste',
+  'Efua Mensah', 'Eleni Papadaki', 'Elias Thorne', 'Emiko Sato', 'Enzo Barbieri',
+  'Esme Callahan', 'Faisal Al-Amin', 'Fatima Zahra', 'Fernanda Lopes', 'Finley Brooks',
+  'Frida Karlsen', 'Gabriel Anaya', 'Genevieve Roux', 'Gideon Marsh', 'Giulia Ferretti',
+  'Hakim Toure', 'Harriet Bellweather', 'Henrik Dahl', 'Hina Iqbal', 'Ian Prescott',
+  'Idris Suleiman', 'Imani Robinson', 'Ines Cabral', 'Ivo Jelinek', 'Jae-won Park',
+  'Jasmine Aldridge', 'Javier Quintero', 'Jelena Markovic', 'Joaquin Rivas', 'Josephine Adeyemo',
+  'Junko Maeda', 'Kaia Solberg', 'Kalinda Rao', 'Kwabena Boateng', 'Larissa Duval',
+  'Leif Andersen', 'Leticia Moraes', 'Liam Gallagher', 'Lucia Serrano', 'Magnus Eriksen',
+  'Maia Tupou', 'Malika Benali', 'Marcus Whitfield', 'Mariam Sesay', 'Matteo Riva',
+  'Meera Krishnan', 'Mikhail Sokolov', 'Nadine Achebe', 'Nikolai Brandt', 'Nia Copeland',
+  'Olamide Adesina', 'Oona Lehtinen', 'Pablo Cifuentes', 'Petra Novotna', 'Quentin Ashford',
+  'Rafael Duarte', 'Rania Fadel', 'Reza Tehrani', 'Rowan Kinsella', 'Ruth Nakamura',
+  'Salma Haddad', 'Sander de Groot', 'Sebastian Kruger', 'Selin Demir', 'Sinead Murphy',
+  'Solomon Grant', 'Sunniva Aas', 'Tariq Mansour', 'Thea Lindberg', 'Tobias Wren',
+  'Ulrika Persson', 'Vikram Chandra', 'Wren Ellery', 'Yusuf Kaya', 'Zane Whitmore',
+  /* Page two onward — 47 more, taking the department to 147. An awkward number
+     deliberately: it leaves the last page part-full, which is the case a round
+     multiple of the page size would hide. */
+  'Abebe Girma', 'Alina Kovalenko', 'Anneke Visser', 'Bartholomew Quill', 'Blessing Eze',
+  'Caterina Lombardi', 'Cyrus Bahrami', 'Desmond Achterberg', 'Dilnoza Karimova', 'Eirik Haugen',
+  'Elodie Charpentier', 'Farrukh Nazarov', 'Freya Ashworth', 'Gunter Hoffmann', 'Halima Yusuf',
+  'Hyun-woo Choi', 'Ignacio Peralta', 'Isabela Fonseca', 'Jonas Bergstrom', 'Kabir Sethi',
+  'Katarina Blazek', 'Kofi Asante', 'Lachlan Fitzroy', 'Linnea Wickstrom', 'Lorenzo Battaglia',
+  'Manon Lefebvre', 'Marguerite Osei', 'Nabila Rahman', 'Nikoloz Beridze', 'Odalys Restrepo',
+  'Orla Concannon', 'Priya Venkatesan', 'Rasmus Kjaer', 'Rosalind Trewin', 'Sabina Iliescu',
+  'Santiago Ocampo', 'Seraphina Vance', 'Sofiya Danylenko', 'Takeshi Fujimoto', 'Tamsin Wilde',
+  'Teodora Ristic', 'Ulises Bermudez', 'Valentina Rojas', 'Wanjiru Kamau', 'Xiomara Delgado',
+  'Yannick Dubois', 'Zohra Belkacem',
+]
+
+/* Cycled across the names. A real department of this size is mostly a handful of
+   repeated roles, and identical titles down the column are part of what makes a
+   list this long hard to scan — worth showing rather than hiding behind variety. */
+const AT_SCALE_TITLES = [
+  'Support Specialist',
+  'Billing Analyst',
+  'Implementation Consultant',
+  'Customer Success Manager',
+  'Technical Writer',
+  'Product Owner',
+  'QA Engineer',
+]
+
+/** The organization the at-scale roster is attached to. */
+export const AT_SCALE_ORG_ID = 'dept-1'
+
+const AT_SCALE_PEOPLE = AT_SCALE_NAMES.map((name, index) => ({
+  // `scale-` prefixed so these can never collide with a hand-written person.
+  id: `scale-${name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`,
+  name,
+  type: 'End user',
+  title: AT_SCALE_TITLES[index % AT_SCALE_TITLES.length],
+  orgIds: [AT_SCALE_ORG_ID],
+}))
+
+/**
  * The personas the prototype can switch between. `attachedOrgId` is the single
  * node a person is attached to; their visible tree is that node plus every
  * descendant — the cascade this feature is meant to deliver.
@@ -266,7 +345,18 @@ export const getOrganization = (orgId) => ORGANIZATIONS.find((org) => org.id ===
 
 export const getChildren = (orgId) => ORGANIZATIONS.filter((org) => org.parentId === orgId)
 
-export const getPeopleIn = (orgId) => PEOPLE.filter((person) => person.orgIds.includes(orgId))
+/**
+ * People sitting directly in `orgId`.
+ *
+ * `atScale` swaps the at-scale department's hand-written roster for the oversized
+ * one — V4's whole subject. It replaces rather than appends, so the count is the
+ * roster's own length and the version reads as "this department has 147 users"
+ * rather than an arbitrary 149.
+ */
+export const getPeopleIn = (orgId, { atScale = false } = {}) => {
+  if (atScale && orgId === AT_SCALE_ORG_ID) return AT_SCALE_PEOPLE
+  return PEOPLE.filter((person) => person.orgIds.includes(orgId))
+}
 
 /** Every organization beneath `orgId`, at any depth. Excludes `orgId` itself. */
 export const getDescendantIds = (orgId) =>
@@ -280,8 +370,11 @@ export const getPath = (orgId) => {
 }
 
 /** Count of people in `orgId` and everything below it — the "reach" of a node. */
-export const countPeopleAtOrBelow = (orgId) =>
-  [orgId, ...getDescendantIds(orgId)].reduce((total, id) => total + getPeopleIn(id).length, 0)
+export const countPeopleAtOrBelow = (orgId, options) =>
+  [orgId, ...getDescendantIds(orgId)].reduce(
+    (total, id) => total + getPeopleIn(id, options).length,
+    0,
+  )
 
 export const getPersona = (personaId) =>
   PERSONAS.find((persona) => persona.id === personaId) || PERSONAS[0]

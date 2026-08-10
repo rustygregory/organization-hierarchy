@@ -77,6 +77,7 @@ const VERSIONS = [
   { id: 'v1', label: 'V1 MVP' },
   { id: 'v2', label: 'V2 with end-users' },
   { id: 'v3', label: 'V3 Sans lines' },
+  { id: 'v4', label: 'V4 100 end users' },
 ]
 
 export default function App() {
@@ -86,7 +87,8 @@ export default function App() {
   const [isSubnavExpanded, setIsSubnavExpanded] = useState(false)
 
   // V1 MVP shows organizations only; V2 adds the end users inside them; V3 is
-  // V1 without row dividers, with the child count moved beside each name.
+  // V1 without row dividers, with the child count moved beside each name; V4 is
+  // V2 against a department of 100 end users.
   const [version, setVersion] = useState('v1')
   const versionLabel = VERSIONS.find((option) => option.id === version)?.label
 

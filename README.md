@@ -70,7 +70,7 @@ The tab is a **focused view on one organization**, not a browsable tree. For the
 organization whose profile you're on it shows exactly three things:
 
 1. **Its ancestors**, as a single path down from the top-level organization
-2. **Its direct children** (and, in V2, the people who sit directly in it)
+2. **Its direct children** (and, in V2 and V4, the people who sit directly in it)
 3. **Its direct siblings**
 
 Nothing else expands. A sibling's children, an ancestor's other branches, and
@@ -122,7 +122,7 @@ alternative was the other half of a comparison this layout can't stage any more:
 only the path and the selected node ever have children on screen, so there is no
 second branch to contrast against.
 
-- **Version switcher** in the top bar — three treatments of the same data, for
+- **Version switcher** in the top bar — four treatments of the same data, for
   side-by-side review:
 
 | Version | People rows | Columns beside Organization | Row dividers |
@@ -130,6 +130,7 @@ second branch to contrast against.
 | **V1 MVP** | — | Child orgs | yes |
 | **V2 with end-users** | yes | Organization type · Child orgs · People | yes |
 | **V3 Sans lines** | — | none — count moves inline as `(4)` | no |
+| **V4 100 end users** | yes, up to 100 per page | same as V2 | yes |
 
 V1 is the MVP scope: organizations only, one supporting column. V2 adds the
 people who sit directly in the selected organization and the columns that
@@ -137,6 +138,35 @@ describe them. V3 asks whether the table furniture is needed at all — the chil
 count becomes a parenthetical after the name, the Child orgs column goes away,
 and the only horizontal line left is the one under the header, so the vertical
 guides carry the structure.
+
+### V4: the at-scale case
+
+V4 is V2's treatment run against a department that actually has a roster — Dept 1
+carries **147 end users** instead of two. Same columns, same rows, one number
+changed. It exists because centring the view bounds how *deep* the tree goes and
+says nothing about how *wide* one node is, so this is the case the focused view
+doesn't answer on its own.
+
+It shows **up to 100 users per page** and paginates past that, with Garden's
+`OffsetPagination` centred under the table — it takes Flora's tokens from the
+ThemeProvider, so the current page reads in Flora's blue. Above it, `Showing users
+1–100 of 147 in Dept 1`, because otherwise a hundred rows sit under a node whose
+People column says 147 and the two look like they disagree.
+
+Two details worth knowing:
+
+- **Only the people rows page.** The ancestor path, the child organizations, and
+  the siblings are the structure of the view rather than its contents, so they
+  stay on every page. Paging them away would leave a page-two reader with a list
+  of names and nothing saying whose they are.
+- **The roster is 147, not 100**, so the last page is deliberately part-full — a
+  round multiple of the page size would hide that case. Page one is still the same
+  hundred names it was before pagination existed, so earlier screenshots line up.
+
+100 is a high page size; Support's own lists sit nearer 30. That is the thing
+under test. Page one is roughly 4,300px of scroll, which is either an acceptable
+price for never paging or an argument for bringing the number down — worth
+watching someone actually look for a name in it before deciding.
 
 Visual treatment responds to the engineering mockup: row rules inset to each
 row's name rather than running full width (a full-width rule cuts through the
@@ -168,8 +198,9 @@ Deliberately out of scope for this pass, worth a PM conversation first:
 - Real navigation. Re-centring swaps the page contents in place; there is no
   back, no history, and no second tab. Support would open a new tab per
   organization.
-- Lazy loading for the "hundreds wide" case — a focused view bounds depth, not
-  the width of one node's child list
+- Lazy loading for the "hundreds wide" case. V4 pages the rows, but every user is
+  still in memory and the whole page renders at once; a real 147-row department
+  would fetch per page.
 - The org-chart / node-graph visualization from the FigJam board
 
 ## Open questions
@@ -177,7 +208,11 @@ Deliberately out of scope for this pass, worth a PM conversation first:
 - Should the view distinguish **direct membership** from **inherited access**?
   Right now only the selected node is marked `current`.
 - Does *People* belong as a column, or is a count link into a separate list
-  better once a department has 100+ users?
+  better once a department has 100+ users? V4 takes the other road — it puts all
+  100 in the tree and pages them — so the two can be compared rather than argued
+  about.
+- Is 100 the right page size? It's the number under test in V4. Lower means less
+  scroll and more paging; Support's own lists sit nearer 30.
 - Do the row dividers help or hurt? V3 removes them to find out.
 - Is one level down enough? A focused view is scannable but makes reaching a
   deep node an eight-click trip. Two levels of children, or a breadcrumb of the
