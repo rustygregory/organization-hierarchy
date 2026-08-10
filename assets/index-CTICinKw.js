@@ -1205,40 +1205,47 @@ Error generating stack: `+e.message+`
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
   border: 0;
-`,cx=()=>(0,K.jsxs)(`svg`,{width:`16`,height:`16`,viewBox:`0 0 16 16`,fill:`none`,stroke:`currentColor`,focusable:`false`,"aria-hidden":`true`,children:[(0,K.jsx)(`circle`,{cx:`6.5`,cy:`6.5`,r:`5`}),(0,K.jsx)(`path`,{strokeLinecap:`round`,d:`m10.5 10.5 4 4`})]}),lx={down:`none`,right:`rotate(-90deg)`,up:`rotate(180deg)`},ux=({direction:e=`down`})=>(0,K.jsx)(`svg`,{width:`12`,height:`12`,viewBox:`0 0 12 12`,fill:`none`,stroke:`currentColor`,strokeWidth:`1.5`,strokeLinecap:`round`,strokeLinejoin:`round`,"aria-hidden":`true`,style:{transform:lx[e],transition:`transform 100ms ease`},children:(0,K.jsx)(`path`,{d:`M2.5 4.5 6 8l3.5-3.5`})}),dx=(e,t=!0,n=!1,r=1)=>{let i=[],a={rows:i,peopleTotal:0,peopleFrom:0,peopleTo:0},o=Eb(e),s=o[o.length-1];if(!s)return a;let c={atScale:n},l=e=>Cb(e).length>0||t&&wb(e,c).length>0,u=o.slice(0,-1),d=[],f=[];u.forEach((e,t)=>{d=[...d,!0],f=[...f,e.id],i.push({key:`org-${e.id}`,kind:`org`,node:e,depth:t,isLast:!0,ancestorIsLast:d,ancestorIds:f,isOpen:!0,hasChildren:!0,childOrgCount:Cb(e.id).length,peopleCount:Db(e.id,c)})});let p=d,m=f,h=u.length,g=Cb(s.id),_=t?wb(s.id,c):[],v=(r-1)*Ib,y=_.slice(v,v+Ib),b=g.length>0||_.length>0,x=s.parentId?Cb(s.parentId):[s];return x.forEach((e,t)=>{let n=t===x.length-1,r=e.id===s.id,a=[...p,n],o=[...m,e.id];i.push({key:`org-${e.id}`,kind:`org`,node:e,depth:h,isLast:n,ancestorIsLast:a,ancestorIds:o,isOpen:r&&b,hasChildren:l(e.id),childOrgCount:Cb(e.id).length,peopleCount:Db(e.id,c)}),r&&(g.forEach((e,t)=>{let n=t===g.length-1&&y.length===0;i.push({key:`org-${e.id}`,kind:`org`,node:e,depth:h+1,isLast:n,ancestorIsLast:[...a,n],ancestorIds:[...o,e.id],isOpen:!1,hasChildren:l(e.id),childOrgCount:Cb(e.id).length,peopleCount:Db(e.id,c)})}),y.forEach((e,t)=>{let n=t===y.length-1;i.push({key:`person-${e.id}-${s.id}`,kind:`person`,node:e,depth:h+1,isLast:n,ancestorIsLast:[...a,n],ancestorIds:[...o,e.id],isOpen:!1,hasChildren:!1})}))}),{rows:i,peopleTotal:_.length,peopleFrom:y.length>0?v+1:0,peopleTo:v+y.length}},fx=({row:e})=>e.depth===0?null:(0,K.jsx)(K.Fragment,{children:Array.from({length:e.depth},(t,n)=>n===e.depth-1?(0,K.jsxs)(qb,{children:[(0,K.jsx)(Jb,{$stopAtMiddle:e.isLast}),(0,K.jsx)(Yb,{})]},n):(0,K.jsx)(qb,{children:!e.ancestorIsLast[n+1]&&(0,K.jsx)(Jb,{})},n))});function px({selectedId:e,onSelectOrganization:t,version:n=`v1`}){let r=n===`v4`,i=n===`v2`||r,a=n===`v3`,[o,s]=(0,g.useState)(1);(0,g.useEffect)(()=>{s(1)},[e,n]);let{rows:c,peopleTotal:l,peopleFrom:u,peopleTo:d}=(0,g.useMemo)(()=>dx(e,i,r,o),[e,i,r,o]),f=Math.ceil(l/Ib),p=f>1,m=(0,g.useMemo)(()=>1+Tb(e).length,[e]),h=(0,g.useMemo)(()=>i?Db(e,{atScale:r}):0,[e,i,r]),_=n=>{n!==e&&t?.(n)},v=m===1?`organization`:`organizations`,y=h===1?`person`:`people`,b=Sb(e)?.name;return(0,K.jsxs)(Rb,{children:[(0,K.jsxs)(zb,{children:[(0,K.jsx)(Bb,{children:i?`Search organizations and users`:`Search organizations`}),(0,K.jsx)(hm,{start:(0,K.jsx)(cx,{})})]}),(0,K.jsxs)(Vb,{children:[m,` `,v,i&&` · ${h} ${y}`]}),(0,K.jsxs)(Hb,{isReadOnly:!0,children:[(0,K.jsx)(sx,{children:`Hierarchy around the selected organization: its ancestors, direct children, and direct siblings`}),(0,K.jsx)(by,{children:(0,K.jsxs)(Sy,{children:[(0,K.jsx)(xy,{children:`Organization`}),i&&(0,K.jsx)(xy,{width:`22%`,children:`Organization type`}),!a&&(0,K.jsx)(xy,{width:`12%`,children:`Child orgs`}),i&&(0,K.jsx)(xy,{width:`10%`,children:`People`})]})}),(0,K.jsx)(my,{children:c.map(t=>{let n=t.kind===`person`,r=!n&&t.node.id===e;return(0,K.jsxs)(Ub,{$ruleInset:Lb(t.depth),$noRule:a,$selected:r,children:[(0,K.jsx)(Wb,{children:(0,K.jsxs)(Gb,{children:[t.isOpen&&(0,K.jsx)(Kb,{$depth:t.depth,"aria-hidden":`true`}),(0,K.jsx)(fx,{row:t}),t.isOpen?(0,K.jsx)(Qb,{"aria-hidden":`true`,children:(0,K.jsx)(ux,{direction:`down`})}):t.hasChildren?(0,K.jsx)(Zb,{type:`button`,onClick:()=>_(t.node.id),"aria-label":`Show the hierarchy around ${t.node.name}`,children:(0,K.jsx)(ux,{direction:`right`})}):(0,K.jsx)(Xb,{"aria-hidden":`true`}),(0,K.jsxs)($b,{children:[n||r?(0,K.jsx)(tx,{$current:r,title:t.node.name,children:t.node.name}):(0,K.jsx)(ex,{href:`#`,onClick:e=>{e.preventDefault(),_(t.node.id)},title:t.node.name,children:t.node.name}),a&&!n&&t.childOrgCount>0&&(0,K.jsxs)(ox,{children:[`(`,t.childOrgCount,`)`]}),r&&(0,K.jsx)(hb,{children:`current`}),n&&t.node.title&&(0,K.jsx)(nx,{children:t.node.title})]})]})}),i&&(0,K.jsx)(vy,{children:t.node.type}),!a&&(0,K.jsx)(vy,{children:n?(0,K.jsx)(rx,{children:`—`}):`${t.childOrgCount} child ${t.childOrgCount===1?`org`:`orgs`}`}),i&&(0,K.jsx)(vy,{children:n?(0,K.jsx)(rx,{children:`—`}):t.peopleCount})]},t.key)})})]}),p&&(0,K.jsxs)(K.Fragment,{children:[(0,K.jsxs)(ax,{children:[`Showing users `,u,`–`,d,` of `,l,` in `,b]}),(0,K.jsx)(ix,{children:(0,K.jsx)(mb,{currentPage:o,totalPages:f,onChange:s,"aria-label":`Pages of users in ${b}`})})]})]})}var mx=V.div`
+`,cx=()=>(0,K.jsxs)(`svg`,{width:`16`,height:`16`,viewBox:`0 0 16 16`,fill:`none`,stroke:`currentColor`,focusable:`false`,"aria-hidden":`true`,children:[(0,K.jsx)(`circle`,{cx:`6.5`,cy:`6.5`,r:`5`}),(0,K.jsx)(`path`,{strokeLinecap:`round`,d:`m10.5 10.5 4 4`})]}),lx=V.span`
+  box-sizing: border-box;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  border: 1px solid currentColor;
+  background-color: ${e=>e.$filled?`currentColor`:`#ffffff`};
+`,ux={down:`none`,right:`rotate(-90deg)`,up:`rotate(180deg)`},dx=({direction:e=`down`})=>(0,K.jsx)(`svg`,{width:`12`,height:`12`,viewBox:`0 0 12 12`,fill:`none`,stroke:`currentColor`,strokeWidth:`1.5`,strokeLinecap:`round`,strokeLinejoin:`round`,"aria-hidden":`true`,style:{transform:ux[e],transition:`transform 100ms ease`},children:(0,K.jsx)(`path`,{d:`M2.5 4.5 6 8l3.5-3.5`})}),fx=(e,t=!0,n=!1,r=1)=>{let i=[],a={rows:i,peopleTotal:0,peopleFrom:0,peopleTo:0},o=Eb(e),s=o[o.length-1];if(!s)return a;let c={atScale:n},l=e=>Cb(e).length>0||t&&wb(e,c).length>0,u=o.slice(0,-1),d=[],f=[];u.forEach((e,t)=>{d=[...d,!0],f=[...f,e.id],i.push({key:`org-${e.id}`,kind:`org`,node:e,depth:t,isLast:!0,ancestorIsLast:d,ancestorIds:f,isOpen:!0,hasChildren:!0,childOrgCount:Cb(e.id).length,peopleCount:Db(e.id,c)})});let p=d,m=f,h=u.length,g=Cb(s.id),_=t?wb(s.id,c):[],v=(r-1)*Ib,y=_.slice(v,v+Ib),b=g.length>0||_.length>0,x=s.parentId?Cb(s.parentId):[s];return x.forEach((e,t)=>{let n=t===x.length-1,r=e.id===s.id,a=[...p,n],o=[...m,e.id];i.push({key:`org-${e.id}`,kind:`org`,node:e,depth:h,isLast:n,ancestorIsLast:a,ancestorIds:o,isOpen:r&&b,hasChildren:l(e.id),childOrgCount:Cb(e.id).length,peopleCount:Db(e.id,c)}),r&&(g.forEach((e,t)=>{let n=t===g.length-1&&y.length===0;i.push({key:`org-${e.id}`,kind:`org`,node:e,depth:h+1,isLast:n,ancestorIsLast:[...a,n],ancestorIds:[...o,e.id],isOpen:!1,hasChildren:l(e.id),childOrgCount:Cb(e.id).length,peopleCount:Db(e.id,c)})}),y.forEach((e,t)=>{let n=t===y.length-1;i.push({key:`person-${e.id}-${s.id}`,kind:`person`,node:e,depth:h+1,isLast:n,ancestorIsLast:[...a,n],ancestorIds:[...o,e.id],isOpen:!1,hasChildren:!1})}))}),{rows:i,peopleTotal:_.length,peopleFrom:y.length>0?v+1:0,peopleTo:v+y.length}},px=({row:e})=>e.depth===0?null:(0,K.jsx)(K.Fragment,{children:Array.from({length:e.depth},(t,n)=>n===e.depth-1?(0,K.jsxs)(qb,{children:[(0,K.jsx)(Jb,{$stopAtMiddle:e.isLast}),(0,K.jsx)(Yb,{})]},n):(0,K.jsx)(qb,{children:!e.ancestorIsLast[n+1]&&(0,K.jsx)(Jb,{})},n))});function mx({selectedId:e,onSelectOrganization:t,version:n=`v1`}){let r=n===`v4`,i=n===`v2`||r,a=n===`v3`,o=r,[s,c]=(0,g.useState)(1);(0,g.useEffect)(()=>{c(1)},[e,n]);let{rows:l,peopleTotal:u,peopleFrom:d,peopleTo:f}=(0,g.useMemo)(()=>fx(e,i,r,s),[e,i,r,s]),p=Math.ceil(u/Ib),m=p>1,h=(0,g.useMemo)(()=>1+Tb(e).length,[e]),_=(0,g.useMemo)(()=>i?Db(e,{atScale:r}):0,[e,i,r]),v=n=>{n!==e&&t?.(n)},y=h===1?`organization`:`organizations`,b=_===1?`person`:`people`,x=Sb(e)?.name;return(0,K.jsxs)(Rb,{children:[(0,K.jsxs)(zb,{children:[(0,K.jsx)(Bb,{children:i?`Search organizations and users`:`Search organizations`}),(0,K.jsx)(hm,{start:(0,K.jsx)(cx,{})})]}),(0,K.jsxs)(Vb,{children:[h,` `,y,i&&` · ${_} ${b}`]}),(0,K.jsxs)(Hb,{isReadOnly:!0,children:[(0,K.jsx)(sx,{children:`Hierarchy around the selected organization: its ancestors, direct children, and direct siblings`}),(0,K.jsx)(by,{children:(0,K.jsxs)(Sy,{children:[(0,K.jsx)(xy,{children:`Organization`}),i&&(0,K.jsx)(xy,{width:`22%`,children:`Organization type`}),!a&&(0,K.jsx)(xy,{width:`12%`,children:`Child orgs`}),i&&(0,K.jsx)(xy,{width:`10%`,children:`People`})]})}),(0,K.jsx)(my,{children:l.map(t=>{let n=t.kind===`person`,r=!n&&t.node.id===e;return(0,K.jsxs)(Ub,{$ruleInset:Lb(t.depth),$noRule:a,$selected:r,children:[(0,K.jsx)(Wb,{children:(0,K.jsxs)(Gb,{children:[t.isOpen&&(0,K.jsx)(Kb,{$depth:t.depth,"aria-hidden":`true`}),(0,K.jsx)(px,{row:t}),t.isOpen?(0,K.jsx)(Qb,{"aria-hidden":`true`,children:o?(0,K.jsx)(lx,{$filled:!0}):(0,K.jsx)(dx,{direction:`down`})}):t.hasChildren?(0,K.jsx)(Zb,{type:`button`,onClick:()=>v(t.node.id),"aria-label":`Show the hierarchy around ${t.node.name}`,children:o?(0,K.jsx)(lx,{}):(0,K.jsx)(dx,{direction:`right`})}):(0,K.jsx)(Xb,{"aria-hidden":`true`}),(0,K.jsxs)($b,{children:[n||r?(0,K.jsx)(tx,{$current:r,title:t.node.name,children:t.node.name}):(0,K.jsx)(ex,{href:`#`,onClick:e=>{e.preventDefault(),v(t.node.id)},title:t.node.name,children:t.node.name}),a&&!n&&t.childOrgCount>0&&(0,K.jsxs)(ox,{children:[`(`,t.childOrgCount,`)`]}),r&&(0,K.jsx)(hb,{children:`current`}),n&&t.node.title&&(0,K.jsx)(nx,{children:t.node.title})]})]})}),i&&(0,K.jsx)(vy,{children:t.node.type}),!a&&(0,K.jsx)(vy,{children:n?(0,K.jsx)(rx,{children:`—`}):`${t.childOrgCount} child ${t.childOrgCount===1?`org`:`orgs`}`}),i&&(0,K.jsx)(vy,{children:n?(0,K.jsx)(rx,{children:`—`}):t.peopleCount})]},t.key)})})]}),m&&(0,K.jsxs)(K.Fragment,{children:[(0,K.jsxs)(ax,{children:[`Showing users `,d,`–`,f,` of `,u,` in `,x]}),(0,K.jsx)(ix,{children:(0,K.jsx)(mb,{currentPage:s,totalPages:p,onChange:c,"aria-label":`Pages of users in ${x}`})})]})]})}var hx=V.div`
   display: flex;
   flex: 1;
   min-height: 0;
   overflow: hidden;
-`,hx=V.aside`
+`,gx=V.aside`
   width: 280px;
   min-width: 280px;
   padding: 16px;
   overflow-y: auto;
-`,gx=V.div`
+`,_x=V.div`
   border: 1px solid #eae9e8;
   border-radius: 8px;
   padding: 12px 12px 4px;
-`,_x=V.div`
+`,vx=V.div`
   display: flex;
   align-items: flex-start;
   gap: 12px;
   margin-bottom: 14px;
-`,vx=V.div`
+`,yx=V.div`
   width: 68px;
   min-width: 68px;
   font-size: 14px;
   color: #646864;
   text-align: right;
   padding-top: 3px;
-`,yx=V.div`
+`,bx=V.div`
   flex: 1;
   min-width: 0;
   font-size: 14px;
   color: #2f3130;
   word-break: break-word;
   padding-top: 3px;
-`,bx=V.div`
+`,xx=V.div`
   flex: 1;
   min-width: 0;
   box-sizing: border-box;
@@ -1248,7 +1255,7 @@ Error generating stack: `+e.message+`
   border-radius: 4px;
   font-size: 14px;
   color: #2f3130;
-`,xx=V.div`
+`,Sx=V.div`
   flex: 1;
   min-width: 0;
   display: flex;
@@ -1260,48 +1267,48 @@ Error generating stack: `+e.message+`
   padding: 4px 0;
   font-size: 14px;
   color: #2f3130;
-`,Sx=V.span`
+`,Cx=V.span`
   color: #646864;
   flex-shrink: 0;
   display: inline-flex;
-`,Cx=V.div`
+`,wx=V.div`
   margin-top: 16px;
   padding: 0 4px;
-`,wx=V.div`
+`,Tx=V.div`
   display: flex;
   gap: 8px;
   margin-bottom: 4px;
   font-size: 14px;
-`,Tx=V.span`
-  color: #646864;
 `,Ex=V.span`
+  color: #646864;
+`,Dx=V.span`
   color: #999b97;
-`,Dx=V.div`
+`,Ox=V.div`
   display: flex;
   flex-direction: column;
   flex: 1;
   min-width: 0;
   overflow: hidden;
-`,Ox=V.div`
+`,kx=V.div`
   display: flex;
   align-items: center;
   gap: 16px;
   padding: 20px 32px 0;
   flex-shrink: 0;
-`,kx=V.div`
+`,Ax=V.div`
   display: flex;
   flex-direction: column;
   gap: 2px;
   margin-right: auto;
   min-width: 0;
-`,Ax=V.div`
+`,jx=V.div`
   display: flex;
   gap: 4px;
   padding: 0 32px;
   border-bottom: 1px solid #eae9e8;
   margin-top: 16px;
   flex-shrink: 0;
-`,jx=V.button`
+`,Mx=V.button`
   position: relative;
   border: none;
   background: transparent;
@@ -1325,7 +1332,7 @@ Error generating stack: `+e.message+`
   &:hover {
     color: #2f3130;
   }
-`,Mx=V.div`
+`,Nx=V.div`
   margin: 32px;
   padding: 32px;
   border: 1px dashed #dcdcda;
@@ -1334,13 +1341,13 @@ Error generating stack: `+e.message+`
   color: #646864;
   font-size: 14px;
   text-align: center;
-`,Nx=()=>(0,K.jsx)(`svg`,{width:`26`,height:`26`,viewBox:`0 0 16 16`,focusable:`false`,"aria-hidden":`true`,children:(0,K.jsxs)(`g`,{fill:`none`,stroke:`currentColor`,children:[(0,K.jsx)(`path`,{d:`M2.5 15.5V1.5a1 1 0 0 1 1-1h9a1 1 0 0 1 1 1v14`}),(0,K.jsx)(`path`,{strokeLinecap:`round`,d:`M.5 15.5h15`}),(0,K.jsx)(`path`,{d:`M5.5 3.5h2m1 0h2m-5 3h2m1 0h2m-5 3h2m1 0h2`,strokeLinecap:`round`}),(0,K.jsx)(`path`,{d:`M6.5 15.5v-3h3v3`})]})}),Px=()=>(0,K.jsx)(`svg`,{width:`12`,height:`12`,viewBox:`0 0 12 12`,fill:`none`,stroke:`currentColor`,strokeWidth:`1.5`,strokeLinecap:`round`,strokeLinejoin:`round`,"aria-hidden":`true`,children:(0,K.jsx)(`path`,{d:`M2.5 4.5 6 8l3.5-3.5`})}),Fx=e=>`${e.name.toLowerCase().replace(/\s+university$/,``).replace(/[^a-z0-9]+/g,``)}.edu`;function Ix({orgId:e,onSelectOrganization:t,version:n=`v1`}){let[r,i]=(0,g.useState)(`hierarchy`),a=Sb(e),o=[{id:`tickets`,label:`Tickets (0)`},{id:`users`,label:`Users (${wb(e,{atScale:n===`v4`}).length})`},{id:`related`,label:`Related`},{id:`hierarchy`,label:`Organization hierarchy`}],s=o.find(e=>e.id===r)?.label;return(0,K.jsxs)(mx,{children:[(0,K.jsxs)(hx,{children:[(0,K.jsxs)(gx,{children:[(0,K.jsxs)(_x,{children:[(0,K.jsx)(vx,{children:`Tags`}),(0,K.jsx)(bx,{children:(0,K.jsx)(Ex,{children:`—`})})]}),(0,K.jsxs)(_x,{children:[(0,K.jsx)(vx,{children:`Domains`}),(0,K.jsx)(yx,{children:Fx(a)})]}),(0,K.jsxs)(_x,{children:[(0,K.jsx)(vx,{children:`Group`}),(0,K.jsxs)(xx,{children:[(0,K.jsx)(Ex,{children:`—`}),(0,K.jsx)(Sx,{children:(0,K.jsx)(Px,{})})]})]}),(0,K.jsxs)(_x,{children:[(0,K.jsx)(vx,{children:`Users`}),(0,K.jsxs)(xx,{children:[(0,K.jsx)(`span`,{children:`Can view tickets in this org and below`}),(0,K.jsx)(Sx,{children:(0,K.jsx)(Px,{})})]})]}),(0,K.jsxs)(_x,{children:[(0,K.jsx)(vx,{children:`Details`}),(0,K.jsx)(yx,{children:(0,K.jsx)(Ex,{children:`—`})})]}),(0,K.jsxs)(_x,{children:[(0,K.jsx)(vx,{children:`Notes`}),(0,K.jsx)(yx,{children:(0,K.jsx)(Ex,{children:`—`})})]})]}),(0,K.jsxs)(Cx,{children:[(0,K.jsxs)(wx,{children:[(0,K.jsx)(Tx,{children:`Created`}),(0,K.jsx)(`span`,{children:`1 minute ago`})]}),(0,K.jsxs)(wx,{children:[(0,K.jsx)(Tx,{children:`Updated`}),(0,K.jsx)(`span`,{children:`1 minute ago`})]})]})]}),(0,K.jsxs)(Dx,{children:[(0,K.jsxs)(Ox,{children:[(0,K.jsx)(Ws,{isSystem:!0,size:`large`,backgroundColor:`#646864`,foregroundColor:`#ffffff`,children:(0,K.jsx)(Nx,{})}),(0,K.jsx)(kx,{children:(0,K.jsx)(qo,{tag:`h1`,style:{color:`#2f3130`},children:a.name})}),(0,K.jsxs)(Fv,{children:[`Actions`,(0,K.jsx)(`span`,{style:{marginLeft:8,display:`inline-flex`,verticalAlign:`middle`},children:(0,K.jsx)(Px,{})})]})]}),(0,K.jsx)(Ax,{children:o.map(e=>(0,K.jsx)(jx,{$active:e.id===r,onClick:()=>i(e.id),children:e.label},e.id))}),r===`hierarchy`?(0,K.jsx)(px,{selectedId:e,onSelectOrganization:t,version:n}):(0,K.jsxs)(Mx,{children:[s,` is out of scope for this prototype — the exploration lives in the Organization hierarchy tab.`]})]})]})}var Lx=V.div`
+`,Px=()=>(0,K.jsx)(`svg`,{width:`26`,height:`26`,viewBox:`0 0 16 16`,focusable:`false`,"aria-hidden":`true`,children:(0,K.jsxs)(`g`,{fill:`none`,stroke:`currentColor`,children:[(0,K.jsx)(`path`,{d:`M2.5 15.5V1.5a1 1 0 0 1 1-1h9a1 1 0 0 1 1 1v14`}),(0,K.jsx)(`path`,{strokeLinecap:`round`,d:`M.5 15.5h15`}),(0,K.jsx)(`path`,{d:`M5.5 3.5h2m1 0h2m-5 3h2m1 0h2m-5 3h2m1 0h2`,strokeLinecap:`round`}),(0,K.jsx)(`path`,{d:`M6.5 15.5v-3h3v3`})]})}),Fx=()=>(0,K.jsx)(`svg`,{width:`12`,height:`12`,viewBox:`0 0 12 12`,fill:`none`,stroke:`currentColor`,strokeWidth:`1.5`,strokeLinecap:`round`,strokeLinejoin:`round`,"aria-hidden":`true`,children:(0,K.jsx)(`path`,{d:`M2.5 4.5 6 8l3.5-3.5`})}),Ix=e=>`${e.name.toLowerCase().replace(/\s+university$/,``).replace(/[^a-z0-9]+/g,``)}.edu`;function Lx({orgId:e,onSelectOrganization:t,version:n=`v1`}){let[r,i]=(0,g.useState)(`hierarchy`),a=Sb(e),o=[{id:`tickets`,label:`Tickets (0)`},{id:`users`,label:`Users (${wb(e,{atScale:n===`v4`}).length})`},{id:`related`,label:`Related`},{id:`hierarchy`,label:`Organization hierarchy`}],s=o.find(e=>e.id===r)?.label;return(0,K.jsxs)(hx,{children:[(0,K.jsxs)(gx,{children:[(0,K.jsxs)(_x,{children:[(0,K.jsxs)(vx,{children:[(0,K.jsx)(yx,{children:`Tags`}),(0,K.jsx)(xx,{children:(0,K.jsx)(Dx,{children:`—`})})]}),(0,K.jsxs)(vx,{children:[(0,K.jsx)(yx,{children:`Domains`}),(0,K.jsx)(bx,{children:Ix(a)})]}),(0,K.jsxs)(vx,{children:[(0,K.jsx)(yx,{children:`Group`}),(0,K.jsxs)(Sx,{children:[(0,K.jsx)(Dx,{children:`—`}),(0,K.jsx)(Cx,{children:(0,K.jsx)(Fx,{})})]})]}),(0,K.jsxs)(vx,{children:[(0,K.jsx)(yx,{children:`Users`}),(0,K.jsxs)(Sx,{children:[(0,K.jsx)(`span`,{children:`Can view tickets in this org and below`}),(0,K.jsx)(Cx,{children:(0,K.jsx)(Fx,{})})]})]}),(0,K.jsxs)(vx,{children:[(0,K.jsx)(yx,{children:`Details`}),(0,K.jsx)(bx,{children:(0,K.jsx)(Dx,{children:`—`})})]}),(0,K.jsxs)(vx,{children:[(0,K.jsx)(yx,{children:`Notes`}),(0,K.jsx)(bx,{children:(0,K.jsx)(Dx,{children:`—`})})]})]}),(0,K.jsxs)(wx,{children:[(0,K.jsxs)(Tx,{children:[(0,K.jsx)(Ex,{children:`Created`}),(0,K.jsx)(`span`,{children:`1 minute ago`})]}),(0,K.jsxs)(Tx,{children:[(0,K.jsx)(Ex,{children:`Updated`}),(0,K.jsx)(`span`,{children:`1 minute ago`})]})]})]}),(0,K.jsxs)(Ox,{children:[(0,K.jsxs)(kx,{children:[(0,K.jsx)(Ws,{isSystem:!0,size:`large`,backgroundColor:`#646864`,foregroundColor:`#ffffff`,children:(0,K.jsx)(Px,{})}),(0,K.jsx)(Ax,{children:(0,K.jsx)(qo,{tag:`h1`,style:{color:`#2f3130`},children:a.name})}),(0,K.jsxs)(Fv,{children:[`Actions`,(0,K.jsx)(`span`,{style:{marginLeft:8,display:`inline-flex`,verticalAlign:`middle`},children:(0,K.jsx)(Fx,{})})]})]}),(0,K.jsx)(jx,{children:o.map(e=>(0,K.jsx)(Mx,{$active:e.id===r,onClick:()=>i(e.id),children:e.label},e.id))}),r===`hierarchy`?(0,K.jsx)(mx,{selectedId:e,onSelectOrganization:t,version:n}):(0,K.jsxs)(Nx,{children:[s,` is out of scope for this prototype — the exploration lives in the Organization hierarchy tab.`]})]})]})}var Rx=V.div`
   display: flex;
   align-items: center;
   height: 100%;
   padding: 0 8px;
   gap: 8px;
-`,Rx=V.div`
+`,zx=V.div`
   display: flex;
   align-items: center;
   gap: 8px;
@@ -1354,11 +1361,11 @@ Error generating stack: `+e.message+`
   font-size: 12px;
   font-weight: 600;
   white-space: nowrap;
-`,zx=V.span`
+`,Bx=V.span`
   display: inline-flex;
   align-items: center;
   justify-content: center;
-`,Bx=V.button`
+`,Vx=V.button`
   width: 32px;
   height: 32px;
   border: none;
@@ -1375,20 +1382,20 @@ Error generating stack: `+e.message+`
     background: #eae9e8;
     color: #2f3130;
   }
-`;function Vx({title:e}){return(0,K.jsxs)(Lx,{children:[(0,K.jsxs)(Rx,{children:[(0,K.jsx)(zx,{children:(0,K.jsxs)(`svg`,{width:`14`,height:`14`,viewBox:`0 0 16 16`,fill:`none`,stroke:`currentColor`,strokeWidth:`1.3`,"aria-hidden":`true`,children:[(0,K.jsx)(`path`,{d:`M3 14.5V2a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v12.5`}),(0,K.jsx)(`path`,{d:`M1.5 14.5h13`,strokeLinecap:`round`}),(0,K.jsx)(`path`,{d:`M5.75 4h1.5m1.5 0h1.5m-4.5 3h1.5m1.5 0h1.5`,strokeLinecap:`round`}),(0,K.jsx)(`path`,{d:`M6.75 14.5v-2.5h2.5v2.5`})]})}),(0,K.jsx)(`span`,{children:e})]}),(0,K.jsx)(Bx,{type:`button`,"aria-label":`Add tab`,children:`+`})]})}var Hx=`bramblewick`,Ux=V.div`
+`;function Hx({title:e}){return(0,K.jsxs)(Rx,{children:[(0,K.jsxs)(zx,{children:[(0,K.jsx)(Bx,{children:(0,K.jsxs)(`svg`,{width:`14`,height:`14`,viewBox:`0 0 16 16`,fill:`none`,stroke:`currentColor`,strokeWidth:`1.3`,"aria-hidden":`true`,children:[(0,K.jsx)(`path`,{d:`M3 14.5V2a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v12.5`}),(0,K.jsx)(`path`,{d:`M1.5 14.5h13`,strokeLinecap:`round`}),(0,K.jsx)(`path`,{d:`M5.75 4h1.5m1.5 0h1.5m-4.5 3h1.5m1.5 0h1.5`,strokeLinecap:`round`}),(0,K.jsx)(`path`,{d:`M6.75 14.5v-2.5h2.5v2.5`})]})}),(0,K.jsx)(`span`,{children:e})]}),(0,K.jsx)(Vx,{type:`button`,"aria-label":`Add tab`,children:`+`})]})}var Ux=`bramblewick`,Wx=V.div`
   display: flex;
   flex-direction: column;
   height: 100vh;
   width: 100vw;
   background-color: #f8f9f9;
   overflow: hidden;
-`,Wx=V.div`
+`,Gx=V.div`
   display: flex;
   flex: 1;
   min-height: 0;
   width: 100%;
   overflow: hidden;
-`,Gx=V.main`
+`,Kx=V.main`
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
@@ -1398,10 +1405,10 @@ Error generating stack: `+e.message+`
   border-radius: 8px 0px 0px 0px;
   box-shadow: 0px 0px 4px rgba(10, 13, 14, 0.16);
   overflow: hidden;
-`,Kx=V.div`
+`,qx=V.div`
   position: relative;
   flex-shrink: 0;
-`,qx=V.div`
+`,Jx=V.div`
   position: absolute;
   top: 0;
   left: 140px;
@@ -1409,7 +1416,7 @@ Error generating stack: `+e.message+`
   display: flex;
   align-items: center;
   z-index: 10;
-`,Jx=V.div`
+`,Yx=V.div`
   position: absolute;
   top: 0;
   right: 428px;
@@ -1417,6 +1424,6 @@ Error generating stack: `+e.message+`
   display: flex;
   align-items: center;
   z-index: 10;
-`,Yx=V.div`
+`,Xx=V.div`
   min-width: 200px;
-`,Xx=[{id:`v1`,label:`V1 MVP`},{id:`v2`,label:`V2 with end-users`},{id:`v3`,label:`V3 Sans lines`},{id:`v4`,label:`V4 100 end users`}];function Zx(){let[e,t]=(0,g.useState)(`support`),[n,r]=(0,g.useState)(2),[i,a]=(0,g.useState)(!1),[o,s]=(0,g.useState)(`v1`),c=Xx.find(e=>e.id===o)?.label,[l,u]=(0,g.useState)(Hx),d=Sb(l);return(0,g.useEffect)(()=>{document.title=`${d.name} — Organization hierarchy`},[d.name]),(0,K.jsx)(Lo,{children:(0,K.jsxs)(Ux,{children:[(0,K.jsxs)(Kx,{children:[(0,K.jsx)(sl,{currentProduct:e,onProductChange:t}),(0,K.jsx)(qx,{children:(0,K.jsx)(Vx,{title:d.name})}),(0,K.jsx)(Jx,{children:(0,K.jsx)(Yx,{children:(0,K.jsx)(W_,{children:(0,K.jsx)(z_,{isCompact:!0,isEditable:!1,inputValue:c,selectionValue:o,onChange:({selectionValue:e})=>{e&&s(e)},children:Xx.map(e=>(0,K.jsx)(fv,{value:e.id,label:e.label,children:e.label},e.id))})})})})]}),(0,K.jsxs)(Wx,{children:[(0,K.jsx)(wl,{currentProduct:`support`,activeNavItem:n,setActiveNavItem:r,isSubnavExpanded:i,setIsSubnavExpanded:a}),(0,K.jsx)(Gx,{children:(0,K.jsx)(Ix,{orgId:l,onSelectOrganization:u,version:o})})]})]})})}(0,_.createRoot)(document.getElementById(`root`)).render((0,K.jsx)(g.StrictMode,{children:(0,K.jsx)(Zx,{})}));
+`,Zx=[{id:`v1`,label:`V1 MVP`},{id:`v2`,label:`V2 with end-users`},{id:`v3`,label:`V3 Sans lines`},{id:`v4`,label:`V4 100 end users`}];function Qx(){let[e,t]=(0,g.useState)(`support`),[n,r]=(0,g.useState)(2),[i,a]=(0,g.useState)(!1),[o,s]=(0,g.useState)(`v1`),c=Zx.find(e=>e.id===o)?.label,[l,u]=(0,g.useState)(Ux),d=Sb(l);return(0,g.useEffect)(()=>{document.title=`${d.name} — Organization hierarchy`},[d.name]),(0,K.jsx)(Lo,{children:(0,K.jsxs)(Wx,{children:[(0,K.jsxs)(qx,{children:[(0,K.jsx)(sl,{currentProduct:e,onProductChange:t}),(0,K.jsx)(Jx,{children:(0,K.jsx)(Hx,{title:d.name})}),(0,K.jsx)(Yx,{children:(0,K.jsx)(Xx,{children:(0,K.jsx)(W_,{children:(0,K.jsx)(z_,{isCompact:!0,isEditable:!1,inputValue:c,selectionValue:o,onChange:({selectionValue:e})=>{e&&s(e)},children:Zx.map(e=>(0,K.jsx)(fv,{value:e.id,label:e.label,children:e.label},e.id))})})})})]}),(0,K.jsxs)(Gx,{children:[(0,K.jsx)(wl,{currentProduct:`support`,activeNavItem:n,setActiveNavItem:r,isSubnavExpanded:i,setIsSubnavExpanded:a}),(0,K.jsx)(Kx,{children:(0,K.jsx)(Lx,{orgId:l,onSelectOrganization:u,version:o})})]})]})})}(0,_.createRoot)(document.getElementById(`root`)).render((0,K.jsx)(g.StrictMode,{children:(0,K.jsx)(Qx,{})}));
