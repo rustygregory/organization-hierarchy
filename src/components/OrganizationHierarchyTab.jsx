@@ -422,6 +422,27 @@ const SearchIcon = () => (
   </svg>
 )
 
+/* V4's alternative to the chevron: a dot in the same slot.
+ *
+ * The chevron is directional — down means "children are below", right means
+ * "children are hidden behind this". A dot has no direction, so the two states
+ * have to be told apart some other way, and the difference here is fill: a node
+ * whose children are on screen is a filled dot, one still holding a subtree back
+ * is a ring. That reads as a junction on the tree's guide line rather than as a
+ * control, which is the point of trying it — whether the arrow was carrying
+ * meaning the guide lines already carry.
+ *
+ * 7px across, sized to sit on the 1px rail without swallowing it. Drawn as a
+ * bordered box rather than an SVG since it's a circle and nothing more. */
+const Dot = styled.span`
+  box-sizing: border-box;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  border: 1px solid currentColor;
+  background-color: ${(props) => (props.$filled ? 'currentColor' : '#ffffff')};
+`
+
 const CHEVRON_ROTATION = {
   down: 'none',
   right: 'rotate(-90deg)',
@@ -661,6 +682,8 @@ export default function OrganizationHierarchyTab({
   // V3 Sans lines: no row dividers, and the child count moves out of its own
   // column into a parenthetical beside each organization's name.
   const isSansLines = version === 'v3'
+  // V4 marks nodes with dots instead of chevrons.
+  const isDotted = atScale
 
   // Which page of the selected organization's people is on screen.
   const [page, setPage] = useState(1)
@@ -747,14 +770,19 @@ export default function OrganizationHierarchyTab({
                     {row.isOpen && <ParentDescender $depth={row.depth} aria-hidden="true" />}
                     <TreeGutter row={row} />
 
-                    {/* Three states, no expand/collapse: a down chevron on the
-                        rows whose children are already in view (the path and the
-                        selected node), a clickable right chevron on rows with a
-                        subtree the focused view is holding back, and the plain
-                        arm on true leaves. */}
+                    {/* Three states, no expand/collapse: a marker on the rows
+                        whose children are already in view (the path and the
+                        selected node), a clickable marker on rows with a subtree
+                        the focused view is holding back, and the plain arm on true
+                        leaves.
+
+                        V4 swaps the chevron for a dot — filled where children are
+                        on screen, a ring where a subtree is still folded away.
+                        Everything else about the slot is unchanged, so the two
+                        treatments are comparable. */}
                     {row.isOpen ? (
                       <ChevronSlot aria-hidden="true">
-                        <Chevron direction="down" />
+                        {isDotted ? <Dot $filled /> : <Chevron direction="down" />}
                       </ChevronSlot>
                     ) : row.hasChildren ? (
                       <ChevronButton
@@ -762,7 +790,7 @@ export default function OrganizationHierarchyTab({
                         onClick={() => select(row.node.id)}
                         aria-label={`Show the hierarchy around ${row.node.name}`}
                       >
-                        <Chevron direction="right" />
+                        {isDotted ? <Dot /> : <Chevron direction="right" />}
                       </ChevronButton>
                     ) : (
                       <LeafArmContinuation aria-hidden="true" />

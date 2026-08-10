@@ -132,6 +132,8 @@ second branch to contrast against.
 | **V3 Sans lines** | — | none — count moves inline as `(4)` | no |
 | **V4 100 end users** | yes, up to 100 per page | same as V2 | yes |
 
+V4 also swaps the chevrons for dots — see below.
+
 V1 is the MVP scope: organizations only, one supporting column. V2 adds the
 people who sit directly in the selected organization and the columns that
 describe them. V3 asks whether the table furniture is needed at all — the child
@@ -176,10 +178,25 @@ under test. Page one is roughly 4,300px of scroll, which is either an acceptable
 price for never paging or an argument for bringing the number down — worth
 watching someone actually look for a name in it before deciding.
 
+**Dots instead of chevrons.** V4 marks each organization with a 7px dot in the
+slot the chevron used to occupy. The chevron is directional — down means "children
+are below", right means "children are hidden behind this" — and a dot isn't, so
+the two states are told apart by fill instead: **filled** where children are on
+screen, a **ring** where a subtree is still folded away. Everything else about the
+slot is unchanged, including the 20×36px hit area and the `Show the hierarchy
+around …` label, so the ring is still the drill-in control and the two treatments
+are directly comparable.
+
+The question it asks is whether the arrow was carrying meaning the guide lines
+already carry. A dot reads as a junction on the rail rather than as a control,
+which is either cleaner or a loss of affordance depending on whether people still
+find the click target.
+
 Visual treatment responds to the engineering mockup: row rules inset to each
 row's name rather than running full width (a full-width rule cuts through the
 vertical guides), vertical guide lines with `├`/`└` elbows, names as blue
-underlined links, and no icons beyond the chevrons.
+underlined links, and no icons beyond the node markers — chevrons in V1–V3, dots in
+V4.
 
 ## Running it
 
@@ -222,6 +239,9 @@ Deliberately out of scope for this pass, worth a PM conversation first:
 - Is 100 the right page size? It's the number under test in V4. Lower means less
   scroll and more paging; Support's own lists sit nearer 30.
 - Do the row dividers help or hurt? V3 removes them to find out.
+- Is the chevron's direction doing work the guide lines don't already do? V4 uses
+  dots — filled vs. ring — to find out. The risk is affordance: a dot looks less
+  like something you click.
 - Is one level down enough? A focused view is scannable but makes reaching a
   deep node an eight-click trip. Two levels of children, or a breadcrumb of the
   path you clicked through, are the obvious mitigations.
