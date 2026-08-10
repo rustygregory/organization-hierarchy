@@ -88,7 +88,7 @@ export default function App() {
 
   // V1 MVP shows organizations only; V2 adds the end users inside them; V3 is
   // V1 without row dividers, with the child count moved beside each name; V4 is
-  // V2 against a department of 100 end users.
+  // V2 against Bramblewick's full 150-user roster, paged 100 at a time.
   const [version, setVersion] = useState('v1')
   const versionLabel = VERSIONS.find((option) => option.id === version)?.label
 

@@ -141,17 +141,22 @@ guides carry the structure.
 
 ### V4: the at-scale case
 
-V4 is V2's treatment run against a department that actually has a roster — Dept 1
-carries **147 end users** instead of two. Same columns, same rows, one number
-changed. It exists because centring the view bounds how *deep* the tree goes and
-says nothing about how *wide* one node is, so this is the case the focused view
-doesn't answer on its own.
+V4 is V2's treatment run against an organization that actually has a roster —
+**Bramblewick University carries 150 users** instead of three. Same columns, same
+rows, one number changed. It exists because centring the view bounds how *deep* the
+tree goes and says nothing about how *wide* one node is, so this is the case the
+focused view doesn't answer on its own.
+
+The roster hangs off **Bramblewick**, the organization the prototype opens on, so
+switching to V4 puts you in the at-scale case immediately — no drilling. Bramblewick
+also has three child organizations, so the long people list sits below a real set of
+child rows rather than on its own, which is the arrangement a reader would meet.
 
 It shows **up to 100 users per page** and paginates past that, with Garden's
 `OffsetPagination` centred under the table — it takes Flora's tokens from the
 ThemeProvider, so the current page reads in Flora's blue. Above it, `Showing users
-1–100 of 147 in Dept 1`, because otherwise a hundred rows sit under a node whose
-People column says 147 and the two look like they disagree.
+1–100 of 150 in Bramblewick University`, because otherwise a hundred rows sit under
+a node whose People column says 150 and the two look like they disagree.
 
 Two details worth knowing:
 
@@ -159,9 +164,12 @@ Two details worth knowing:
   the siblings are the structure of the view rather than its contents, so they
   stay on every page. Paging them away would leave a page-two reader with a list
   of names and nothing saying whose they are.
-- **The roster is 147, not 100**, so the last page is deliberately part-full — a
-  round multiple of the page size would hide that case. Page one is still the same
-  hundred names it was before pagination existed, so earlier screenshots line up.
+- **150 = Bramblewick's three hand-written staff plus a 147-name roster**, appended
+  rather than substituted. Those three include the personas the prototype is built
+  around, and dropping Adrian Whitlock out of the tree to reach a round number
+  would cost more than the round number is worth. It also leaves page two at 50 —
+  a real page rather than a stray remainder, and not a round multiple of the page
+  size, which would hide the part-full last page.
 
 100 is a high page size; Support's own lists sit nearer 30. That is the thing
 under test. Page one is roughly 4,300px of scroll, which is either an acceptable
@@ -199,7 +207,7 @@ Deliberately out of scope for this pass, worth a PM conversation first:
   back, no history, and no second tab. Support would open a new tab per
   organization.
 - Lazy loading for the "hundreds wide" case. V4 pages the rows, but every user is
-  still in memory and the whole page renders at once; a real 147-row department
+  still in memory and the whole page renders at once; a real 150-user organization
   would fetch per page.
 - The org-chart / node-graph visualization from the FigJam board
 

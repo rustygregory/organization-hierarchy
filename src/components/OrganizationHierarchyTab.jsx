@@ -371,7 +371,7 @@ const PaginationRow = styled.div`
 
 /* Sits above the pager, left-aligned with the table: which slice of the roster is
    on screen. Without it the tree shows a hundred names under a node whose People
-   column reads 147, and the two look like they disagree. */
+   column reads 150, and the two look like they disagree. */
 const PageStatus = styled(SM)`
   display: block;
   color: #646864;
@@ -602,7 +602,7 @@ const buildFocusedRows = (selectedId, showPeople = true, atScale = false, page =
   return {
     rows,
     peopleTotal: allPeople.length,
-    // 1-indexed and inclusive, for "Showing 101–147 of 147". Zero when the slice
+    // 1-indexed and inclusive, for "Showing 101–150 of 150". Zero when the slice
     // is empty, so the caption can be left off entirely.
     peopleFrom: people.length > 0 ? pageStart + 1 : 0,
     peopleTo: pageStart + people.length,
@@ -648,10 +648,12 @@ export default function OrganizationHierarchyTab({
   onSelectOrganization,
   version = 'v1',
 }) {
-  // V4 is V2's treatment against a department of 100 end users — same columns,
-  // same people rows, one organization's roster swapped for a realistic one. The
-  // long scroll it produces is the point: centring the view bounds how deep the
-  // tree goes, not how many people sit in one node, so this is the case the
+  // V4 is V2's treatment against an organization with a real roster — same
+  // columns, same people rows, one organization's user list swapped for a
+  // full-sized one. It hangs off Bramblewick, the node the prototype opens on, so
+  // the at-scale case is what V4 shows first rather than something to drill for.
+  // The long scroll it produces is the point: centring the view bounds how deep
+  // the tree goes, not how many people sit in one node, so this is the case the
   // focused view does not answer.
   const atScale = version === 'v4'
   // V1 MVP and V3: organizations only — no people rows, no type/people columns.

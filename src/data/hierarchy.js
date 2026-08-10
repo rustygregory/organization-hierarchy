@@ -214,18 +214,22 @@ export const PEOPLE = [
 ]
 
 /**
- * The at-scale department: an oversized roster in Dept 1, for V4.
+ * The at-scale roster: an oversized list of end users for V4.
+ *
+ * It hangs off **Bramblewick University**, the organization the prototype opens
+ * on, so the at-scale case is the first thing V4 shows rather than something you
+ * have to drill two levels to reach. Bramblewick also has three child
+ * organizations, so the people list sits below a real set of child rows — the
+ * arrangement a reader would actually meet.
  *
  * Kept out of PEOPLE and layered in only when the view asks for it, so V2 keeps
  * the small hand-written set that makes its treatment readable. V4 is the stress
  * test — the "hundreds wide" case the focused view doesn't bound, since centring
  * on a node caps how *deep* the tree goes but not how many people sit in it.
  *
- * The roster runs past one page on purpose. V4 shows up to 100 end users at a
- * time and paginates beyond that, so a roster of exactly 100 would sit on the
- * boundary and never draw the pager — there'd be nothing to stress test. These
- * first 100 names are the ones page one has always shown, so screenshots taken
- * before pagination existed still line up.
+ * The roster runs past one page on purpose. V4 shows up to 100 users at a time
+ * and paginates beyond that, so a roster that stopped at 100 would sit on the
+ * boundary and never draw the pager — there'd be nothing to stress test.
  *
  * Names and titles are zipped from fixed lists rather than randomised: the row
  * count is the variable under test, and a list that reshuffles every render would
@@ -252,9 +256,10 @@ const AT_SCALE_NAMES = [
   'Salma Haddad', 'Sander de Groot', 'Sebastian Kruger', 'Selin Demir', 'Sinead Murphy',
   'Solomon Grant', 'Sunniva Aas', 'Tariq Mansour', 'Thea Lindberg', 'Tobias Wren',
   'Ulrika Persson', 'Vikram Chandra', 'Wren Ellery', 'Yusuf Kaya', 'Zane Whitmore',
-  /* Page two onward — 47 more, taking the department to 147. An awkward number
-     deliberately: it leaves the last page part-full, which is the case a round
-     multiple of the page size would hide. */
+  /* Page two onward — 47 more. With Bramblewick's three hand-written staff that
+     totals 150, so the second page holds 50: enough to read as a real page rather
+     than a stray remainder, and not a round multiple of the page size, which would
+     hide the part-full last page. */
   'Abebe Girma', 'Alina Kovalenko', 'Anneke Visser', 'Bartholomew Quill', 'Blessing Eze',
   'Caterina Lombardi', 'Cyrus Bahrami', 'Desmond Achterberg', 'Dilnoza Karimova', 'Eirik Haugen',
   'Elodie Charpentier', 'Farrukh Nazarov', 'Freya Ashworth', 'Gunter Hoffmann', 'Halima Yusuf',
@@ -267,28 +272,29 @@ const AT_SCALE_NAMES = [
   'Yannick Dubois', 'Zohra Belkacem',
 ]
 
-/* Cycled across the names. A real department of this size is mostly a handful of
+/** The organization the at-scale roster is attached to. */
+export const AT_SCALE_ORG_ID = 'bramblewick'
+
+/* Titles for a university's own roster rather than a product department's. The
+   list is short and cycled: a real institution of this size is mostly a handful of
    repeated roles, and identical titles down the column are part of what makes a
    list this long hard to scan — worth showing rather than hiding behind variety. */
-const AT_SCALE_TITLES = [
-  'Support Specialist',
-  'Billing Analyst',
-  'Implementation Consultant',
-  'Customer Success Manager',
-  'Technical Writer',
-  'Product Owner',
-  'QA Engineer',
+const AT_SCALE_UNIVERSITY_TITLES = [
+  'Lecturer',
+  'Research Assistant',
+  'Administrator',
+  'Postgraduate Researcher',
+  'Facilities Coordinator',
+  'Student Advisor',
+  'Librarian',
 ]
-
-/** The organization the at-scale roster is attached to. */
-export const AT_SCALE_ORG_ID = 'dept-1'
 
 const AT_SCALE_PEOPLE = AT_SCALE_NAMES.map((name, index) => ({
   // `scale-` prefixed so these can never collide with a hand-written person.
   id: `scale-${name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`,
   name,
   type: 'End user',
-  title: AT_SCALE_TITLES[index % AT_SCALE_TITLES.length],
+  title: AT_SCALE_UNIVERSITY_TITLES[index % AT_SCALE_UNIVERSITY_TITLES.length],
   orgIds: [AT_SCALE_ORG_ID],
 }))
 
@@ -348,14 +354,17 @@ export const getChildren = (orgId) => ORGANIZATIONS.filter((org) => org.parentId
 /**
  * People sitting directly in `orgId`.
  *
- * `atScale` swaps the at-scale department's hand-written roster for the oversized
- * one — V4's whole subject. It replaces rather than appends, so the count is the
- * roster's own length and the version reads as "this department has 147 users"
- * rather than an arbitrary 149.
+ * `atScale` layers the oversized roster onto the organization it belongs to —
+ * V4's whole subject. It appends rather than replaces, because Bramblewick's three
+ * hand-written staff include the personas the prototype is built around, and
+ * dropping Adrian Whitlock out of the tree to reach a round number would cost more
+ * than the round number is worth. The hand-written three come first, so the two
+ * agents at the top of the list are the same in V2 and V4.
  */
 export const getPeopleIn = (orgId, { atScale = false } = {}) => {
-  if (atScale && orgId === AT_SCALE_ORG_ID) return AT_SCALE_PEOPLE
-  return PEOPLE.filter((person) => person.orgIds.includes(orgId))
+  const own = PEOPLE.filter((person) => person.orgIds.includes(orgId))
+  if (atScale && orgId === AT_SCALE_ORG_ID) return [...own, ...AT_SCALE_PEOPLE]
+  return own
 }
 
 /** Every organization beneath `orgId`, at any depth. Excludes `orgId` itself. */
