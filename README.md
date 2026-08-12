@@ -83,10 +83,22 @@ own profile.
 The selected organization **stays where it sits in its sibling group**. Clicking
 the third of four pods doesn't hoist it to the top of the group — the rows hold
 still and only the marking moves, so a click reads as selecting a row rather than
-as the list rearranging itself. It's marked three ways: a blue.100 tint across
-the row, the name in foreground.default and bold instead of a link, and the
-`current` tag beside it. Hover stays grey.100, so hovering a row never imitates
-selection.
+as the list rearranging itself. It's marked three ways: a **2px
+border.primaryEmphasis bar down the row's left edge**, a blue.100 tint across the
+row, and the name in foreground.default and bold instead of a link. Hover stays
+grey.100, so hovering a row never imitates selection — the selected row keeps its
+tint on hover rather than reverting to grey.
+
+The bar spans **exactly one row** and moves with the selection. It's drawn as a
+`::before` on the row's first cell with `top: 0; bottom: 0`, so it can't bleed
+into the rows either side, and it's gated on the selected id, so only one row can
+ever carry it. It needs no gutter of its own: the name cell's 12px padding
+already leaves clear space at the left edge, so nothing in the tree shifts to
+make room and the indents stay on their 24px multiples.
+
+A `current` tag used to sit beside the name as a fourth marker. It's gone — the
+bar and the tint say which row this is, and the tag was the most redundant of the
+set.
 
 The table is `isReadOnly`, which is load-bearing rather than cosmetic. Garden's
 `Row` gives every row `tabIndex={-1}` and paints
@@ -98,6 +110,11 @@ Garden's row interaction model entirely (no tabIndex, no focus tracking, no
 shadow), and a `box-shadow: none` override covers the `&:focus` half of Garden's
 rule, which is unconditional. Worth knowing before adding any row selection to
 this table: Garden already has an opinion about what a clicked row looks like.
+
+Note that the selection bar above is *not* that shadow reinstated. It looks
+similar by design — it's the same token — but it's the prototype's own
+pseudo-element keyed off the selected id rather than off DOM focus, which is what
+stops it accumulating.
 
 That is the answer to the depth problem. Bramblewick's Computer Science branch
 runs ten levels deep and four wide at the bottom; rendered recursively that is
@@ -231,7 +248,7 @@ Deliberately out of scope for this pass, worth a PM conversation first:
 ## Open questions
 
 - Should the view distinguish **direct membership** from **inherited access**?
-  Right now only the selected node is marked `current`.
+  Right now only the selected node is marked at all.
 - Does *People* belong as a column, or is a count link into a separate list
   better once a department has 100+ users? V4 takes the other road — it puts all
   100 in the tree and pages them — so the two can be compared rather than argued
@@ -245,10 +262,12 @@ Deliberately out of scope for this pass, worth a PM conversation first:
 - Is one level down enough? A focused view is scannable but makes reaching a
   deep node an eight-click trip. Two levels of children, or a breadcrumb of the
   path you clicked through, are the obvious mitigations.
-- Three markers on the selected row (tint, bold, tag) may still be one too many.
-  The tint does the work; the `current` tag is the most redundant once the row is
-  visibly picked out, and it's the obvious next thing to drop if review says the
-  marking is still loud.
+- Three markers on the selected row (bar, tint, bold) may still be one too many —
+  the `current` tag was already dropped as a fourth. The bar is the strongest of
+  the three and the tint the softest, so if review says the marking is still
+  loud, the tint is what goes next. Against that: the tint is the only marker
+  that reaches the full width of the row, and the columns on the right have
+  nothing else tying them to the selected name.
 - Does this need a dedicated full-width page, or is the profile tab enough real
   estate?
 - Is "Organization hierarchy" the right tab label, or something like "Access"?

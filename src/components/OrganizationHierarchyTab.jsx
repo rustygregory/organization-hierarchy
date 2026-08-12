@@ -13,7 +13,6 @@ import {
 import { OffsetPagination } from '@zendeskgarden/react-pagination'
 import { Field, Label, MediaInput } from '@zendeskgarden/react-forms'
 import { SM } from '@zendeskgarden/react-typography'
-import SubtleTag from './SubtleTag'
 import {
   getChildren,
   getOrganization,
@@ -38,15 +37,32 @@ const RULE_COLOR = '#eae9e8'
 
 /* The selected row's background: blue.100, the faintest step on Flora's primary
    ramp. It's a tint rather than a fill — enough to read as a band across the row
-   at a glance, not enough to compete with the names sitting on it. It's the whole
-   selection marking now: a blue bar used to sit at the left edge as well, and two
-   blue marks for one state was one too many. The tree's own guide lines already
-   show where the row sits.
+   at a glance, not enough to compete with the names sitting on it.
 
    Hover stays grey.100 so hovering a row never imitates selection; the selected
    row keeps its own tint on hover rather than reverting to grey. */
 const SELECTED_ROW_BG = '#f3f6fb'
 const HOVER_ROW_BG = '#f7f7f7'
+
+/* The selection bar: 2px of border.primaryEmphasis down the left edge of the
+   selected row, and that row only.
+
+   It is drawn as a pseudo-element on the row's first cell, with explicit `top: 0;
+   bottom: 0`, so it spans exactly one row's height and cannot bleed into the rows
+   either side. Crucially it is *not* Garden's own focused-row bar: Garden draws an
+   inset box-shadow on any focused row, rows here are keyed by organization id so
+   the focused DOM node survives a re-render, and the result was bars accumulating
+   down the tree as you drilled. That is switched off (see TreeTable's isReadOnly
+   note) — this bar is the prototype's own, keyed off the selected id, so exactly
+   one row can ever carry it.
+
+   It needs no gutter of its own: the name cell's 12px padding plus the chevron
+   slot already leave clear space at the left edge, so the bar sits in space that
+   was empty and nothing shifts. Deliberately so — the last attempt at this gave
+   the bar its own column, which meant threading a width through ruleInsetFor and
+   the descender geometry and knocking the indents off their 24px multiples. */
+const SELECTION_BAR_COLOR = '#406cc4'
+const SELECTION_BAR_WIDTH = 2
 
 /* How many people rows one page of the tree shows before the pager takes over.
    Only V4 has a roster big enough to reach it. 100 is high for a page size —
@@ -190,6 +206,23 @@ const TreeRow = styled(Row)`
 
   td:first-child::after {
     left: ${props.$ruleInset}px;
+  }
+  `}
+
+  /* The selection bar, on the selected row and no other. top/bottom pin it to
+     this row's box, so it can neither run into the neighbours nor accumulate:
+     there is one selected row, so there is one bar. */
+  ${(props) =>
+    props.$selected &&
+    `
+  td:first-child::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: ${SELECTION_BAR_WIDTH}px;
+    background-color: ${SELECTION_BAR_COLOR};
   }
   `}
 
@@ -555,8 +588,8 @@ const buildFocusedRows = (selectedId, showPeople = true, atScale = false, page =
   // sitting wherever it actually sits. Hoisting it to the top of the group would
   // make a click reorder the rows around it — you click the third of four pods
   // and it jumps to first, which reads as the list rearranging itself rather
-  // than as one row being selected. The tree holds still; only the highlight and
-  // the `current` tag move.
+  // than as one row being selected. The tree holds still; only the selection bar
+  // and the row tint move.
   const siblingGroup = selected.parentId ? getChildren(selected.parentId) : [selected]
 
   siblingGroup.forEach((org, index) => {
@@ -817,7 +850,9 @@ export default function OrganizationHierarchyTab({
                       {isSansLines && !isPerson && row.childOrgCount > 0 && (
                         <ChildCount>({row.childOrgCount})</ChildCount>
                       )}
-                      {isCurrent && <SubtleTag>current</SubtleTag>}
+                      {/* No `current` tag. The bar and the tint say which row this
+                          is, and a third marker repeating it was the most
+                          redundant of the three. */}
                       {isPerson && row.node.title && (
                         <PersonTitle>{row.node.title}</PersonTitle>
                       )}
