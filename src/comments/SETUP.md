@@ -19,7 +19,14 @@ and the same project can serve every prototype you drop this into.
 
 ## 2. Create the table
 
-Open **SQL Editor** in the left sidebar, paste all of this in, and hit run.
+Open **SQL Editor** in the left sidebar, then select all of
+**[schema.sql](./schema.sql)**, paste, and run. Expect "Success. No rows
+returned."
+
+Use that file rather than copying the block below: the ```` ```sql ```` fence
+here is markdown formatting, and pasting it along with the query fails with
+`syntax error at or near "```"`. The block is reproduced only so this document
+explains itself.
 
 ```sql
 create table public.prototype_comments (
@@ -123,6 +130,8 @@ showing an empty list, so the message is usually the diagnosis:
 
 | Message | Cause |
 | --- | --- |
+| `syntax error at or near "```"` in the SQL Editor | A markdown code fence got pasted along with the query. Use [schema.sql](./schema.sql), which has none. |
+| `relation "prototype_comments" already exists` | The SQL ran before, possibly partway. `drop table public.prototype_comments cascade;` then re-run — but note that deletes any comments already stored. |
 | `Supabase 404` | Table name doesn't match, or the SQL didn't run. Check the table exists under **Table Editor**. |
 | `Supabase 401` | Wrong or truncated anon key. Copy it again — it's long and easy to clip. |
 | `Supabase 403` / empty list with no error | RLS is on but the policies didn't apply. Re-run the `create policy` statements. |
