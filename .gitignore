@@ -12,3 +12,10 @@ npm-debug.log*
 .DS_Store
 .vscode/
 .idea/
+
+# Local env. The Supabase anon key in here is public by design — it ends up in
+# the built bundle either way — but the file is still untracked so the repo
+# doesn't carry project-specific config, and so nobody is tempted to put a
+# service-role key in a tracked file. See src/comments/SETUP.md.
+.env.local
+.env*.local

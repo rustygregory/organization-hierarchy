@@ -5,6 +5,7 @@ import { Combobox, Field, Option } from '@zendeskgarden/react-dropdowns'
 import styled from 'styled-components'
 import OrganizationProfile from './components/OrganizationProfile'
 import TabBar from './components/TabBar'
+import CommentLayer from './comments/CommentLayer'
 import { getOrganization } from './data/hierarchy'
 import './App.css'
 
@@ -148,6 +149,24 @@ export default function App() {
             />
           </MainContent>
         </ContentRow>
+
+        {/* Comment mode. Sits outside the prototype's own flow: while it's off
+            nothing here intercepts a click and the prototype behaves exactly as
+            it did before it was added.
+
+            `context` is what a pin remembers about the view it was made in, and
+            `onRestoreContext` puts the app back into that view when someone
+            opens a comment from another one. That matters because this page
+            re-centres on click — the same screen position holds different
+            content depending on the version and the selected organization, so a
+            pin without this context would point at the wrong row. */}
+        <CommentLayer
+          context={{ version, orgId }}
+          onRestoreContext={(saved) => {
+            if (saved.version) setVersion(saved.version)
+            if (saved.orgId) setOrgId(saved.orgId)
+          }}
+        />
       </PageContainer>
     </ThemeProvider>
   )

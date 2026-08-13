@@ -757,8 +757,12 @@ export default function OrganizationHierarchyTab({
   // the control knows which node's roster it walks.
   const selectedName = getOrganization(selectedId)?.name
 
+  // data-comment-root marks the subtree comment pins may anchor inside. The
+  // global nav and the comment layer itself sit outside it deliberately: the nav
+  // is chrome rather than design under review, and a pin able to attach to the
+  // comment layer could anchor to another pin.
   return (
-    <Wrapper>
+    <Wrapper data-comment-root="true">
       {/* No Hint — the label carries the explanation, and a hint line here
           pushed the counts and the table down for no added meaning. */}
       <SearchField>

@@ -215,6 +215,73 @@ vertical guides), vertical guide lines with `├`/`└` elbows, names as blue
 underlined links, and no icons beyond the node markers — chevrons in V1–V3, dots in
 V4.
 
+## Comment mode
+
+Anyone with the link can annotate the prototype in place, Figma-style: click
+**Comment** in the top right, click the thing you want to talk about, and a
+numbered pin and a thread appear. Pins persist, so you can come back and read
+what people said. Replies are one level deep; threads can be resolved or deleted.
+
+This exists because a prototype in a browser has no comment affordance at all.
+Feedback on the earlier versions arrived as Slack messages describing rows
+("the one under Product, two levels down") which is slow to write and easy to
+misread. A pin points at the row.
+
+It is deliberately outside the prototype's own flow. While comment mode is off,
+nothing intercepts a click and the prototype behaves exactly as it did before the
+layer existed. That matters more than it sounds: the alternative — always-on
+commenting — makes every click ambiguous between using the design and annotating
+it.
+
+**Pins remember the view, not just the position.** This is the part that isn't
+obvious. A Figma pin can be a plain x/y coordinate because the canvas doesn't
+change underneath it. Here the same screen position shows entirely different
+content depending on which version is selected and which organization the tree is
+centred on — a pin dropped on a user row in V4 would float over blank space in
+V1. So a pin stores the version, the selected organization, a structural path to
+the element, and where inside that element the click fell as a fraction of its
+box. Opening a comment restores the version and organization first, then scrolls
+its row into view. Comments made on another view aren't drawn on the current one;
+the sidebar lists them with a "on another view — click to jump there" note.
+
+Two smaller decisions worth knowing:
+
+- **⌘-click (Ctrl-click) navigates** without leaving comment mode. The click
+  catcher covers the design area, so plain clicks can't reach the links
+  underneath — and an early version covered the whole viewport, which trapped
+  reviewers on whichever version they happened to enter comment mode on. The
+  catcher is now scoped to the commentable area, so the version switcher and nav
+  stay live regardless.
+- **The path uses `nth-of-type`, never class names.** styled-components
+  regenerates its class names on every build, so a class-based path would break
+  on the next deploy — pins would silently detach, which is worse than pins that
+  visibly fail. If the anchored row's text has changed since, the thread header
+  says "content changed since" rather than hiding the pin: the row may have been
+  legitimately renamed.
+
+Where comments are stored depends on configuration, and the sidebar always says
+which mode you're in:
+
+| | |
+| --- | --- |
+| **Shared** | A free Supabase project. Everyone with the link reads and writes the same threads. Five minutes of setup: **[src/comments/SETUP.md](src/comments/SETUP.md)** |
+| **This browser only** | The fallback when no credentials are configured. No setup, but nobody else sees your comments. |
+
+There's no login — just a remembered name. Anyone with the link can post under
+any name and delete anyone's comment. That's the right trade for design review
+among colleagues and the wrong one for anything needing trustworthy attribution,
+so don't put confidential material in a comment.
+
+`src/comments/` is self-contained and has **zero dependencies** — Supabase is
+reached over its REST API with plain `fetch` rather than through the SDK, which
+would have added ~40kB and a realtime client this doesn't use. Dropping it into
+another prototype is: copy the directory, change `PROJECT` in `store.js`, put
+`data-comment-root="true"` on the element wrapping the design, and render
+`<CommentLayer context={…} onRestoreContext={…} />`. The `context` object is
+opaque to the layer — it's whatever state your prototype needs to restore, so a
+different prototype passes a completely different shape without editing anything
+in the directory.
+
 ## Running it
 
 ```bash
