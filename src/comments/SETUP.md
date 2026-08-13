@@ -20,13 +20,18 @@ and the same project can serve every prototype you drop this into.
 ## 2. Create the table
 
 Open **SQL Editor** in the left sidebar, then select all of
-**[schema.sql](./schema.sql)**, paste, and run. Expect "Success. No rows
-returned."
+**[schema.sql](./schema.sql)**, paste, and run. It ends with a summary of what it
+created rather than a bare "Success. No rows returned."
 
 Use that file rather than copying the block below: the ```` ```sql ```` fence
 here is markdown formatting, and pasting it along with the query fails with
-`syntax error at or near "```"`. The block is reproduced only so this document
-explains itself.
+`syntax error at or near "```"`. The block is an abridged illustration only — it
+leaves out the ownership pieces, so don't run it.
+
+> **Already have a table from an earlier version of this?** Run
+> **[schema-owner-only.sql](./schema-owner-only.sql)** instead. It adds the
+> delete-your-own-comments rules to an existing table without dropping it. The
+> older schema let anyone with the link delete anyone's comment.
 
 ```sql
 create table public.prototype_comments (
@@ -58,20 +63,40 @@ create index prototype_comments_project_created_idx
 
 alter table public.prototype_comments enable row level security;
 
--- What anonymous link-holders may do. Read, post, and edit — which covers
--- commenting, replying, resolving and deleting your own note.
---
--- Deliberately permissive, and worth being clear-eyed about: anyone with the
--- link can also delete somebody else's comment or post under somebody else's
--- name. There is no login, so there is nothing to check them against. That is
--- the right trade for design review among colleagues and the wrong trade for
--- anything where attribution has to be trustworthy. Don't put customer data or
--- anything confidential in here.
+-- Abridged. The real file also adds an `author_key` column, a reading view, and
+-- policies that confine deletes to your own comments — see "Who can delete what".
 create policy "anon can read"   on public.prototype_comments for select using (true);
 create policy "anon can insert" on public.prototype_comments for insert with check (true);
-create policy "anon can update" on public.prototype_comments for update using (true);
-create policy "anon can delete" on public.prototype_comments for delete using (true);
 ```
+
+## Who can delete what
+
+Everyone with the link reads every comment and can post and reply. **Deleting is
+limited to your own comments**, and Delete simply doesn't appear on anyone else's
+thread. **Resolve is available to everyone** — marking a thread handled is triage
+rather than authorship, it changes nobody's words, and it's reversible.
+
+Ownership works without anybody logging in. Each browser generates a random key
+the first time it's used, keeps it in localStorage, and sends it as a header. The
+database stamps that key onto each row and requires a match to delete. The key is
+never readable by anyone: the column is revoked from clients outright, and comments
+are read through a view that returns `is_mine` in its place. Both halves are needed
+— the table stays in the API, so a hidden column that was merely *unused* by the app
+could still be asked for directly with `?select=author_key`, which would hand a
+reader every key and with it the ability to delete anything.
+
+Be clear about what this is and isn't:
+
+- **It prevents the accident worth preventing** — one reviewer wiping another's
+  feedback.
+- **It is not authentication.** The name beside a comment is still self-declared,
+  so anyone can sign a comment with your name.
+- **The key is per browser.** Your laptop and your phone are two different owners,
+  and clearing browser data gives up the ability to delete what you already wrote.
+  A comment nobody owns can only be removed from the SQL Editor.
+
+So it's the right trade for design review among colleagues, and still the wrong
+place for customer data or anything confidential.
 
 ## 3. Point the prototype at it
 
@@ -135,4 +160,7 @@ showing an empty list, so the message is usually the diagnosis:
 | `Supabase 404` | Table name doesn't match, or the SQL didn't run. Check the table exists under **Table Editor**. |
 | `Supabase 401` | Wrong or truncated anon key. Copy it again — it's long and easy to clip. |
 | `Supabase 403` / empty list with no error | RLS is on but the policies didn't apply. Re-run the `create policy` statements. |
+| Delete missing on comments you *did* write | Different browser, or browser data was cleared, so the owner key no longer matches. Expected — see "Who can delete what". |
+| Delete missing on every comment, including new ones | `schema-owner-only.sql` hasn't run, so there's no view and the app can't tell what's yours. It falls back to hiding Delete rather than offering a button that fails. |
+| `That comment belongs to someone else` | Working as intended: the policy withheld the row. |
 | Still says "Stored in this browser only" | Vite didn't see the env file. It must be named exactly `.env.local`, sit in the project root, use the `VITE_` prefix, and the server has to be restarted. |

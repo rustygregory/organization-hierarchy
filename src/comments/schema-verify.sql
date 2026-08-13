@@ -11,7 +11,10 @@ with expected(name, kind) as (
   values
     ('id', 'uuid'), ('project', 'text'), ('author', 'text'), ('body', 'text'),
     ('parent_id', 'uuid'), ('number', 'integer'), ('anchor', 'jsonb'),
-    ('resolved', 'boolean'), ('created_at', 'timestamp with time zone')
+    ('resolved', 'boolean'), ('created_at', 'timestamp with time zone'),
+    -- Who owns a row, so only they can delete it. Missing means the table predates
+    -- the owner-only rules: run schema-owner-only.sql.
+    ('author_key', 'text')
 ),
 actual as (
   select column_name, data_type
@@ -62,6 +65,63 @@ other_checks as (
       where schemaname = 'public' and tablename = 'prototype_comments'
         and indexdef like '%project%created_at%'
     ) then 'PASS' else 'WARN — missing, but it only affects speed' end
+  union all
+  -- The app reads through this view, not the table, because the table holds the
+  -- owner key and publishing it would let any reader delete anyone's comment.
+  select 'reading view exists',
+    case when to_regclass('public.prototype_comments_view') is null
+      then 'FAIL — run schema-owner-only.sql' else 'PASS' end
+  union all
+  -- The view must run as its owner, which is what lets it read `author_key` to
+  -- answer "is this mine?" while clients are denied that column. With
+  -- security_invoker on it would be evaluated with the caller's privileges and
+  -- every read would fail with a permission error on author_key.
+  select 'view can compute is_mine',
+    case
+      when to_regclass('public.prototype_comments_view') is null then 'FAIL — no view'
+      when exists (
+        select 1 from pg_class
+        where oid = 'public.prototype_comments_view'::regclass
+          and reloptions::text like '%security_invoker=on%'
+      ) then 'FAIL — security_invoker on; reads will fail on author_key'
+      else 'PASS — runs as owner'
+    end
+  union all
+  -- The check that matters most. Reading through the view protects nothing on its
+  -- own: the table stays in the API, so if `author_key` is selectable, anyone can
+  -- ask for it directly, collect every reviewer's key, and delete anything.
+  select 'owner key not readable',
+    case when exists (
+      select 1 from information_schema.column_privileges
+      where table_schema = 'public' and table_name = 'prototype_comments'
+        and column_name = 'author_key' and privilege_type = 'SELECT'
+        and grantee in ('anon', 'authenticated')
+    ) then 'FAIL — author_key is selectable; re-run the grant statements'
+    else 'PASS — hidden from clients' end
+  union all
+  -- Row-level security says which rows may be touched, not which columns. Without
+  -- this grant narrowed to `resolved`, the update policy would allow rewriting
+  -- anyone's text.
+  select 'update limited to resolved',
+    coalesce((
+      select case
+        when string_agg(distinct column_name, ',') = 'resolved' then 'PASS'
+        else 'FAIL — also grants ' || string_agg(distinct column_name, ', ')
+      end
+      from information_schema.column_privileges
+      where table_schema = 'public' and table_name = 'prototype_comments'
+        and privilege_type = 'UPDATE' and grantee = 'anon'
+    ), 'PASS — no update granted at all')
+  union all
+  -- Reached through to_jsonb rather than naming the column, because a bare
+  -- `where author_key is null` fails to *parse* on a table that hasn't been
+  -- upgraded yet — and that would take the whole diagnostic down with it, on
+  -- exactly the table most in need of diagnosing.
+  select 'comments with no owner',
+    case when count(*) = 0 then 'PASS — none'
+      else count(*)::text || ' predate the owner rules and nobody can delete them' end
+  from public.prototype_comments t
+  where to_jsonb(t) ->> 'author_key' is null
   union all
   select 'comments stored so far', count(*)::text
   from public.prototype_comments

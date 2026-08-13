@@ -843,9 +843,14 @@ export default function CommentLayer({ context, onRestoreContext }) {
                   <IconButton type="button" onClick={() => toggleResolved(openComment)}>
                     {openComment.resolved ? 'Unresolve' : 'Resolve'}
                   </IconButton>
-                  <IconButton type="button" onClick={() => removeComment(openComment)}>
-                    Delete
-                  </IconButton>
+                  {/* Only on your own comments. Resolve stays available to
+                      everyone — marking a thread handled is triage, and it's
+                      reversible; deleting someone else's feedback isn't. */}
+                  {openComment.isMine && (
+                    <IconButton type="button" onClick={() => removeComment(openComment)}>
+                      Delete
+                    </IconButton>
+                  )}
                   <IconButton type="button" onClick={() => setOpenId(null)}>
                     Close
                   </IconButton>
@@ -905,7 +910,12 @@ export default function CommentLayer({ context, onRestoreContext }) {
               </IconButton>
             </SidebarHead>
             {isShared ? (
-              <Banner $tone="info">Shared — everyone with this link sees these comments.</Banner>
+              /* Says who can delete what, because the rule shows up in the UI as a
+                 *missing* button on other people's threads, which reads as a bug
+                 unless it's stated. */
+              <Banner $tone="info">
+                Shared — everyone with this link sees these comments. You can delete your own.
+              </Banner>
             ) : (
               <Banner $tone="warn">
                 Stored in this browser only — others won&apos;t see these. See

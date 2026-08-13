@@ -59,22 +59,62 @@ create index prototype_comments_project_created_idx
 
 alter table public.prototype_comments enable row level security;
 
--- What anonymous link-holders may do. Read, post, and edit — which covers
--- commenting, replying, resolving and deleting a note.
---
--- Deliberately permissive, and worth being clear-eyed about: anyone with the
--- link can also delete somebody else's comment or post under somebody else's
--- name. There is no login, so there is nothing to check them against. That is
--- the right trade for design review among colleagues and the wrong trade for
--- anything where attribution has to be trustworthy. Don't put customer data or
--- anything confidential in here.
---
--- To lock it down instead, delete the update and delete policies: reviewers can
--- then post and read, but not resolve or delete anything.
-create policy "anon can read"   on public.prototype_comments for select using (true);
-create policy "anon can insert" on public.prototype_comments for insert with check (true);
-create policy "anon can update" on public.prototype_comments for update using (true);
-create policy "anon can delete" on public.prototype_comments for delete using (true);
+-- Who owns a comment, so only they can delete it. Defaulted from a request header
+-- rather than accepted in the request body, so the client cannot choose it. See
+-- schema.sql for the full reasoning.
+alter table public.prototype_comments
+  add column author_key text
+  default (current_setting('request.headers', true)::json ->> 'x-comment-key');
+
+-- Reads go through a view that returns `is_mine` rather than the key itself.
+-- Runs as its owner (security_invoker off), which is what lets it read author_key
+-- while clients are denied that column.
+create view public.prototype_comments_view as
+select
+  id, project, author, body, parent_id, number, anchor, resolved, created_at,
+  coalesce(
+    author_key = current_setting('request.headers', true)::json ->> 'x-comment-key',
+    false
+  ) as is_mine
+from public.prototype_comments;
+
+alter view public.prototype_comments_view set (security_invoker = off);
+grant select on public.prototype_comments_view to anon, authenticated;
+
+-- What anonymous link-holders may do: read everything, post as themselves, resolve
+-- any thread, and delete only their own comments. Not authentication — the author
+-- name is still self-declared, and the owner key lives in one browser — so still
+-- the wrong place for anything confidential.
+create policy "anon can read" on public.prototype_comments
+  for select using (true);
+
+create policy "anon can insert own" on public.prototype_comments
+  for insert with check (
+    author_key is not null
+    and author_key = current_setting('request.headers', true)::json ->> 'x-comment-key'
+  );
+
+create policy "anon can resolve" on public.prototype_comments
+  for update using (true) with check (true);
+
+create policy "anon can delete own" on public.prototype_comments
+  for delete using (
+    author_key = current_setting('request.headers', true)::json ->> 'x-comment-key'
+  );
+
+-- Column grants. These are what confine an update to `resolved` and keep
+-- `author_key` out of every client's reach — row-level security governs rows, not
+-- columns, so the policies above are not sufficient on their own.
+revoke update on public.prototype_comments from anon, authenticated;
+grant update (resolved) on public.prototype_comments to anon, authenticated;
+
+revoke insert on public.prototype_comments from anon, authenticated;
+grant insert (project, author, body, parent_id, number, anchor, resolved)
+  on public.prototype_comments to anon, authenticated;
+
+revoke select on public.prototype_comments from anon, authenticated;
+grant select (id, project, author, body, parent_id, number, anchor, resolved, created_at)
+  on public.prototype_comments to anon, authenticated;
 
 -- Proof it worked, rather than a bare "Success. No rows returned." Expect nine
 -- column rows followed by four policy rows.

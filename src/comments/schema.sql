@@ -38,6 +38,19 @@ create table if not exists public.prototype_comments (
   created_at  timestamptz not null default now()
 );
 
+-- Who owns a comment, so that only they can delete it.
+--
+-- There is no login here. Each browser generates a random key on first use, keeps
+-- it in localStorage, and sends it as an `x-comment-key` header; this column is
+-- *defaulted from that header* rather than accepted from the request body, so the
+-- client never sends it and cannot choose what goes in it.
+--
+-- Added separately from the create table above so this file stays re-runnable
+-- against a table made by an earlier version of it.
+alter table public.prototype_comments
+  add column if not exists author_key text
+  default (current_setting('request.headers', true)::json ->> 'x-comment-key');
+
 -- Every read filters by project and sorts by time. This is the only query the
 -- app makes, so it's the only index worth having.
 create index if not exists prototype_comments_project_created_idx
@@ -46,30 +59,109 @@ create index if not exists prototype_comments_project_created_idx
 -- Already idempotent: enabling this twice is not an error.
 alter table public.prototype_comments enable row level security;
 
--- What anonymous link-holders may do. Read, post, and edit — which covers
--- commenting, replying, resolving and deleting a note.
+-- Reads go through a view, not the table.
 --
--- Deliberately permissive, and worth being clear-eyed about: anyone with the
--- link can also delete somebody else's comment or post under somebody else's
--- name. There is no login, so there is nothing to check them against. That is
--- the right trade for design review among colleagues and the wrong trade for
--- anything where attribution has to be trustworthy. Don't put customer data or
--- anything confidential in here.
+-- Everyone reads every comment — the point of shared comments is that the team
+-- sees one conversation. What must not leak is `author_key` itself: published in a
+-- readable column it would tell any reader exactly what to send in order to delete
+-- somebody else's note. So the view exposes the *answer* — is this mine? — instead
+-- of the key.
 --
--- To lock it down instead, delete the update and delete pairs below: reviewers
--- can then post and read, but not resolve or delete anything.
+-- The view runs as its owner rather than as the caller (`security_invoker = off`,
+-- which is also the default — set explicitly because it's load-bearing here, not
+-- incidental). That is what lets it read `author_key` to compute `is_mine` while
+-- the grants further down deny that column to every client. Turn security_invoker
+-- on and the view breaks: it would be evaluated with the caller's column
+-- privileges, and the caller is precisely who must not have them.
+--
+-- What running as owner gives up is row-level security on the underlying table.
+-- Here that costs nothing — the read policy is `using (true)`, so the view exposes
+-- exactly the rows a client could already see. It is worth knowing before adding a
+-- *restrictive* read policy later, though: this view would not honour it, and the
+-- rows would have to be filtered in the view's own where clause instead.
+create or replace view public.prototype_comments_view as
+select
+  id, project, author, body, parent_id, number, anchor, resolved, created_at,
+  -- coalesce, so a request arriving with no header reads as "not mine" rather than
+  -- as null, which the app would have to special-case.
+  coalesce(
+    author_key = current_setting('request.headers', true)::json ->> 'x-comment-key',
+    false
+  ) as is_mine
+from public.prototype_comments;
+
+alter view public.prototype_comments_view set (security_invoker = off);
+grant select on public.prototype_comments_view to anon, authenticated;
+
+-- What anonymous link-holders may do: read everything, post as themselves, mark
+-- any thread resolved, and delete only their own comments.
+--
+-- Be clear-eyed about what this is. It stops one reviewer deleting another's
+-- feedback, which is the accident worth preventing. It is not authentication: the
+-- author *name* is still self-declared, so anyone can sign a comment "Rusty", and
+-- the owner key lives in one browser, so the same person on a laptop and a phone
+-- counts as two people. Still the wrong place for customer data or anything
+-- confidential.
 --
 -- Dropped before being created because Postgres has no `create policy if not
--- exists`. Dropping a policy that isn't there is a no-op, so this is safe on a
--- first run as well as a repeat.
-drop policy if exists "anon can read" on public.prototype_comments;
-create policy "anon can read" on public.prototype_comments for select using (true);
+-- exists`. That includes the permissive policies from earlier versions of this
+-- file — leaving "anon can delete" in place would keep granting what the
+-- delete-own policy is here to withhold.
+drop policy if exists "anon can read"       on public.prototype_comments;
+drop policy if exists "anon can insert"     on public.prototype_comments;
+drop policy if exists "anon can update"     on public.prototype_comments;
+drop policy if exists "anon can delete"     on public.prototype_comments;
+drop policy if exists "anon can insert own" on public.prototype_comments;
+drop policy if exists "anon can resolve"    on public.prototype_comments;
+drop policy if exists "anon can delete own" on public.prototype_comments;
 
-drop policy if exists "anon can insert" on public.prototype_comments;
-create policy "anon can insert" on public.prototype_comments for insert with check (true);
+-- The underlying table still needs a read policy: security_invoker passes the
+-- caller's permissions through to it.
+create policy "anon can read" on public.prototype_comments
+  for select using (true);
 
-drop policy if exists "anon can update" on public.prototype_comments;
-create policy "anon can update" on public.prototype_comments for update using (true);
+-- Only stamped with your own key. Without the equality check a caller could pass
+-- `author_key` in the request body and post a comment owned by somebody else — or
+-- by nobody, which would make it undeletable.
+create policy "anon can insert own" on public.prototype_comments
+  for insert with check (
+    author_key is not null
+    and author_key = current_setting('request.headers', true)::json ->> 'x-comment-key'
+  );
 
-drop policy if exists "anon can delete" on public.prototype_comments;
-create policy "anon can delete" on public.prototype_comments for delete using (true);
+-- Resolving is triage rather than authorship: whoever is collecting the feedback
+-- needs to mark a thread handled, it is reversible, and it changes nobody's words.
+-- The column grant below is what stops this becoming "edit anyone's text".
+create policy "anon can resolve" on public.prototype_comments
+  for update using (true) with check (true);
+
+create policy "anon can delete own" on public.prototype_comments
+  for delete using (
+    author_key = current_setting('request.headers', true)::json ->> 'x-comment-key'
+  );
+
+-- Column-level grants, which are what actually confine an update to `resolved`.
+-- Row-level security decides which *rows* a statement may touch and has nothing to
+-- say about which columns, so the update policy on its own would allow rewriting
+-- anyone's body text.
+revoke update on public.prototype_comments from anon, authenticated;
+grant update (resolved) on public.prototype_comments to anon, authenticated;
+
+-- Likewise for insert: `author_key` is left out of the grant, so it can only ever
+-- be filled by its header default. A column omitted from an insert still gets its
+-- default, and the policy above sees the defaulted value — so this closes the door
+-- on posting a comment owned by someone else without closing it on posting at all.
+revoke insert on public.prototype_comments from anon, authenticated;
+grant insert (project, author, body, parent_id, number, anchor, resolved)
+  on public.prototype_comments to anon, authenticated;
+
+-- And for select, which is the one that matters most.
+--
+-- Routing the app's reads through the view is not by itself protection: the table
+-- is still in the API, so without this grant anyone could ask it for
+-- `?select=author_key` and collect every reviewer's key — and with those, delete
+-- anything. Naming the columns leaves `author_key` readable only by the policies
+-- that compare it, never by a client.
+revoke select on public.prototype_comments from anon, authenticated;
+grant select (id, project, author, body, parent_id, number, anchor, resolved, created_at)
+  on public.prototype_comments to anon, authenticated;
