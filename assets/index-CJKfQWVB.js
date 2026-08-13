@@ -982,11 +982,11 @@ Error generating stack: `+e.message+`
           color: ${a};
           fill: ${i};
         }
-      `,$a({theme:e}))},V),oy=`tables.header_cell`,sy=z([``,`{max-width:100%;overflow:hidden;text-overflow:ellipsis;}`],ay),cy=e=>{let t;return e.$hasOverflow||(t=U(`(${Uv(e)} - ${Yv(e)}) / 2`)),z([`padding-top:`,`;padding-bottom:`,`;`],t,t)},ly=B(ey).attrs({as:`th`,"data-garden-id":oy,"data-garden-version":`9.15.7`}).withConfig({displayName:`StyledHeaderCell`,componentId:`sc-fzagoe-0`})([`text-align:`,`;font-weight:inherit;`,` `,` `,`;`],e=>{if(!e.$hasOverflow)return e.theme.rtl?`right`:`left`},e=>cy(e),e=>e.$isTruncated&&sy,V),uy=`tables.head`,dy=({theme:e})=>{let t=K({variable:`border.default`,theme:e});return z([`background-color:`,`;& > `,`:last-child{border-bottom-color:transparent;& > `,`{box-shadow:inset 0 -`,` 0 `,`;}}`],K({variable:`background.default`,theme:e}),qv,ly,e.borderWidths.sm,t)},fy=()=>z([`position:sticky;top:0;z-index:1;`]),py=B.thead.attrs({"data-garden-id":uy,"data-garden-version":`9.15.7`}).withConfig({displayName:`StyledHead`,componentId:`sc-spf23a-0`})([``,` `,` `,`;`],e=>e.$isSticky&&fy(),dy,V),my=B(Hv).attrs({"data-garden-id":`tables.group_row`,"data-garden-version":`9.15.7`}).withConfig({displayName:`StyledGroupRow`,componentId:`sc-mpd0r8-0`})([``,` `,` `,`;`],e=>{let t=`${e.theme.space.base*8}px`,n=Yv(e);return z([`height:`,`;line-height:`,`;font-size:`,`;`,`{padding:`,` `,`px;}`],t,n,e.theme.fontSizes.sm,ey,U(`(${t} - ${n}) / 2`),e.theme.space.base*3)},({theme:e})=>z([`background-color:`,`;`],K({variable:`background.subtle`,transparency:e.opacity[100],light:{offset:300},dark:{offset:-600},theme:e})),V),hy=B.div.attrs({"data-garden-id":`tables.hidden_cell`,"data-garden-version":`9.15.7`}).withConfig({displayName:`StyledHiddenCell`,componentId:`sc-1x454xw-0`})([``,` `,`;`],ci(),V),gy=B(Hv).attrs({"data-garden-id":`tables.row`,"data-garden-version":`9.15.7`}).withConfig({displayName:`StyledRow`,componentId:`sc-ek66ow-0`})([``,` `,` `,`;`],e=>z([`height:`,`;`],Uv(e)),({theme:e,$isFocused:t,$isSelected:n,$isHovered:r,$isReadOnly:i})=>{let a=K({variable:`background.primaryEmphasis`,transparency:e.opacity[100],dark:{offset:-100},theme:e}),o=K({variable:`border.primaryEmphasis`,transparency:e.opacity[200],dark:{offset:-100},theme:e}),s=K({variable:`background.primaryEmphasis`,transparency:e.opacity[200],dark:{offset:-100},theme:e}),c=K({variable:`border.primaryEmphasis`,light:{offset:-400},dark:{offset:300},theme:e}),l=K({variable:`background.primaryEmphasis`,transparency:e.opacity[300],dark:{offset:-100},theme:e}),u=K({variable:`border.primaryEmphasis`,theme:e}),d=`inset ${e.rtl?`-`:``}${e.shadowWidths.md} 0 0 0 ${u}`,f,p,m,h;return n?(f=r?l:s,p=c,m=c,h=l):r?(f=a,p=o):i||(m=o,h=a),z([`border-bottom-color:`,`;background-color:`,`;&:hover{border-bottom-color:`,`;background-color:`,`;`,`{opacity:1;}}&:focus{outline:none;}`,`:first-of-type{box-shadow:`,`;&:focus{box-shadow:`,`;}}`],p,f,m,h,Wv,ey,t&&d,d)},V),_y=(0,g.forwardRef)((e,t)=>g.createElement(Bv,Object.assign({ref:t},e)));_y.displayName=`Table.Body`;var vy=(0,g.forwardRef)((e,t)=>g.createElement(Vv,Object.assign({ref:t},e)));vy.displayName=`Table.Caption`;var yy=g.createContext({size:`medium`,isReadOnly:!1}),by=()=>(0,g.useContext)(yy),xy=g.forwardRef(({hidden:e,isMinimum:t,isTruncated:n,hasOverflow:r,...i},a)=>{let{size:o}=by();return g.createElement(ey,Object.assign({ref:a,$size:o,$isMinimum:t,$isTruncated:n,$hasOverflow:r},i),e&&i.children?g.createElement(hy,null,i.children):i.children)});xy.displayName=`Table.Cell`,xy.propTypes={isMinimum:J.default.bool,isTruncated:J.default.bool,hasOverflow:J.default.bool,width:J.default.oneOfType([J.default.string,J.default.number])};var Sy=(0,g.forwardRef)((e,t)=>{let{size:n}=by();return g.createElement(my,Object.assign({ref:t,$size:n},e))});Sy.displayName=`Table.GroupRow`;var Cy=(0,g.forwardRef)(({isSticky:e,...t},n)=>g.createElement(py,Object.assign({ref:n,$isSticky:e},t)));Cy.displayName=`Table.Head`;var wy=(0,g.forwardRef)(({hidden:e,isMinimum:t,isTruncated:n,hasOverflow:r,...i},a)=>{let{size:o}=by();return g.createElement(ly,Object.assign({ref:a,$size:o,$isMinimum:t,$isTruncated:n,$hasOverflow:r},i),e&&i.children?g.createElement(hy,null,i.children):i.children)});wy.displayName=`Table.HeaderCell`,wy.propTypes=xy.propTypes;var Ty=g.forwardRef((e,t)=>{let{size:n}=by();return g.createElement(qv,Object.assign({ref:t,$size:n},e))});Ty.displayName=`Table.HeaderRow`;var Ey;function Dy(){return Dy=Object.assign?Object.assign.bind():function(e){for(var t=1;t<arguments.length;t++){var n=arguments[t];for(var r in n)({}).hasOwnProperty.call(n,r)&&(e[r]=n[r])}return e},Dy.apply(null,arguments)}var Oy=function(e){return g.createElement(`svg`,Dy({xmlns:`http://www.w3.org/2000/svg`,width:16,height:16,focusable:`false`,viewBox:`0 0 16 16`,"aria-hidden":`true`},e),Ey||=g.createElement(`path`,{fill:`currentColor`,d:`M9.5 2.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zm0 5.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zm0 5.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z`}))},ky=(0,g.forwardRef)((e,t)=>{let{size:n}=by();return g.createElement(Wv,Object.assign({type:`button`,$size:n,ref:t},e,{focusInset:!0}),g.createElement(Oy,null))});ky.displayName=`Table.OverflowButton`;var Ay=(0,g.forwardRef)(({onFocus:e,onBlur:t,isSelected:n,isStriped:r,isHovered:i,isFocused:a,...o},s)=>{let[c,l]=(0,g.useState)(!1),{size:u,isReadOnly:d}=by(),f=(0,g.useMemo)(()=>a===void 0?!d&&c:a,[a,c,d]),p=(0,g.useMemo)(()=>Q(e,()=>{l(!0)}),[e,l]),m=(0,g.useMemo)(()=>Q(t,()=>{l(!1)}),[t,l]);return g.createElement(gy,Object.assign({onFocus:p,onBlur:m,ref:s,$size:u,$isReadOnly:d,$isFocused:f,$isHovered:i,$isStriped:r,$isSelected:n},o,{tabIndex:d?void 0:-1}))});Ay.displayName=`Table.Row`,Ay.propTypes={isStriped:J.default.bool,isFocused:J.default.bool,isHovered:J.default.bool,isSelected:J.default.bool};var jy;function My(){return My=Object.assign?Object.assign.bind():function(e){for(var t=1;t<arguments.length;t++){var n=arguments[t];for(var r in n)({}).hasOwnProperty.call(n,r)&&(e[r]=n[r])}return e},My.apply(null,arguments)}var Ny=function(e){return g.createElement(`svg`,My({xmlns:`http://www.w3.org/2000/svg`,width:12,height:12,focusable:`false`,viewBox:`0 0 12 12`,"aria-hidden":`true`},e),jy||=g.createElement(`path`,{fill:`none`,stroke:`currentColor`,strokeLinecap:`round`,d:`M2.5 4L5.6.9c.2-.2.5-.2.7 0L9.5 4m-7 4l3.1 3.1c.2.2.5.2.7 0L9.5 8`}))},Py,Fy;function Iy(){return Iy=Object.assign?Object.assign.bind():function(e){for(var t=1;t<arguments.length;t++){var n=arguments[t];for(var r in n)({}).hasOwnProperty.call(n,r)&&(e[r]=n[r])}return e},Iy.apply(null,arguments)}var Ly=function(e){return g.createElement(`svg`,Iy({xmlns:`http://www.w3.org/2000/svg`,width:12,height:12,focusable:`false`,viewBox:`0 0 12 12`,"aria-hidden":`true`},e),Py||=g.createElement(`path`,{fill:`currentColor`,d:`M10 5H2a.5.5 0 01-.46-.31.47.47 0 01.11-.54L5.29.5A1 1 0 016.7.5l3.65 3.65a.49.49 0 01.11.54A.51.51 0 0110 5z`}),Fy||=g.createElement(`path`,{d:`M2 7a.5.5 0 00-.46.31.47.47 0 00.11.54L5.3 11.5a1 1 0 001.41 0l3.65-3.65a.49.49 0 00.11-.54A.53.53 0 0010 7z`}))},Ry=[`small`,`medium`,`large`],zy=[`asc`,`desc`],By=(0,g.forwardRef)(({sort:e,cellProps:t={},width:n,children:r,...i},a)=>{let{isMinimum:o,isTruncated:s,hasOverflow:c,...l}=t,u=`none`;e===`asc`?u=`ascending`:e===`desc`&&(u=`descending`);let d=e===void 0?Ny:Ly;return g.createElement(ly,Object.assign({"aria-sort":u,width:n,$isMinimum:o,$isTruncated:s,$hasOverflow:c},l),g.createElement(ay,Object.assign({$sort:e,ref:a},i),r,g.createElement(ry,null,g.createElement(d,null)),g.createElement(iy,null,g.createElement(Ly,null))))});By.displayName=`Table.SortableCell`,By.propTypes={sort:J.default.oneOf(zy),cellProps:J.default.any,width:J.default.oneOfType([J.default.string,J.default.number])};var Vy=g.forwardRef(({isReadOnly:e,size:t=`medium`,...n},r)=>{let i=(0,g.useMemo)(()=>({size:t,isReadOnly:e}),[t,e]);return g.createElement(yy.Provider,{value:i},g.createElement(Xv,Object.assign({ref:r},n)))});Vy.displayName=`Table`,Vy.propTypes={size:J.default.oneOf(Ry),isReadOnly:J.default.bool};var Hy=Vy;Hy.Body=_y,Hy.Caption=vy,Hy.Cell=xy,Hy.GroupRow=Sy,Hy.Head=Cy,Hy.HeaderCell=wy,Hy.HeaderRow=Ty,Hy.OverflowButton=ky,Hy.Row=Ay,Hy.SortableCell=By;var Uy=B.ul.attrs({"data-garden-id":`pagination.list`,"data-garden-version":`9.15.7`}).withConfig({displayName:`StyledList`,componentId:`sc-1uz2jxo-0`})([`direction:`,`;display:flex;justify-content:center;margin:0;padding:0;list-style:none;white-space:nowrap;`,` &:focus{outline:none;}`,`;`],e=>e.theme.rtl&&`rtl`,({theme:e})=>z([`color:`,`;`],K({variable:`foreground.subtle`,theme:e})),V),Wy=B.li.attrs({"data-garden-id":`pagination.list_item`,"data-garden-version":`9.15.7`}).withConfig({displayName:`StyledListItem`,componentId:`sc-16j4sju-0`})([`box-sizing:border-box;margin-left:`,`;user-select:none;&`,`{margin-left:0;}`,`;`],e=>`${e.theme.space.base}px`,e=>e.theme.rtl?`:last-of-type`:`:first-of-type`,V),Gy=`pagination.page`,Ky=({theme:e})=>{let t=K({variable:`foreground.disabled`,theme:e}),n=K({variable:`foreground.subtle`,theme:e}),r=K({variable:`foreground.subtle`,light:{offset:100},dark:{offset:-100},theme:e}),i=K({variable:`background.primaryEmphasis`,transparency:e.opacity[100],dark:{offset:-100},theme:e}),a=K({variable:`foreground.subtle`,light:{offset:200},dark:{offset:-200},theme:e}),o=K({variable:`background.primaryEmphasis`,transparency:e.opacity[200],dark:{offset:-100},theme:e}),s=a,c=i,l=o,u=K({variable:`background.primaryEmphasis`,transparency:e.opacity[300],dark:{offset:-100},theme:e});return z([`border:none;background:transparent;color:`,`;&:hover{background-color:`,`;color:`,`;}`,` &:active,&:focus-visible:active{background-color:`,`;color:`,`;}&[aria-current='page']{background-color:`,`;color:`,`;}&[aria-current='page']:hover{background-color:`,`;}&[aria-current='page']:active{background-color:`,`;}&:disabled,&[aria-disabled='true']{background-color:transparent;color:`,`;}`],n,i,r,$a({theme:e,inset:!0}),o,a,c,s,l,u,t)},qy=e=>{let t=e.theme.fontSizes.md,n=`${e.theme.space.base*8}px`,r=Va(n,t);return z([`padding:0 `,`;height:`,`;line-height:`,`;font-size:`,`;`],`${e.theme.space.base*1.5}px`,n,r,t)},Jy=B.button.attrs({"data-garden-id":Gy,"data-garden-version":`9.15.7`}).withConfig({displayName:`StyledPageBase`,componentId:`sc-ttwj4u-0`})([`box-sizing:border-box;display:inline-block;transition:box-shadow 0.1s ease-in-out,background-color 0.25s ease-in-out,color 0.25s ease-in-out;visibility:`,`;border-radius:`,`;cursor:pointer;overflow:hidden;text-align:center;text-overflow:ellipsis;font-family:inherit;user-select:none;`,`;&[aria-current='page']{font-weight:`,`;}&::-moz-focus-inner{border:0;}&:disabled,[aria-disabled='true']{cursor:default;}`,`;`,`;`],e=>e.hidden&&`hidden`,e=>e.theme.borderRadii.md,e=>qy(e),e=>e.theme.fontWeights.semibold,e=>Ky(e),V),Yy=`pagination.page`,Xy=e=>{let t=e.theme.space.base*8;return z([`min-width:`,`px;max-width:`,`px;&[aria-current='true']{max-width:none;}`],t,t*2)},Zy=B(Jy).attrs({"data-garden-id":Yy,"data-garden-version":`9.15.7`}).withConfig({displayName:`StyledPage`,componentId:`sc-sxjfwy-0`})([``,`;&[aria-current="true"]{font-weight:`,`;}`,`;`],e=>Xy(e),e=>e.theme.fontWeights.semibold,V),Qy=B(Wy).attrs({"data-garden-id":`pagination.gap`,"data-garden-version":`9.15.7`}).withConfig({displayName:`StyledGapListItem`,componentId:`sc-10wd0iz-0`})([`display:inline-block;text-align:center;`,`;`,` &:hover{color:inherit;}`,`;`],e=>{let t=U(`${e.theme.fontSizes.md} + 2`),n=`${e.theme.space.base*8}px`,r=Va(n,t);return z([`padding:0 `,`;min-width:`,`;max-width:`,`;height:`,`;line-height:`,`;font-size:`,`;`],`${e.theme.space.base*1.5}px`,n,U(`${n} * 2`),n,r,t)},({theme:e})=>z([`color:`,`;`],K({variable:`foreground.subtle`,theme:e})),V),$y=B(Zy).attrs({"data-garden-id":`pagination.navigation`,"data-garden-version":`9.15.7`}).withConfig({displayName:`StyledNavigation`,componentId:`sc-1lpl8pp-0`})([`display:flex;align-items:center;justify-content:center;`,`;`],V),eb=B.nav.attrs({"data-garden-id":`pagination.pagination_view`,"data-garden-version":`9.15.7`}).withConfig({displayName:`StyledNav`,componentId:`sc-ppnpkw-0`})([``,`;`],V),tb;function nb(){return nb=Object.assign?Object.assign.bind():function(e){for(var t=1;t<arguments.length;t++){var n=arguments[t];for(var r in n)({}).hasOwnProperty.call(n,r)&&(e[r]=n[r])}return e},nb.apply(null,arguments)}var rb=function(e){return g.createElement(`svg`,nb({xmlns:`http://www.w3.org/2000/svg`,width:16,height:16,focusable:`false`,viewBox:`0 0 16 16`,"aria-hidden":`true`},e),tb||=g.createElement(`path`,{fill:`currentColor`,d:`M10.39 12.688a.5.5 0 01-.718.69l-.062-.066-4-5a.5.5 0 01-.054-.542l.054-.082 4-5a.5.5 0 01.83.55l-.05.074L6.641 8l3.75 4.688z`}))},ib;function ab(){return ab=Object.assign?Object.assign.bind():function(e){for(var t=1;t<arguments.length;t++){var n=arguments[t];for(var r in n)({}).hasOwnProperty.call(n,r)&&(e[r]=n[r])}return e},ab.apply(null,arguments)}var ob=function(e){return g.createElement(`svg`,ab({xmlns:`http://www.w3.org/2000/svg`,width:16,height:16,focusable:`false`,viewBox:`0 0 16 16`,"aria-hidden":`true`},e),ib||=g.createElement(`path`,{fill:`currentColor`,d:`M5.61 3.312a.5.5 0 01.718-.69l.062.066 4 5a.5.5 0 01.054.542l-.054.082-4 5a.5.5 0 01-.83-.55l.05-.074L9.359 8l-3.75-4.688z`}))},sb=(0,g.forwardRef)((e,t)=>{let n=qa(sb,e,`aria-label`,`Previous page`),r=(0,g.useContext)(Dn);return g.createElement($y,Object.assign({type:`button`},e,{"aria-label":n,ref:t}),r.rtl?g.createElement(ob,null):g.createElement(rb,null))});sb.displayName=`Pagination.Previous`;var cb=sb,lb=(0,g.forwardRef)((e,t)=>{let n=qa(lb,e,`aria-label`,`Next page`),r=(0,g.useContext)(Dn);return g.createElement($y,Object.assign({type:`button`},e,{"aria-label":n,ref:t}),r.rtl?g.createElement(rb,null):g.createElement(ob,null))});lb.displayName=`Pagination.Next`;var ub=lb,db=(0,g.forwardRef)((e,t)=>{let n=qa(db,e,`aria-label`,`Page ${e.children}`);return g.createElement(Zy,Object.assign({type:`button`},e,{"aria-label":n,ref:t}))});db.displayName=`Pagination.Page`;var fb=db,pb=(0,g.forwardRef)((e,t)=>{let n=qa(pb,e,`aria-label`,`Ellipsis indicating non-visible pages`);return g.createElement(Qy,Object.assign({},e,{"aria-label":n,ref:t}),`…`)});pb.displayName=`Pagination.Gap`;var mb=pb,hb=`previous`,gb=`next`,_b=(0,g.forwardRef)(({currentPage:e,totalPages:t,pagePadding:n=2,pageGap:r=2,onChange:i,"aria-label":a,labels:o,...s},c)=>{let[l,u]=(0,g.useState)(),[d,f]=(0,g.useState)(1),p=qa(_b,{"aria-label":a},`aria-label`,`Pagination`),m=Fl(e,d),h=(0,g.useCallback)(e=>{u(e)},[]),_=(0,g.useCallback)(e=>{let n=e,r=l;n===hb&&m>1?(n=m-1,n===1&&l===hb&&(r=1)):n===gb&&m<t&&(n=m+1,n===t&&r===gb&&(r=t)),i&&n!==void 0&&i(n),u(r),f(n)},[m,l,i,t]),v=()=>{let e=t>0&&m===1;return g.createElement(Wy,null,g.createElement(cb,{hidden:e,onFocus:()=>h(`previous`),onClick:()=>_(`previous`),"aria-label":o?.previous}))},y=()=>{let e=m===t;return g.createElement(Wy,null,g.createElement(ub,{hidden:e,onFocus:()=>h(`next`),onClick:()=>_(`next`),"aria-label":o?.next}))},b=e=>g.createElement(mb,{key:`gap-${e}`,"aria-label":o?.gap}),x=e=>g.createElement(Wy,{key:e},g.createElement(fb,{onFocus:()=>h(e),onClick:()=>_(e),"aria-current":m===e?`page`:void 0,"aria-label":o?.renderPage?.(e)},e));return g.createElement(eb,{"aria-label":p},g.createElement(Uy,Object.assign({},s,{ref:c}),v(),t>0&&(()=>{let e=[],i=n,a=r;for(let n=1;n<=t;n++){if(n===m||n<a||n>t-a+1){e.push(x(n));continue}let r,o;if(m<=a+i?(r=a+1,o=r+i*2):m>=t-a-i?(o=t-a,r=o-i*2):(r=m-i,o=m+i),n>=r&&n<=m||n>=m&&n<=o){e.push(x(n));continue}if(n===a){r>a+1&&m>a+i+1?e.push(b(n)):e.push(x(n));continue}if(n===t-a+1){o<t-a&&m<t-a-i?e.push(b(n)):e.push(x(n));continue}}return e})(),y()))});_b.propTypes={currentPage:J.default.number.isRequired,totalPages:J.default.number.isRequired,pagePadding:J.default.number,pageGap:J.default.number,onChange:J.default.func,labels:J.default.any},_b.displayName=`OffsetPagination`;var vb=[{id:`td-synnex`,name:`TD Synnex`,type:`Reseller Network`,parentId:null},{id:`reseller-a`,name:`Reseller A`,type:`Service Provider`,parentId:`td-synnex`},{id:`bramblewick`,name:`Bramblewick University`,type:`Company`,parentId:`reseller-a`},{id:`computer-science`,name:`Computer Science`,type:`Cost Center`,parentId:`bramblewick`},{id:`artificial-intelligence`,name:`Artificial Intelligence`,type:`Cost Center`,parentId:`computer-science`},{id:`machine-learning-lab`,name:`Machine Learning Lab`,type:`Supervisory`,parentId:`artificial-intelligence`},{id:`natural-language-lab`,name:`Natural Language Lab`,type:`Supervisory`,parentId:`artificial-intelligence`},{id:`robotics-lab`,name:`Robotics Lab`,type:`Supervisory`,parentId:`artificial-intelligence`},{id:`speech-processing-group`,name:`Speech Processing Group`,type:`Supervisory`,parentId:`natural-language-lab`},{id:`transcription-team`,name:`Transcription Team`,type:`Supervisory`,parentId:`speech-processing-group`},{id:`neural-networks-group`,name:`Neural Networks Group`,type:`Supervisory`,parentId:`machine-learning-lab`},{id:`deep-learning-unit`,name:`Deep Learning Unit`,type:`Supervisory`,parentId:`neural-networks-group`},{id:`computer-vision-team`,name:`Computer Vision Team`,type:`Supervisory`,parentId:`deep-learning-unit`},{id:`speech-recognition-team`,name:`Speech Recognition Team`,type:`Supervisory`,parentId:`deep-learning-unit`},{id:`image-recognition-squad`,name:`Image Recognition Squad`,type:`Supervisory`,parentId:`computer-vision-team`},{id:`model-training-pod`,name:`Model Training Pod`,type:`Supervisory`,parentId:`image-recognition-squad`},{id:`gpu-cluster-ops`,name:`GPU Cluster Ops`,type:`Supervisory`,parentId:`model-training-pod`},{id:`dataset-curation-pod`,name:`Dataset Curation Pod`,type:`Supervisory`,parentId:`model-training-pod`},{id:`evaluation-pod`,name:`Evaluation Pod`,type:`Supervisory`,parentId:`model-training-pod`},{id:`inference-serving-pod`,name:`Inference Serving Pod`,type:`Supervisory`,parentId:`model-training-pod`},{id:`mathematics`,name:`Mathematics`,type:`Cost Center`,parentId:`bramblewick`},{id:`applied-mathematics`,name:`Applied Mathematics`,type:`Cost Center`,parentId:`mathematics`},{id:`pure-mathematics`,name:`Pure Mathematics`,type:`Cost Center`,parentId:`mathematics`},{id:`statistics`,name:`Statistics`,type:`Cost Center`,parentId:`mathematics`},{id:`numerical-analysis-group`,name:`Numerical Analysis Group`,type:`Cost Center`,parentId:`applied-mathematics`},{id:`simulation-team`,name:`Simulation Team`,type:`Supervisory`,parentId:`numerical-analysis-group`},{id:`engineering`,name:`Engineering`,type:`Cost Center Hierarchy`,parentId:`bramblewick`},{id:`mobile-app-team`,name:`Mobile App Team`,type:`Supervisory`,parentId:`engineering`},{id:`ios-squad`,name:`iOS Squad`,type:`Supervisory`,parentId:`mobile-app-team`},{id:`build-release`,name:`Build & Release`,type:`Supervisory`,parentId:`ios-squad`},{id:`380-applications`,name:`380 Applications`,type:`Cost Center`,parentId:`engineering`},{id:`saas-product`,name:`SaaS Product`,type:`Company`,parentId:`reseller-a`},{id:`dept-1`,name:`Dept 1`,type:`Cost Center`,parentId:`saas-product`},{id:`dept-2`,name:`Dept 2`,type:`Cost Center`,parentId:`saas-product`},{id:`dept-3`,name:`Dept 3`,type:`Cost Center`,parentId:`saas-product`}],yb=[{id:`adrian-whitlock`,name:`Adrian Whitlock`,type:`Agent`,title:`Head of Engineering`,orgIds:[`bramblewick`]},{id:`priya-raman`,name:`Priya Raman`,type:`Agent`,title:`IT Director`,orgIds:[`bramblewick`]},{id:`helen-osei`,name:`Helen Osei`,type:`End user`,title:`Registrar`,orgIds:[`bramblewick`]},{id:`rachel-martinez`,name:`Rachel Martinez`,type:`End user`,title:`Professor`,orgIds:[`computer-science`]},{id:`daniel-okafor`,name:`Daniel Okafor`,type:`End user`,title:`Associate Professor`,orgIds:[`computer-science`]},{id:`sofia-almeida`,name:`Sofia Almeida`,type:`End user`,title:`Lab Manager`,orgIds:[`computer-science`]},{id:`wei-zhang`,name:`Wei Zhang`,type:`End user`,title:`Teaching Assistant`,orgIds:[`computer-science`]},{id:`amara-diallo`,name:`Amara Diallo`,type:`End user`,title:`Graduate Researcher`,orgIds:[`computer-science`]},{id:`theodore-abiodun`,name:`Theodore Abiodun`,type:`End user`,title:`Research Director`,orgIds:[`artificial-intelligence`]},{id:`saoirse-flanagan`,name:`Saoirse Flanagan`,type:`End user`,title:`Senior Researcher`,orgIds:[`artificial-intelligence`]},{id:`hiroshi-nakamura`,name:`Hiroshi Nakamura`,type:`End user`,title:`Lecturer`,orgIds:[`artificial-intelligence`]},{id:`valentina-rossi`,name:`Valentina Rossi`,type:`End user`,title:`Lab Director`,orgIds:[`machine-learning-lab`]},{id:`obinna-eze`,name:`Obinna Eze`,type:`End user`,title:`Research Engineer`,orgIds:[`machine-learning-lab`]},{id:`freya-lindholm`,name:`Freya Lindholm`,type:`End user`,title:`Doctoral Candidate`,orgIds:[`machine-learning-lab`]},{id:`anneke-vos`,name:`Anneke Vos`,type:`End user`,title:`Group Lead`,orgIds:[`neural-networks-group`]},{id:`mateo-guerrero`,name:`Mateo Guerrero`,type:`End user`,title:`Research Scientist`,orgIds:[`neural-networks-group`]},{id:`lena-fischer`,name:`Lena Fischer`,type:`End user`,title:`Unit Lead`,orgIds:[`deep-learning-unit`]},{id:`kwame-asante`,name:`Kwame Asante`,type:`End user`,title:`ML Engineer`,orgIds:[`deep-learning-unit`]},{id:`siobhan-doherty`,name:`Siobhan Doherty`,type:`End user`,title:`Team Lead`,orgIds:[`computer-vision-team`]},{id:`raul-mendoza`,name:`Raul Mendoza`,type:`End user`,title:`Vision Researcher`,orgIds:[`computer-vision-team`]},{id:`thandiwe-mokoena`,name:`Thandiwe Mokoena`,type:`End user`,title:`Postdoctoral Researcher`,orgIds:[`computer-vision-team`]},{id:`georgi-ivanov`,name:`Georgi Ivanov`,type:`End user`,title:`Research Assistant`,orgIds:[`neural-networks-group`]},{id:`amelie-caron`,name:`Amelie Caron`,type:`End user`,title:`Doctoral Candidate`,orgIds:[`deep-learning-unit`]},{id:`chiara-bellini`,name:`Chiara Bellini`,type:`End user`,title:`Squad Lead`,orgIds:[`image-recognition-squad`]},{id:`tobias-lang`,name:`Tobias Lang`,type:`End user`,title:`Data Annotator`,orgIds:[`image-recognition-squad`]},{id:`nour-haddad`,name:`Nour Haddad`,type:`End user`,title:`Training Lead`,orgIds:[`model-training-pod`]},{id:`evgeni-petrov`,name:`Evgeni Petrov`,type:`End user`,title:`Pipeline Engineer`,orgIds:[`model-training-pod`]},{id:`marisol-reyes`,name:`Marisol Reyes`,type:`End user`,title:`Cluster Administrator`,orgIds:[`gpu-cluster-ops`]},{id:`declan-byrne`,name:`Declan Byrne`,type:`End user`,title:`Infrastructure Engineer`,orgIds:[`gpu-cluster-ops`]},{id:`ingrid-halvorsen`,name:`Ingrid Halvorsen`,type:`End user`,title:`Lab Director`,orgIds:[`natural-language-lab`]},{id:`oscar-delgado`,name:`Oscar Delgado`,type:`End user`,title:`Computational Linguist`,orgIds:[`natural-language-lab`]},{id:`yara-nasser`,name:`Yara Nasser`,type:`End user`,title:`Lab Director`,orgIds:[`robotics-lab`]},{id:`pavel-novak`,name:`Pavel Novak`,type:`End user`,title:`Robotics Engineer`,orgIds:[`robotics-lab`]},{id:`linnea-berg`,name:`Linnea Berg`,type:`End user`,title:`Group Lead`,orgIds:[`speech-processing-group`]},{id:`hassan-qureshi`,name:`Hassan Qureshi`,type:`End user`,title:`Speech Scientist`,orgIds:[`speech-processing-group`]},{id:`juliet-adeyinka`,name:`Juliet Adeyinka`,type:`End user`,title:`Transcription Lead`,orgIds:[`transcription-team`]},{id:`karin-lindgren`,name:`Karin Lindgren`,type:`End user`,title:`Team Lead`,orgIds:[`speech-recognition-team`]},{id:`diego-salazar`,name:`Diego Salazar`,type:`End user`,title:`Audio Engineer`,orgIds:[`speech-recognition-team`]},{id:`noor-rahman`,name:`Noor Rahman`,type:`End user`,title:`Curation Lead`,orgIds:[`dataset-curation-pod`]},{id:`esther-mwangi`,name:`Esther Mwangi`,type:`End user`,title:`Data Steward`,orgIds:[`dataset-curation-pod`]},{id:`viktor-sorensen`,name:`Viktor Sorensen`,type:`End user`,title:`Evaluation Lead`,orgIds:[`evaluation-pod`]},{id:`aria-behzadi`,name:`Aria Behzadi`,type:`End user`,title:`Serving Engineer`,orgIds:[`inference-serving-pod`]},{id:`ottoline-frank`,name:`Ottoline Frank`,type:`End user`,title:`Professor`,orgIds:[`pure-mathematics`]},{id:`mikael-sundberg`,name:`Mikael Sundberg`,type:`End user`,title:`Lecturer`,orgIds:[`pure-mathematics`]},{id:`chandra-iyer`,name:`Chandra Iyer`,type:`End user`,title:`Head of Statistics`,orgIds:[`statistics`]},{id:`lorna-fitzgerald`,name:`Lorna Fitzgerald`,type:`End user`,title:`Biostatistician`,orgIds:[`statistics`]},{id:`emeka-nwosu`,name:`Emeka Nwosu`,type:`End user`,title:`Group Lead`,orgIds:[`numerical-analysis-group`]},{id:`sanne-de-vries`,name:`Sanne de Vries`,type:`End user`,title:`Numerical Analyst`,orgIds:[`numerical-analysis-group`]},{id:`gustavo-pinto`,name:`Gustavo Pinto`,type:`End user`,title:`Simulation Engineer`,orgIds:[`simulation-team`]},{id:`jonas-lindqvist`,name:`Jonas Lindqvist`,type:`End user`,title:`Professor`,orgIds:[`mathematics`]},{id:`nadia-haddad`,name:`Nadia Haddad`,type:`End user`,title:`Lecturer`,orgIds:[`mathematics`]},{id:`tomas-varga`,name:`Tomas Varga`,type:`End user`,title:`Teaching Assistant`,orgIds:[`mathematics`]},{id:`grace-mbeki`,name:`Grace Mbeki`,type:`End user`,title:`Department Coordinator`,orgIds:[`mathematics`]},{id:`ruth-castellanos`,name:`Ruth Castellanos`,type:`End user`,title:`Research Fellow`,orgIds:[`applied-mathematics`]},{id:`benedikt-hofer`,name:`Benedikt Hofer`,type:`End user`,title:`Statistician`,orgIds:[`applied-mathematics`]},{id:`priscilla-adeyemi`,name:`Priscilla Adeyemi`,type:`End user`,title:`Postdoctoral Researcher`,orgIds:[`applied-mathematics`]},{id:`oliver-brandt`,name:`Oliver Brandt`,type:`End user`,title:`Department Administrator`,orgIds:[`engineering`]},{id:`dana-whitfield`,name:`Dana Whitfield`,type:`End user`,title:`Faculty Lead`,orgIds:[`engineering`]},{id:`samir-patel`,name:`Samir Patel`,type:`End user`,title:`Professor`,orgIds:[`engineering`]},{id:`tim-mclean`,name:`Tim McLean`,type:`End user`,title:`Engineering Manager`,orgIds:[`mobile-app-team`]},{id:`yuki-tanaka`,name:`Yuki Tanaka`,type:`End user`,title:`iOS Developer`,orgIds:[`mobile-app-team`]},{id:`lucas-ferreira`,name:`Lucas Ferreira`,type:`End user`,title:`Android Developer`,orgIds:[`mobile-app-team`]},{id:`hannah-mcgrath`,name:`Hannah McGrath`,type:`End user`,title:`QA Engineer`,orgIds:[`mobile-app-team`]},{id:`felix-nordstrom`,name:`Felix Nordstrom`,type:`End user`,title:`Squad Lead`,orgIds:[`ios-squad`]},{id:`rosalind-akana`,name:`Rosalind Akana`,type:`End user`,title:`Senior iOS Engineer`,orgIds:[`ios-squad`]},{id:`devon-marsh`,name:`Devon Marsh`,type:`End user`,title:`iOS Engineer`,orgIds:[`ios-squad`]},{id:`ingrid-solberg`,name:`Ingrid Solberg`,type:`End user`,title:`Release Manager`,orgIds:[`build-release`]},{id:`callum-baptiste`,name:`Callum Baptiste`,type:`End user`,title:`Build Engineer`,orgIds:[`build-release`]},{id:`ines-moreau`,name:`Ines Moreau`,type:`End user`,title:`Applications Analyst`,orgIds:[`380-applications`]},{id:`kofi-mensah`,name:`Kofi Mensah`,type:`End user`,title:`Systems Engineer`,orgIds:[`380-applications`]},{id:`elena-petrova`,name:`Elena Petrova`,type:`End user`,title:`Integrations Lead`,orgIds:[`380-applications`]},{id:`ryan-doyle`,name:`Ryan Doyle`,type:`End user`,title:`Support Analyst`,orgIds:[`380-applications`]},{id:`aisha-karim`,name:`Aisha Karim`,type:`End user`,title:`Database Administrator`,orgIds:[`380-applications`]},{id:`gordon-alvarez`,name:`Gordon Alvarez`,type:`Agent`,title:`Service Provider Support Engineer`,orgIds:[`reseller-a`]},{id:`beatrice-nowak`,name:`Beatrice Nowak`,type:`Agent`,title:`Account Manager`,orgIds:[`reseller-a`]},{id:`victor-hale`,name:`Victor Hale`,type:`End user`,title:`Operations Lead`,orgIds:[`saas-product`]},{id:`mei-lin`,name:`Mei Lin`,type:`End user`,title:`Product Owner`,orgIds:[`dept-1`]},{id:`andre-silva`,name:`Andre Silva`,type:`End user`,title:`Support Specialist`,orgIds:[`dept-1`]},{id:`claire-dubois`,name:`Claire Dubois`,type:`End user`,title:`Billing Analyst`,orgIds:[`dept-2`]},{id:`omar-farouk`,name:`Omar Farouk`,type:`End user`,title:`Implementation Consultant`,orgIds:[`dept-2`]},{id:`natalie-cross`,name:`Natalie Cross`,type:`End user`,title:`Customer Success Manager`,orgIds:[`dept-3`]},{id:`peter-shaw`,name:`Peter Shaw`,type:`End user`,title:`Technical Writer`,orgIds:[`dept-3`]}],bb=`Aaliyah Bennett.Adrian Cole.Aiko Watanabe.Amara Osei.Anton Kovac.Ariana Fuentes.Arjun Malhotra.Astrid Lund.Ayodele Bakare.Beatriz Campos.Bilal Chaudhry.Bronwyn Price.Camille Roussel.Carlos Ibarra.Cecelia Nagy.Chidi Okonkwo.Clara Vogt.Cormac Sheehan.Dagny Olsen.Damaris Leon.Darius Petrescu.Delphine Marchand.Dmitri Volkov.Eartha Simmons.Edwin Baptiste.Efua Mensah.Eleni Papadaki.Elias Thorne.Emiko Sato.Enzo Barbieri.Esme Callahan.Faisal Al-Amin.Fatima Zahra.Fernanda Lopes.Finley Brooks.Frida Karlsen.Gabriel Anaya.Genevieve Roux.Gideon Marsh.Giulia Ferretti.Hakim Toure.Harriet Bellweather.Henrik Dahl.Hina Iqbal.Ian Prescott.Idris Suleiman.Imani Robinson.Ines Cabral.Ivo Jelinek.Jae-won Park.Jasmine Aldridge.Javier Quintero.Jelena Markovic.Joaquin Rivas.Josephine Adeyemo.Junko Maeda.Kaia Solberg.Kalinda Rao.Kwabena Boateng.Larissa Duval.Leif Andersen.Leticia Moraes.Liam Gallagher.Lucia Serrano.Magnus Eriksen.Maia Tupou.Malika Benali.Marcus Whitfield.Mariam Sesay.Matteo Riva.Meera Krishnan.Mikhail Sokolov.Nadine Achebe.Nikolai Brandt.Nia Copeland.Olamide Adesina.Oona Lehtinen.Pablo Cifuentes.Petra Novotna.Quentin Ashford.Rafael Duarte.Rania Fadel.Reza Tehrani.Rowan Kinsella.Ruth Nakamura.Salma Haddad.Sander de Groot.Sebastian Kruger.Selin Demir.Sinead Murphy.Solomon Grant.Sunniva Aas.Tariq Mansour.Thea Lindberg.Tobias Wren.Ulrika Persson.Vikram Chandra.Wren Ellery.Yusuf Kaya.Zane Whitmore.Abebe Girma.Alina Kovalenko.Anneke Visser.Bartholomew Quill.Blessing Eze.Caterina Lombardi.Cyrus Bahrami.Desmond Achterberg.Dilnoza Karimova.Eirik Haugen.Elodie Charpentier.Farrukh Nazarov.Freya Ashworth.Gunter Hoffmann.Halima Yusuf.Hyun-woo Choi.Ignacio Peralta.Isabela Fonseca.Jonas Bergstrom.Kabir Sethi.Katarina Blazek.Kofi Asante.Lachlan Fitzroy.Linnea Wickstrom.Lorenzo Battaglia.Manon Lefebvre.Marguerite Osei.Nabila Rahman.Nikoloz Beridze.Odalys Restrepo.Orla Concannon.Priya Venkatesan.Rasmus Kjaer.Rosalind Trewin.Sabina Iliescu.Santiago Ocampo.Seraphina Vance.Sofiya Danylenko.Takeshi Fujimoto.Tamsin Wilde.Teodora Ristic.Ulises Bermudez.Valentina Rojas.Wanjiru Kamau.Xiomara Delgado.Yannick Dubois.Zohra Belkacem`.split(`.`),xb=`bramblewick`,Sb=[`Lecturer`,`Research Assistant`,`Administrator`,`Postgraduate Researcher`,`Facilities Coordinator`,`Student Advisor`,`Librarian`],Cb=bb.map((e,t)=>({id:`scale-${e.toLowerCase().replace(/[^a-z0-9]+/g,`-`)}`,name:e,type:`End user`,title:Sb[t%Sb.length],orgIds:[xb]})),wb=e=>vb.find(t=>t.id===e),Tb=e=>vb.filter(t=>t.parentId===e),Eb=(e,{atScale:t=!1}={})=>{let n=yb.filter(t=>t.orgIds.includes(e));return t&&e===`bramblewick`?[...n,...Cb]:n},Db=e=>Tb(e).flatMap(e=>[e.id,...Db(e.id)]),Ob=e=>{let t=wb(e);return t?t.parentId?[...Ob(t.parentId),t]:[t]:[]},kb=(e,t)=>[e,...Db(e)].reduce((e,n)=>e+Eb(n,t).length,0),Ab=24,jb=10,Mb=4,Nb=20,Pb=12,Fb=`#eae9e8`,Ib=`#f3f6fb`,Lb=`#f7f7f7`,Rb=`#406cc4`,zb=2,Bb=100,Vb=e=>Pb+e*Ab+Nb+Mb,Hb=B.div`
+      `,$a({theme:e}))},V),oy=`tables.header_cell`,sy=z([``,`{max-width:100%;overflow:hidden;text-overflow:ellipsis;}`],ay),cy=e=>{let t;return e.$hasOverflow||(t=U(`(${Uv(e)} - ${Yv(e)}) / 2`)),z([`padding-top:`,`;padding-bottom:`,`;`],t,t)},ly=B(ey).attrs({as:`th`,"data-garden-id":oy,"data-garden-version":`9.15.7`}).withConfig({displayName:`StyledHeaderCell`,componentId:`sc-fzagoe-0`})([`text-align:`,`;font-weight:inherit;`,` `,` `,`;`],e=>{if(!e.$hasOverflow)return e.theme.rtl?`right`:`left`},e=>cy(e),e=>e.$isTruncated&&sy,V),uy=`tables.head`,dy=({theme:e})=>{let t=K({variable:`border.default`,theme:e});return z([`background-color:`,`;& > `,`:last-child{border-bottom-color:transparent;& > `,`{box-shadow:inset 0 -`,` 0 `,`;}}`],K({variable:`background.default`,theme:e}),qv,ly,e.borderWidths.sm,t)},fy=()=>z([`position:sticky;top:0;z-index:1;`]),py=B.thead.attrs({"data-garden-id":uy,"data-garden-version":`9.15.7`}).withConfig({displayName:`StyledHead`,componentId:`sc-spf23a-0`})([``,` `,` `,`;`],e=>e.$isSticky&&fy(),dy,V),my=B(Hv).attrs({"data-garden-id":`tables.group_row`,"data-garden-version":`9.15.7`}).withConfig({displayName:`StyledGroupRow`,componentId:`sc-mpd0r8-0`})([``,` `,` `,`;`],e=>{let t=`${e.theme.space.base*8}px`,n=Yv(e);return z([`height:`,`;line-height:`,`;font-size:`,`;`,`{padding:`,` `,`px;}`],t,n,e.theme.fontSizes.sm,ey,U(`(${t} - ${n}) / 2`),e.theme.space.base*3)},({theme:e})=>z([`background-color:`,`;`],K({variable:`background.subtle`,transparency:e.opacity[100],light:{offset:300},dark:{offset:-600},theme:e})),V),hy=B.div.attrs({"data-garden-id":`tables.hidden_cell`,"data-garden-version":`9.15.7`}).withConfig({displayName:`StyledHiddenCell`,componentId:`sc-1x454xw-0`})([``,` `,`;`],ci(),V),gy=B(Hv).attrs({"data-garden-id":`tables.row`,"data-garden-version":`9.15.7`}).withConfig({displayName:`StyledRow`,componentId:`sc-ek66ow-0`})([``,` `,` `,`;`],e=>z([`height:`,`;`],Uv(e)),({theme:e,$isFocused:t,$isSelected:n,$isHovered:r,$isReadOnly:i})=>{let a=K({variable:`background.primaryEmphasis`,transparency:e.opacity[100],dark:{offset:-100},theme:e}),o=K({variable:`border.primaryEmphasis`,transparency:e.opacity[200],dark:{offset:-100},theme:e}),s=K({variable:`background.primaryEmphasis`,transparency:e.opacity[200],dark:{offset:-100},theme:e}),c=K({variable:`border.primaryEmphasis`,light:{offset:-400},dark:{offset:300},theme:e}),l=K({variable:`background.primaryEmphasis`,transparency:e.opacity[300],dark:{offset:-100},theme:e}),u=K({variable:`border.primaryEmphasis`,theme:e}),d=`inset ${e.rtl?`-`:``}${e.shadowWidths.md} 0 0 0 ${u}`,f,p,m,h;return n?(f=r?l:s,p=c,m=c,h=l):r?(f=a,p=o):i||(m=o,h=a),z([`border-bottom-color:`,`;background-color:`,`;&:hover{border-bottom-color:`,`;background-color:`,`;`,`{opacity:1;}}&:focus{outline:none;}`,`:first-of-type{box-shadow:`,`;&:focus{box-shadow:`,`;}}`],p,f,m,h,Wv,ey,t&&d,d)},V),_y=(0,g.forwardRef)((e,t)=>g.createElement(Bv,Object.assign({ref:t},e)));_y.displayName=`Table.Body`;var vy=(0,g.forwardRef)((e,t)=>g.createElement(Vv,Object.assign({ref:t},e)));vy.displayName=`Table.Caption`;var yy=g.createContext({size:`medium`,isReadOnly:!1}),by=()=>(0,g.useContext)(yy),xy=g.forwardRef(({hidden:e,isMinimum:t,isTruncated:n,hasOverflow:r,...i},a)=>{let{size:o}=by();return g.createElement(ey,Object.assign({ref:a,$size:o,$isMinimum:t,$isTruncated:n,$hasOverflow:r},i),e&&i.children?g.createElement(hy,null,i.children):i.children)});xy.displayName=`Table.Cell`,xy.propTypes={isMinimum:J.default.bool,isTruncated:J.default.bool,hasOverflow:J.default.bool,width:J.default.oneOfType([J.default.string,J.default.number])};var Sy=(0,g.forwardRef)((e,t)=>{let{size:n}=by();return g.createElement(my,Object.assign({ref:t,$size:n},e))});Sy.displayName=`Table.GroupRow`;var Cy=(0,g.forwardRef)(({isSticky:e,...t},n)=>g.createElement(py,Object.assign({ref:n,$isSticky:e},t)));Cy.displayName=`Table.Head`;var wy=(0,g.forwardRef)(({hidden:e,isMinimum:t,isTruncated:n,hasOverflow:r,...i},a)=>{let{size:o}=by();return g.createElement(ly,Object.assign({ref:a,$size:o,$isMinimum:t,$isTruncated:n,$hasOverflow:r},i),e&&i.children?g.createElement(hy,null,i.children):i.children)});wy.displayName=`Table.HeaderCell`,wy.propTypes=xy.propTypes;var Ty=g.forwardRef((e,t)=>{let{size:n}=by();return g.createElement(qv,Object.assign({ref:t,$size:n},e))});Ty.displayName=`Table.HeaderRow`;var Ey;function Dy(){return Dy=Object.assign?Object.assign.bind():function(e){for(var t=1;t<arguments.length;t++){var n=arguments[t];for(var r in n)({}).hasOwnProperty.call(n,r)&&(e[r]=n[r])}return e},Dy.apply(null,arguments)}var Oy=function(e){return g.createElement(`svg`,Dy({xmlns:`http://www.w3.org/2000/svg`,width:16,height:16,focusable:`false`,viewBox:`0 0 16 16`,"aria-hidden":`true`},e),Ey||=g.createElement(`path`,{fill:`currentColor`,d:`M9.5 2.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zm0 5.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zm0 5.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z`}))},ky=(0,g.forwardRef)((e,t)=>{let{size:n}=by();return g.createElement(Wv,Object.assign({type:`button`,$size:n,ref:t},e,{focusInset:!0}),g.createElement(Oy,null))});ky.displayName=`Table.OverflowButton`;var Ay=(0,g.forwardRef)(({onFocus:e,onBlur:t,isSelected:n,isStriped:r,isHovered:i,isFocused:a,...o},s)=>{let[c,l]=(0,g.useState)(!1),{size:u,isReadOnly:d}=by(),f=(0,g.useMemo)(()=>a===void 0?!d&&c:a,[a,c,d]),p=(0,g.useMemo)(()=>Q(e,()=>{l(!0)}),[e,l]),m=(0,g.useMemo)(()=>Q(t,()=>{l(!1)}),[t,l]);return g.createElement(gy,Object.assign({onFocus:p,onBlur:m,ref:s,$size:u,$isReadOnly:d,$isFocused:f,$isHovered:i,$isStriped:r,$isSelected:n},o,{tabIndex:d?void 0:-1}))});Ay.displayName=`Table.Row`,Ay.propTypes={isStriped:J.default.bool,isFocused:J.default.bool,isHovered:J.default.bool,isSelected:J.default.bool};var jy;function My(){return My=Object.assign?Object.assign.bind():function(e){for(var t=1;t<arguments.length;t++){var n=arguments[t];for(var r in n)({}).hasOwnProperty.call(n,r)&&(e[r]=n[r])}return e},My.apply(null,arguments)}var Ny=function(e){return g.createElement(`svg`,My({xmlns:`http://www.w3.org/2000/svg`,width:12,height:12,focusable:`false`,viewBox:`0 0 12 12`,"aria-hidden":`true`},e),jy||=g.createElement(`path`,{fill:`none`,stroke:`currentColor`,strokeLinecap:`round`,d:`M2.5 4L5.6.9c.2-.2.5-.2.7 0L9.5 4m-7 4l3.1 3.1c.2.2.5.2.7 0L9.5 8`}))},Py,Fy;function Iy(){return Iy=Object.assign?Object.assign.bind():function(e){for(var t=1;t<arguments.length;t++){var n=arguments[t];for(var r in n)({}).hasOwnProperty.call(n,r)&&(e[r]=n[r])}return e},Iy.apply(null,arguments)}var Ly=function(e){return g.createElement(`svg`,Iy({xmlns:`http://www.w3.org/2000/svg`,width:12,height:12,focusable:`false`,viewBox:`0 0 12 12`,"aria-hidden":`true`},e),Py||=g.createElement(`path`,{fill:`currentColor`,d:`M10 5H2a.5.5 0 01-.46-.31.47.47 0 01.11-.54L5.29.5A1 1 0 016.7.5l3.65 3.65a.49.49 0 01.11.54A.51.51 0 0110 5z`}),Fy||=g.createElement(`path`,{d:`M2 7a.5.5 0 00-.46.31.47.47 0 00.11.54L5.3 11.5a1 1 0 001.41 0l3.65-3.65a.49.49 0 00.11-.54A.53.53 0 0010 7z`}))},Ry=[`small`,`medium`,`large`],zy=[`asc`,`desc`],By=(0,g.forwardRef)(({sort:e,cellProps:t={},width:n,children:r,...i},a)=>{let{isMinimum:o,isTruncated:s,hasOverflow:c,...l}=t,u=`none`;e===`asc`?u=`ascending`:e===`desc`&&(u=`descending`);let d=e===void 0?Ny:Ly;return g.createElement(ly,Object.assign({"aria-sort":u,width:n,$isMinimum:o,$isTruncated:s,$hasOverflow:c},l),g.createElement(ay,Object.assign({$sort:e,ref:a},i),r,g.createElement(ry,null,g.createElement(d,null)),g.createElement(iy,null,g.createElement(Ly,null))))});By.displayName=`Table.SortableCell`,By.propTypes={sort:J.default.oneOf(zy),cellProps:J.default.any,width:J.default.oneOfType([J.default.string,J.default.number])};var Vy=g.forwardRef(({isReadOnly:e,size:t=`medium`,...n},r)=>{let i=(0,g.useMemo)(()=>({size:t,isReadOnly:e}),[t,e]);return g.createElement(yy.Provider,{value:i},g.createElement(Xv,Object.assign({ref:r},n)))});Vy.displayName=`Table`,Vy.propTypes={size:J.default.oneOf(Ry),isReadOnly:J.default.bool};var Hy=Vy;Hy.Body=_y,Hy.Caption=vy,Hy.Cell=xy,Hy.GroupRow=Sy,Hy.Head=Cy,Hy.HeaderCell=wy,Hy.HeaderRow=Ty,Hy.OverflowButton=ky,Hy.Row=Ay,Hy.SortableCell=By;var Uy=B.ul.attrs({"data-garden-id":`pagination.list`,"data-garden-version":`9.15.7`}).withConfig({displayName:`StyledList`,componentId:`sc-1uz2jxo-0`})([`direction:`,`;display:flex;justify-content:center;margin:0;padding:0;list-style:none;white-space:nowrap;`,` &:focus{outline:none;}`,`;`],e=>e.theme.rtl&&`rtl`,({theme:e})=>z([`color:`,`;`],K({variable:`foreground.subtle`,theme:e})),V),Wy=B.li.attrs({"data-garden-id":`pagination.list_item`,"data-garden-version":`9.15.7`}).withConfig({displayName:`StyledListItem`,componentId:`sc-16j4sju-0`})([`box-sizing:border-box;margin-left:`,`;user-select:none;&`,`{margin-left:0;}`,`;`],e=>`${e.theme.space.base}px`,e=>e.theme.rtl?`:last-of-type`:`:first-of-type`,V),Gy=`pagination.page`,Ky=({theme:e})=>{let t=K({variable:`foreground.disabled`,theme:e}),n=K({variable:`foreground.subtle`,theme:e}),r=K({variable:`foreground.subtle`,light:{offset:100},dark:{offset:-100},theme:e}),i=K({variable:`background.primaryEmphasis`,transparency:e.opacity[100],dark:{offset:-100},theme:e}),a=K({variable:`foreground.subtle`,light:{offset:200},dark:{offset:-200},theme:e}),o=K({variable:`background.primaryEmphasis`,transparency:e.opacity[200],dark:{offset:-100},theme:e}),s=a,c=i,l=o,u=K({variable:`background.primaryEmphasis`,transparency:e.opacity[300],dark:{offset:-100},theme:e});return z([`border:none;background:transparent;color:`,`;&:hover{background-color:`,`;color:`,`;}`,` &:active,&:focus-visible:active{background-color:`,`;color:`,`;}&[aria-current='page']{background-color:`,`;color:`,`;}&[aria-current='page']:hover{background-color:`,`;}&[aria-current='page']:active{background-color:`,`;}&:disabled,&[aria-disabled='true']{background-color:transparent;color:`,`;}`],n,i,r,$a({theme:e,inset:!0}),o,a,c,s,l,u,t)},qy=e=>{let t=e.theme.fontSizes.md,n=`${e.theme.space.base*8}px`,r=Va(n,t);return z([`padding:0 `,`;height:`,`;line-height:`,`;font-size:`,`;`],`${e.theme.space.base*1.5}px`,n,r,t)},Jy=B.button.attrs({"data-garden-id":Gy,"data-garden-version":`9.15.7`}).withConfig({displayName:`StyledPageBase`,componentId:`sc-ttwj4u-0`})([`box-sizing:border-box;display:inline-block;transition:box-shadow 0.1s ease-in-out,background-color 0.25s ease-in-out,color 0.25s ease-in-out;visibility:`,`;border-radius:`,`;cursor:pointer;overflow:hidden;text-align:center;text-overflow:ellipsis;font-family:inherit;user-select:none;`,`;&[aria-current='page']{font-weight:`,`;}&::-moz-focus-inner{border:0;}&:disabled,[aria-disabled='true']{cursor:default;}`,`;`,`;`],e=>e.hidden&&`hidden`,e=>e.theme.borderRadii.md,e=>qy(e),e=>e.theme.fontWeights.semibold,e=>Ky(e),V),Yy=`pagination.page`,Xy=e=>{let t=e.theme.space.base*8;return z([`min-width:`,`px;max-width:`,`px;&[aria-current='true']{max-width:none;}`],t,t*2)},Zy=B(Jy).attrs({"data-garden-id":Yy,"data-garden-version":`9.15.7`}).withConfig({displayName:`StyledPage`,componentId:`sc-sxjfwy-0`})([``,`;&[aria-current="true"]{font-weight:`,`;}`,`;`],e=>Xy(e),e=>e.theme.fontWeights.semibold,V),Qy=B(Wy).attrs({"data-garden-id":`pagination.gap`,"data-garden-version":`9.15.7`}).withConfig({displayName:`StyledGapListItem`,componentId:`sc-10wd0iz-0`})([`display:inline-block;text-align:center;`,`;`,` &:hover{color:inherit;}`,`;`],e=>{let t=U(`${e.theme.fontSizes.md} + 2`),n=`${e.theme.space.base*8}px`,r=Va(n,t);return z([`padding:0 `,`;min-width:`,`;max-width:`,`;height:`,`;line-height:`,`;font-size:`,`;`],`${e.theme.space.base*1.5}px`,n,U(`${n} * 2`),n,r,t)},({theme:e})=>z([`color:`,`;`],K({variable:`foreground.subtle`,theme:e})),V),$y=B(Zy).attrs({"data-garden-id":`pagination.navigation`,"data-garden-version":`9.15.7`}).withConfig({displayName:`StyledNavigation`,componentId:`sc-1lpl8pp-0`})([`display:flex;align-items:center;justify-content:center;`,`;`],V),eb=B.nav.attrs({"data-garden-id":`pagination.pagination_view`,"data-garden-version":`9.15.7`}).withConfig({displayName:`StyledNav`,componentId:`sc-ppnpkw-0`})([``,`;`],V),tb;function nb(){return nb=Object.assign?Object.assign.bind():function(e){for(var t=1;t<arguments.length;t++){var n=arguments[t];for(var r in n)({}).hasOwnProperty.call(n,r)&&(e[r]=n[r])}return e},nb.apply(null,arguments)}var rb=function(e){return g.createElement(`svg`,nb({xmlns:`http://www.w3.org/2000/svg`,width:16,height:16,focusable:`false`,viewBox:`0 0 16 16`,"aria-hidden":`true`},e),tb||=g.createElement(`path`,{fill:`currentColor`,d:`M10.39 12.688a.5.5 0 01-.718.69l-.062-.066-4-5a.5.5 0 01-.054-.542l.054-.082 4-5a.5.5 0 01.83.55l-.05.074L6.641 8l3.75 4.688z`}))},ib;function ab(){return ab=Object.assign?Object.assign.bind():function(e){for(var t=1;t<arguments.length;t++){var n=arguments[t];for(var r in n)({}).hasOwnProperty.call(n,r)&&(e[r]=n[r])}return e},ab.apply(null,arguments)}var ob=function(e){return g.createElement(`svg`,ab({xmlns:`http://www.w3.org/2000/svg`,width:16,height:16,focusable:`false`,viewBox:`0 0 16 16`,"aria-hidden":`true`},e),ib||=g.createElement(`path`,{fill:`currentColor`,d:`M5.61 3.312a.5.5 0 01.718-.69l.062.066 4 5a.5.5 0 01.054.542l-.054.082-4 5a.5.5 0 01-.83-.55l.05-.074L9.359 8l-3.75-4.688z`}))},sb=(0,g.forwardRef)((e,t)=>{let n=qa(sb,e,`aria-label`,`Previous page`),r=(0,g.useContext)(Dn);return g.createElement($y,Object.assign({type:`button`},e,{"aria-label":n,ref:t}),r.rtl?g.createElement(ob,null):g.createElement(rb,null))});sb.displayName=`Pagination.Previous`;var cb=sb,lb=(0,g.forwardRef)((e,t)=>{let n=qa(lb,e,`aria-label`,`Next page`),r=(0,g.useContext)(Dn);return g.createElement($y,Object.assign({type:`button`},e,{"aria-label":n,ref:t}),r.rtl?g.createElement(rb,null):g.createElement(ob,null))});lb.displayName=`Pagination.Next`;var ub=lb,db=(0,g.forwardRef)((e,t)=>{let n=qa(db,e,`aria-label`,`Page ${e.children}`);return g.createElement(Zy,Object.assign({type:`button`},e,{"aria-label":n,ref:t}))});db.displayName=`Pagination.Page`;var fb=db,pb=(0,g.forwardRef)((e,t)=>{let n=qa(pb,e,`aria-label`,`Ellipsis indicating non-visible pages`);return g.createElement(Qy,Object.assign({},e,{"aria-label":n,ref:t}),`…`)});pb.displayName=`Pagination.Gap`;var mb=pb,hb=`previous`,gb=`next`,_b=(0,g.forwardRef)(({currentPage:e,totalPages:t,pagePadding:n=2,pageGap:r=2,onChange:i,"aria-label":a,labels:o,...s},c)=>{let[l,u]=(0,g.useState)(),[d,f]=(0,g.useState)(1),p=qa(_b,{"aria-label":a},`aria-label`,`Pagination`),m=Fl(e,d),h=(0,g.useCallback)(e=>{u(e)},[]),_=(0,g.useCallback)(e=>{let n=e,r=l;n===hb&&m>1?(n=m-1,n===1&&l===hb&&(r=1)):n===gb&&m<t&&(n=m+1,n===t&&r===gb&&(r=t)),i&&n!==void 0&&i(n),u(r),f(n)},[m,l,i,t]),v=()=>{let e=t>0&&m===1;return g.createElement(Wy,null,g.createElement(cb,{hidden:e,onFocus:()=>h(`previous`),onClick:()=>_(`previous`),"aria-label":o?.previous}))},y=()=>{let e=m===t;return g.createElement(Wy,null,g.createElement(ub,{hidden:e,onFocus:()=>h(`next`),onClick:()=>_(`next`),"aria-label":o?.next}))},b=e=>g.createElement(mb,{key:`gap-${e}`,"aria-label":o?.gap}),x=e=>g.createElement(Wy,{key:e},g.createElement(fb,{onFocus:()=>h(e),onClick:()=>_(e),"aria-current":m===e?`page`:void 0,"aria-label":o?.renderPage?.(e)},e));return g.createElement(eb,{"aria-label":p},g.createElement(Uy,Object.assign({},s,{ref:c}),v(),t>0&&(()=>{let e=[],i=n,a=r;for(let n=1;n<=t;n++){if(n===m||n<a||n>t-a+1){e.push(x(n));continue}let r,o;if(m<=a+i?(r=a+1,o=r+i*2):m>=t-a-i?(o=t-a,r=o-i*2):(r=m-i,o=m+i),n>=r&&n<=m||n>=m&&n<=o){e.push(x(n));continue}if(n===a){r>a+1&&m>a+i+1?e.push(b(n)):e.push(x(n));continue}if(n===t-a+1){o<t-a&&m<t-a-i?e.push(b(n)):e.push(x(n));continue}}return e})(),y()))});_b.propTypes={currentPage:J.default.number.isRequired,totalPages:J.default.number.isRequired,pagePadding:J.default.number,pageGap:J.default.number,onChange:J.default.func,labels:J.default.any},_b.displayName=`OffsetPagination`;var vb=[{id:`td-synnex`,name:`TD Synnex`,type:`Reseller Network`,parentId:null},{id:`reseller-a`,name:`Reseller A`,type:`Service Provider`,parentId:`td-synnex`},{id:`bramblewick`,name:`Bramblewick University`,type:`Company`,parentId:`reseller-a`},{id:`computer-science`,name:`Computer Science`,type:`Cost Center`,parentId:`bramblewick`},{id:`artificial-intelligence`,name:`Artificial Intelligence`,type:`Cost Center`,parentId:`computer-science`},{id:`machine-learning-lab`,name:`Machine Learning Lab`,type:`Supervisory`,parentId:`artificial-intelligence`},{id:`natural-language-lab`,name:`Natural Language Lab`,type:`Supervisory`,parentId:`artificial-intelligence`},{id:`robotics-lab`,name:`Robotics Lab`,type:`Supervisory`,parentId:`artificial-intelligence`},{id:`speech-processing-group`,name:`Speech Processing Group`,type:`Supervisory`,parentId:`natural-language-lab`},{id:`transcription-team`,name:`Transcription Team`,type:`Supervisory`,parentId:`speech-processing-group`},{id:`neural-networks-group`,name:`Neural Networks Group`,type:`Supervisory`,parentId:`machine-learning-lab`},{id:`deep-learning-unit`,name:`Deep Learning Unit`,type:`Supervisory`,parentId:`neural-networks-group`},{id:`computer-vision-team`,name:`Computer Vision Team`,type:`Supervisory`,parentId:`deep-learning-unit`},{id:`speech-recognition-team`,name:`Speech Recognition Team`,type:`Supervisory`,parentId:`deep-learning-unit`},{id:`image-recognition-squad`,name:`Image Recognition Squad`,type:`Supervisory`,parentId:`computer-vision-team`},{id:`model-training-pod`,name:`Model Training Pod`,type:`Supervisory`,parentId:`image-recognition-squad`},{id:`gpu-cluster-ops`,name:`GPU Cluster Ops`,type:`Supervisory`,parentId:`model-training-pod`},{id:`dataset-curation-pod`,name:`Dataset Curation Pod`,type:`Supervisory`,parentId:`model-training-pod`},{id:`evaluation-pod`,name:`Evaluation Pod`,type:`Supervisory`,parentId:`model-training-pod`},{id:`inference-serving-pod`,name:`Inference Serving Pod`,type:`Supervisory`,parentId:`model-training-pod`},{id:`mathematics`,name:`Mathematics`,type:`Cost Center`,parentId:`bramblewick`},{id:`applied-mathematics`,name:`Applied Mathematics`,type:`Cost Center`,parentId:`mathematics`},{id:`pure-mathematics`,name:`Pure Mathematics`,type:`Cost Center`,parentId:`mathematics`},{id:`statistics`,name:`Statistics`,type:`Cost Center`,parentId:`mathematics`},{id:`numerical-analysis-group`,name:`Numerical Analysis Group`,type:`Cost Center`,parentId:`applied-mathematics`},{id:`simulation-team`,name:`Simulation Team`,type:`Supervisory`,parentId:`numerical-analysis-group`},{id:`engineering`,name:`Engineering`,type:`Cost Center Hierarchy`,parentId:`bramblewick`},{id:`mobile-app-team`,name:`Mobile App Team`,type:`Supervisory`,parentId:`engineering`},{id:`ios-squad`,name:`iOS Squad`,type:`Supervisory`,parentId:`mobile-app-team`},{id:`build-release`,name:`Build & Release`,type:`Supervisory`,parentId:`ios-squad`},{id:`380-applications`,name:`380 Applications`,type:`Cost Center`,parentId:`engineering`},{id:`saas-product`,name:`SaaS Product`,type:`Company`,parentId:`reseller-a`},{id:`dept-1`,name:`Dept 1`,type:`Cost Center`,parentId:`saas-product`},{id:`dept-2`,name:`Dept 2`,type:`Cost Center`,parentId:`saas-product`},{id:`dept-3`,name:`Dept 3`,type:`Cost Center`,parentId:`saas-product`}],yb=[{id:`adrian-whitlock`,name:`Adrian Whitlock`,type:`Agent`,title:`Head of Engineering`,orgIds:[`bramblewick`]},{id:`priya-raman`,name:`Priya Raman`,type:`Agent`,title:`IT Director`,orgIds:[`bramblewick`]},{id:`helen-osei`,name:`Helen Osei`,type:`End user`,title:`Registrar`,orgIds:[`bramblewick`]},{id:`rachel-martinez`,name:`Rachel Martinez`,type:`End user`,title:`Professor`,orgIds:[`computer-science`]},{id:`daniel-okafor`,name:`Daniel Okafor`,type:`End user`,title:`Associate Professor`,orgIds:[`computer-science`]},{id:`sofia-almeida`,name:`Sofia Almeida`,type:`End user`,title:`Lab Manager`,orgIds:[`computer-science`]},{id:`wei-zhang`,name:`Wei Zhang`,type:`End user`,title:`Teaching Assistant`,orgIds:[`computer-science`]},{id:`amara-diallo`,name:`Amara Diallo`,type:`End user`,title:`Graduate Researcher`,orgIds:[`computer-science`]},{id:`theodore-abiodun`,name:`Theodore Abiodun`,type:`End user`,title:`Research Director`,orgIds:[`artificial-intelligence`]},{id:`saoirse-flanagan`,name:`Saoirse Flanagan`,type:`End user`,title:`Senior Researcher`,orgIds:[`artificial-intelligence`]},{id:`hiroshi-nakamura`,name:`Hiroshi Nakamura`,type:`End user`,title:`Lecturer`,orgIds:[`artificial-intelligence`]},{id:`valentina-rossi`,name:`Valentina Rossi`,type:`End user`,title:`Lab Director`,orgIds:[`machine-learning-lab`]},{id:`obinna-eze`,name:`Obinna Eze`,type:`End user`,title:`Research Engineer`,orgIds:[`machine-learning-lab`]},{id:`freya-lindholm`,name:`Freya Lindholm`,type:`End user`,title:`Doctoral Candidate`,orgIds:[`machine-learning-lab`]},{id:`anneke-vos`,name:`Anneke Vos`,type:`End user`,title:`Group Lead`,orgIds:[`neural-networks-group`]},{id:`mateo-guerrero`,name:`Mateo Guerrero`,type:`End user`,title:`Research Scientist`,orgIds:[`neural-networks-group`]},{id:`lena-fischer`,name:`Lena Fischer`,type:`End user`,title:`Unit Lead`,orgIds:[`deep-learning-unit`]},{id:`kwame-asante`,name:`Kwame Asante`,type:`End user`,title:`ML Engineer`,orgIds:[`deep-learning-unit`]},{id:`siobhan-doherty`,name:`Siobhan Doherty`,type:`End user`,title:`Team Lead`,orgIds:[`computer-vision-team`]},{id:`raul-mendoza`,name:`Raul Mendoza`,type:`End user`,title:`Vision Researcher`,orgIds:[`computer-vision-team`]},{id:`thandiwe-mokoena`,name:`Thandiwe Mokoena`,type:`End user`,title:`Postdoctoral Researcher`,orgIds:[`computer-vision-team`]},{id:`georgi-ivanov`,name:`Georgi Ivanov`,type:`End user`,title:`Research Assistant`,orgIds:[`neural-networks-group`]},{id:`amelie-caron`,name:`Amelie Caron`,type:`End user`,title:`Doctoral Candidate`,orgIds:[`deep-learning-unit`]},{id:`chiara-bellini`,name:`Chiara Bellini`,type:`End user`,title:`Squad Lead`,orgIds:[`image-recognition-squad`]},{id:`tobias-lang`,name:`Tobias Lang`,type:`End user`,title:`Data Annotator`,orgIds:[`image-recognition-squad`]},{id:`nour-haddad`,name:`Nour Haddad`,type:`End user`,title:`Training Lead`,orgIds:[`model-training-pod`]},{id:`evgeni-petrov`,name:`Evgeni Petrov`,type:`End user`,title:`Pipeline Engineer`,orgIds:[`model-training-pod`]},{id:`marisol-reyes`,name:`Marisol Reyes`,type:`End user`,title:`Cluster Administrator`,orgIds:[`gpu-cluster-ops`]},{id:`declan-byrne`,name:`Declan Byrne`,type:`End user`,title:`Infrastructure Engineer`,orgIds:[`gpu-cluster-ops`]},{id:`ingrid-halvorsen`,name:`Ingrid Halvorsen`,type:`End user`,title:`Lab Director`,orgIds:[`natural-language-lab`]},{id:`oscar-delgado`,name:`Oscar Delgado`,type:`End user`,title:`Computational Linguist`,orgIds:[`natural-language-lab`]},{id:`yara-nasser`,name:`Yara Nasser`,type:`End user`,title:`Lab Director`,orgIds:[`robotics-lab`]},{id:`pavel-novak`,name:`Pavel Novak`,type:`End user`,title:`Robotics Engineer`,orgIds:[`robotics-lab`]},{id:`linnea-berg`,name:`Linnea Berg`,type:`End user`,title:`Group Lead`,orgIds:[`speech-processing-group`]},{id:`hassan-qureshi`,name:`Hassan Qureshi`,type:`End user`,title:`Speech Scientist`,orgIds:[`speech-processing-group`]},{id:`juliet-adeyinka`,name:`Juliet Adeyinka`,type:`End user`,title:`Transcription Lead`,orgIds:[`transcription-team`]},{id:`karin-lindgren`,name:`Karin Lindgren`,type:`End user`,title:`Team Lead`,orgIds:[`speech-recognition-team`]},{id:`diego-salazar`,name:`Diego Salazar`,type:`End user`,title:`Audio Engineer`,orgIds:[`speech-recognition-team`]},{id:`noor-rahman`,name:`Noor Rahman`,type:`End user`,title:`Curation Lead`,orgIds:[`dataset-curation-pod`]},{id:`esther-mwangi`,name:`Esther Mwangi`,type:`End user`,title:`Data Steward`,orgIds:[`dataset-curation-pod`]},{id:`viktor-sorensen`,name:`Viktor Sorensen`,type:`End user`,title:`Evaluation Lead`,orgIds:[`evaluation-pod`]},{id:`aria-behzadi`,name:`Aria Behzadi`,type:`End user`,title:`Serving Engineer`,orgIds:[`inference-serving-pod`]},{id:`ottoline-frank`,name:`Ottoline Frank`,type:`End user`,title:`Professor`,orgIds:[`pure-mathematics`]},{id:`mikael-sundberg`,name:`Mikael Sundberg`,type:`End user`,title:`Lecturer`,orgIds:[`pure-mathematics`]},{id:`chandra-iyer`,name:`Chandra Iyer`,type:`End user`,title:`Head of Statistics`,orgIds:[`statistics`]},{id:`lorna-fitzgerald`,name:`Lorna Fitzgerald`,type:`End user`,title:`Biostatistician`,orgIds:[`statistics`]},{id:`emeka-nwosu`,name:`Emeka Nwosu`,type:`End user`,title:`Group Lead`,orgIds:[`numerical-analysis-group`]},{id:`sanne-de-vries`,name:`Sanne de Vries`,type:`End user`,title:`Numerical Analyst`,orgIds:[`numerical-analysis-group`]},{id:`gustavo-pinto`,name:`Gustavo Pinto`,type:`End user`,title:`Simulation Engineer`,orgIds:[`simulation-team`]},{id:`jonas-lindqvist`,name:`Jonas Lindqvist`,type:`End user`,title:`Professor`,orgIds:[`mathematics`]},{id:`nadia-haddad`,name:`Nadia Haddad`,type:`End user`,title:`Lecturer`,orgIds:[`mathematics`]},{id:`tomas-varga`,name:`Tomas Varga`,type:`End user`,title:`Teaching Assistant`,orgIds:[`mathematics`]},{id:`grace-mbeki`,name:`Grace Mbeki`,type:`End user`,title:`Department Coordinator`,orgIds:[`mathematics`]},{id:`ruth-castellanos`,name:`Ruth Castellanos`,type:`End user`,title:`Research Fellow`,orgIds:[`applied-mathematics`]},{id:`benedikt-hofer`,name:`Benedikt Hofer`,type:`End user`,title:`Statistician`,orgIds:[`applied-mathematics`]},{id:`priscilla-adeyemi`,name:`Priscilla Adeyemi`,type:`End user`,title:`Postdoctoral Researcher`,orgIds:[`applied-mathematics`]},{id:`oliver-brandt`,name:`Oliver Brandt`,type:`End user`,title:`Department Administrator`,orgIds:[`engineering`]},{id:`dana-whitfield`,name:`Dana Whitfield`,type:`End user`,title:`Faculty Lead`,orgIds:[`engineering`]},{id:`samir-patel`,name:`Samir Patel`,type:`End user`,title:`Professor`,orgIds:[`engineering`]},{id:`tim-mclean`,name:`Tim McLean`,type:`End user`,title:`Engineering Manager`,orgIds:[`mobile-app-team`]},{id:`yuki-tanaka`,name:`Yuki Tanaka`,type:`End user`,title:`iOS Developer`,orgIds:[`mobile-app-team`]},{id:`lucas-ferreira`,name:`Lucas Ferreira`,type:`End user`,title:`Android Developer`,orgIds:[`mobile-app-team`]},{id:`hannah-mcgrath`,name:`Hannah McGrath`,type:`End user`,title:`QA Engineer`,orgIds:[`mobile-app-team`]},{id:`felix-nordstrom`,name:`Felix Nordstrom`,type:`End user`,title:`Squad Lead`,orgIds:[`ios-squad`]},{id:`rosalind-akana`,name:`Rosalind Akana`,type:`End user`,title:`Senior iOS Engineer`,orgIds:[`ios-squad`]},{id:`devon-marsh`,name:`Devon Marsh`,type:`End user`,title:`iOS Engineer`,orgIds:[`ios-squad`]},{id:`ingrid-solberg`,name:`Ingrid Solberg`,type:`End user`,title:`Release Manager`,orgIds:[`build-release`]},{id:`callum-baptiste`,name:`Callum Baptiste`,type:`End user`,title:`Build Engineer`,orgIds:[`build-release`]},{id:`ines-moreau`,name:`Ines Moreau`,type:`End user`,title:`Applications Analyst`,orgIds:[`380-applications`]},{id:`kofi-mensah`,name:`Kofi Mensah`,type:`End user`,title:`Systems Engineer`,orgIds:[`380-applications`]},{id:`elena-petrova`,name:`Elena Petrova`,type:`End user`,title:`Integrations Lead`,orgIds:[`380-applications`]},{id:`ryan-doyle`,name:`Ryan Doyle`,type:`End user`,title:`Support Analyst`,orgIds:[`380-applications`]},{id:`aisha-karim`,name:`Aisha Karim`,type:`End user`,title:`Database Administrator`,orgIds:[`380-applications`]},{id:`gordon-alvarez`,name:`Gordon Alvarez`,type:`Agent`,title:`Service Provider Support Engineer`,orgIds:[`reseller-a`]},{id:`beatrice-nowak`,name:`Beatrice Nowak`,type:`Agent`,title:`Account Manager`,orgIds:[`reseller-a`]},{id:`victor-hale`,name:`Victor Hale`,type:`End user`,title:`Operations Lead`,orgIds:[`saas-product`]},{id:`mei-lin`,name:`Mei Lin`,type:`End user`,title:`Product Owner`,orgIds:[`dept-1`]},{id:`andre-silva`,name:`Andre Silva`,type:`End user`,title:`Support Specialist`,orgIds:[`dept-1`]},{id:`claire-dubois`,name:`Claire Dubois`,type:`End user`,title:`Billing Analyst`,orgIds:[`dept-2`]},{id:`omar-farouk`,name:`Omar Farouk`,type:`End user`,title:`Implementation Consultant`,orgIds:[`dept-2`]},{id:`natalie-cross`,name:`Natalie Cross`,type:`End user`,title:`Customer Success Manager`,orgIds:[`dept-3`]},{id:`peter-shaw`,name:`Peter Shaw`,type:`End user`,title:`Technical Writer`,orgIds:[`dept-3`]}],bb=`Accounting.Aerospace Engineering.African Studies.Agricultural Sciences.American Literature.Anatomy.Ancient History.Anthropology.Applied Linguistics.Applied Physics.Arabic Studies.Archaeology.Architecture.Art History.Astronomy.Astrophysics.Athletics Administration.Audiology.Biochemistry.Bioinformatics.Biomedical Engineering.Botany.Business Administration.Cardiology Research.Cartography.Ceramics.Chemical Engineering.Chemistry.Chinese Studies.Civil Engineering.Classics.Climate Science.Cognitive Science.Communications.Comparative Literature.Composition Studies.Conservation Biology.Construction Management.Criminology.Cultural Studies.Curriculum Studies.Dance.Data Science.Demography.Dentistry.Dermatology Research.Development Studies.Digital Humanities.Drama.Earth Sciences.East Asian Studies.Ecology.Econometrics.Economics.Education Policy.Electrical Engineering.Electronics.Elementary Education.Endocrinology Research.Energy Systems.English Literature.Entomology.Entrepreneurship.Environmental Engineering.Environmental Law.Epidemiology.Ethics.Ethnomusicology.European Studies.Exercise Science.Film Studies.Finance.Fine Arts.Food Science.Forestry.French Studies.Gastronomy.Genetics.Geochemistry.Geography.Geology.Geophysics.German Studies.Gerontology.Global Health.Graphic Design.Greek Studies.Health Informatics.Hebrew Studies.Hispanic Studies.History of Science.Horticulture.Hospitality Management.Human Resources.Hydrology.Immunology.Industrial Design.Industrial Engineering.Information Systems.Interior Architecture.International Relations.Islamic Studies.Italian Studies.Japanese Studies.Jazz Studies.Journalism.Judaic Studies.Kinesiology.Korean Studies.Labour Economics.Landscape Architecture.Latin American Studies.Law.Library Science.Linguistics.Logistics.Marine Biology.Marketing.Materials Science.Mechanical Engineering.Media Studies.Medical Physics.Medieval Studies.Meteorology.Microbiology.Middle Eastern Studies.Military History.Mineralogy.Molecular Biology.Museum Studies.Music Theory.Nanotechnology.Naval Architecture.Neuroscience.Nuclear Engineering.Nursing.Nutrition Science.Occupational Therapy.Oceanography.Oncology Research.Operations Research.Ophthalmology Research.Optometry.Organic Chemistry.Orthopaedics Research.Paediatrics Research.Palaeontology`.split(`.`),xb=`bramblewick`,Sb=bb.map(e=>({id:`scale-${e.toLowerCase().replace(/[^a-z0-9]+/g,`-`)}`,name:e,type:`Cost Center`,parentId:xb})),Cb=new Set(Sb.map(e=>e.id)),wb=e=>Cb.has(e),Tb=e=>vb.find(t=>t.id===e)||Sb.find(t=>t.id===e),Eb=(e,{atScale:t=!1}={})=>{let n=vb.filter(t=>t.parentId===e);return t&&e===`bramblewick`?[...n,...Sb]:n},Db=e=>yb.filter(t=>t.orgIds.includes(e)),Ob=(e,t)=>Eb(e,t).flatMap(e=>[e.id,...Ob(e.id,t)]),kb=e=>{let t=Tb(e);return t?t.parentId?[...kb(t.parentId),t]:[t]:[]},Ab=(e,t)=>[e,...Ob(e,t)].reduce((e,t)=>e+Db(t).length,0),jb=24,Mb=10,Nb=4,Pb=20,Fb=12,Ib=`#eae9e8`,Lb=`#f3f6fb`,Rb=`#f7f7f7`,zb=`#406cc4`,Bb=2,Vb=100,Hb=e=>Fb+e*jb+Pb+Nb,Ub=B.div`
   padding: 24px 32px 40px;
   overflow-y: auto;
   flex: 1;
-`,Ub=B(um)`
+`,Wb=B(um)`
   width: 450px;
   margin-bottom: 20px;
 
@@ -999,19 +999,19 @@ Error generating stack: `+e.message+`
   [data-garden-id='forms.input'] {
     height: 100%;
   }
-`,Wb=B(cm)`
+`,Gb=B(cm)`
   font-size: 14px;
   font-weight: 600;
   color: #2f3130;
   margin-bottom: 4px;
-`,Gb=B(Jo)`
+`,Kb=B(Jo)`
   display: block;
   color: #646864;
   font-size: 14px;
   white-space: nowrap;
   margin-top: 0;
   margin-bottom: 8px;
-`,Kb=B(Hy)`
+`,qb=B(Hy)`
   table-layout: fixed;
   font-size: 14px;
 
@@ -1031,16 +1031,16 @@ Error generating stack: `+e.message+`
   tbody tr:focus td:first-of-type {
     box-shadow: none;
   }
-`,qb=B(Ay)`
+`,Jb=B(Ay)`
   /* Set on the cells rather than the row: Garden gives its own cells a
      background, which would paint over a colour set on the row itself. */
   td {
     position: relative;
-    background-color: ${e=>e.$selected?Ib:`transparent`};
+    background-color: ${e=>e.$selected?Lb:`transparent`};
   }
 
   &:hover td {
-    background-color: ${e=>e.$selected?Ib:Lb};
+    background-color: ${e=>e.$selected?Lb:Rb};
   }
 
   ${e=>!e.$noRule&&`
@@ -1051,7 +1051,7 @@ Error generating stack: `+e.message+`
     right: 0;
     bottom: 0;
     height: 1px;
-    background-color: ${Fb};
+    background-color: ${Ib};
   }
 
   td:first-child::after {
@@ -1069,63 +1069,63 @@ Error generating stack: `+e.message+`
     left: 0;
     top: 0;
     bottom: 0;
-    width: ${zb}px;
-    background-color: ${Rb};
+    width: ${Bb}px;
+    background-color: ${zb};
   }
   `}
 
-`,Jb=B(xy)`
+`,Yb=B(xy)`
   padding-top: 0;
   padding-bottom: 0;
-`,Yb=B.div`
+`,Xb=B.div`
   position: relative;
   display: flex;
   align-items: stretch;
   min-height: 36px;
-`,Xb=B.span`
+`,Zb=B.span`
   position: absolute;
-  left: ${e=>e.$depth*Ab+jb}px;
+  left: ${e=>e.$depth*jb+Mb}px;
   top: calc(50% + 5px);
   bottom: 0;
   width: 1px;
   background-color: #dcdcda;
-`,Zb=B.div`
+`,Qb=B.div`
   position: relative;
-  width: ${Ab}px;
-  min-width: ${Ab}px;
+  width: ${jb}px;
+  min-width: ${jb}px;
   flex-shrink: 0;
-`,Qb=B.span`
+`,$b=B.span`
   position: absolute;
-  left: ${jb}px;
+  left: ${Mb}px;
   top: 0;
   bottom: ${e=>e.$stopAtMiddle?`50%`:`0`};
   width: 1px;
   background-color: #dcdcda;
-`,$b=B.span`
+`,ex=B.span`
   position: absolute;
-  left: ${jb}px;
+  left: ${Mb}px;
   top: 50%;
   width: ${10}px;
   height: 1px;
   background-color: #dcdcda;
-`,ex=B.div`
+`,tx=B.div`
   position: relative;
-  width: ${Nb}px;
-  min-width: ${Nb}px;
+  width: ${Pb}px;
+  min-width: ${Pb}px;
   flex-shrink: 0;
 
   &::before {
     content: '';
     position: absolute;
-    left: -${Mb}px;
+    left: -${Nb}px;
     top: 50%;
-    width: ${Nb}px;
+    width: ${Pb}px;
     height: 1px;
     background-color: #dcdcda;
   }
-`,tx=B.button`
-  width: ${Nb}px;
-  min-width: ${Nb}px;
+`,nx=B.button`
+  width: ${Pb}px;
+  min-width: ${Pb}px;
   flex-shrink: 0;
   padding: 0;
   border: none;
@@ -1145,21 +1145,21 @@ Error generating stack: `+e.message+`
     outline-offset: 1px;
     border-radius: 2px;
   }
-`,nx=B.span`
-  width: ${Nb}px;
-  min-width: ${Nb}px;
+`,rx=B.span`
+  width: ${Pb}px;
+  min-width: ${Pb}px;
   flex-shrink: 0;
   color: #646864;
   display: flex;
   align-items: center;
   justify-content: center;
-`,rx=B.div`
+`,ix=B.div`
   display: flex;
   align-items: center;
   gap: 8px;
-  padding-left: ${Mb}px;
+  padding-left: ${Nb}px;
   min-width: 0;
-`,ix=B.a`
+`,ax=B.a`
   color: #406cc4;
   text-decoration: underline;
   font-size: 14px;
@@ -1171,33 +1171,33 @@ Error generating stack: `+e.message+`
   &:hover {
     color: #284173;
   }
-`,ax=B.span`
+`,ox=B.span`
   font-size: 14px;
   color: #2f3130;
   font-weight: ${e=>e.$current?700:400};
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-`,ox=B.span`
+`,sx=B.span`
   font-size: 14px;
   color: #646864;
   white-space: nowrap;
-`,sx=B.span`
+`,cx=B.span`
   color: #999b97;
-`,cx=B.div`
+`,lx=B.div`
   display: flex;
   justify-content: center;
   margin-top: 24px;
-`,lx=B(Jo)`
+`,ux=B(Jo)`
   display: block;
   color: #646864;
   font-size: 14px;
   margin-top: 16px;
-`,ux=B.span`
+`,dx=B.span`
   font-size: 14px;
   color: #646864;
   white-space: nowrap;
-`,dx=B(vy)`
+`,fx=B(vy)`
   position: absolute;
   width: 1px;
   height: 1px;
@@ -1207,47 +1207,47 @@ Error generating stack: `+e.message+`
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
   border: 0;
-`,fx=()=>(0,q.jsxs)(`svg`,{width:`16`,height:`16`,viewBox:`0 0 16 16`,fill:`none`,stroke:`currentColor`,focusable:`false`,"aria-hidden":`true`,children:[(0,q.jsx)(`circle`,{cx:`6.5`,cy:`6.5`,r:`5`}),(0,q.jsx)(`path`,{strokeLinecap:`round`,d:`m10.5 10.5 4 4`})]}),px=B.span`
+`,px=()=>(0,q.jsxs)(`svg`,{width:`16`,height:`16`,viewBox:`0 0 16 16`,fill:`none`,stroke:`currentColor`,focusable:`false`,"aria-hidden":`true`,children:[(0,q.jsx)(`circle`,{cx:`6.5`,cy:`6.5`,r:`5`}),(0,q.jsx)(`path`,{strokeLinecap:`round`,d:`m10.5 10.5 4 4`})]}),mx=B.span`
   box-sizing: border-box;
   width: 7px;
   height: 7px;
   border-radius: 50%;
   border: 1px solid currentColor;
   background-color: ${e=>e.$filled?`currentColor`:`#ffffff`};
-`,mx={down:`none`,right:`rotate(-90deg)`,up:`rotate(180deg)`},hx=({direction:e=`down`})=>(0,q.jsx)(`svg`,{width:`12`,height:`12`,viewBox:`0 0 12 12`,fill:`none`,stroke:`currentColor`,strokeWidth:`1.5`,strokeLinecap:`round`,strokeLinejoin:`round`,"aria-hidden":`true`,style:{transform:mx[e],transition:`transform 100ms ease`},children:(0,q.jsx)(`path`,{d:`M2.5 4.5 6 8l3.5-3.5`})}),gx=(e,t=!0,n=!1,r=1)=>{let i=[],a={rows:i,peopleTotal:0,peopleFrom:0,peopleTo:0},o=Ob(e),s=o[o.length-1];if(!s)return a;let c={atScale:n},l=e=>Tb(e).length>0||t&&Eb(e,c).length>0,u=o.slice(0,-1),d=[],f=[];u.forEach((e,t)=>{d=[...d,!0],f=[...f,e.id],i.push({key:`org-${e.id}`,kind:`org`,node:e,depth:t,isLast:!0,ancestorIsLast:d,ancestorIds:f,isOpen:!0,hasChildren:!0,childOrgCount:Tb(e.id).length,peopleCount:kb(e.id,c)})});let p=d,m=f,h=u.length,g=Tb(s.id),_=t?Eb(s.id,c):[],v=(r-1)*Bb,y=_.slice(v,v+Bb),b=g.length>0||_.length>0,x=s.parentId?Tb(s.parentId):[s];return x.forEach((e,t)=>{let n=t===x.length-1,r=e.id===s.id,a=[...p,n],o=[...m,e.id];i.push({key:`org-${e.id}`,kind:`org`,node:e,depth:h,isLast:n,ancestorIsLast:a,ancestorIds:o,isOpen:r&&b,hasChildren:l(e.id),childOrgCount:Tb(e.id).length,peopleCount:kb(e.id,c)}),r&&(g.forEach((e,t)=>{let n=t===g.length-1&&y.length===0;i.push({key:`org-${e.id}`,kind:`org`,node:e,depth:h+1,isLast:n,ancestorIsLast:[...a,n],ancestorIds:[...o,e.id],isOpen:!1,hasChildren:l(e.id),childOrgCount:Tb(e.id).length,peopleCount:kb(e.id,c)})}),y.forEach((e,t)=>{let n=t===y.length-1;i.push({key:`person-${e.id}-${s.id}`,kind:`person`,node:e,depth:h+1,isLast:n,ancestorIsLast:[...a,n],ancestorIds:[...o,e.id],isOpen:!1,hasChildren:!1})}))}),{rows:i,peopleTotal:_.length,peopleFrom:y.length>0?v+1:0,peopleTo:v+y.length}},_x=({row:e})=>e.depth===0?null:(0,q.jsx)(q.Fragment,{children:Array.from({length:e.depth},(t,n)=>n===e.depth-1?(0,q.jsxs)(Zb,{children:[(0,q.jsx)(Qb,{$stopAtMiddle:e.isLast}),(0,q.jsx)($b,{})]},n):(0,q.jsx)(Zb,{children:!e.ancestorIsLast[n+1]&&(0,q.jsx)(Qb,{})},n))});function vx({selectedId:e,onSelectOrganization:t,version:n=`v1`}){let r=n===`v4`,i=n===`v2`||r,a=n===`v3`,o=r,[s,c]=(0,g.useState)(1);(0,g.useEffect)(()=>{c(1)},[e,n]);let{rows:l,peopleTotal:u,peopleFrom:d,peopleTo:f}=(0,g.useMemo)(()=>gx(e,i,r,s),[e,i,r,s]),p=Math.ceil(u/Bb),m=p>1,h=(0,g.useMemo)(()=>1+Db(e).length,[e]),_=(0,g.useMemo)(()=>i?kb(e,{atScale:r}):0,[e,i,r]),v=n=>{n!==e&&t?.(n)},y=h===1?`organization`:`organizations`,b=_===1?`person`:`people`,x=wb(e)?.name;return(0,q.jsxs)(Hb,{"data-comment-root":`true`,children:[(0,q.jsxs)(Ub,{children:[(0,q.jsx)(Wb,{children:i?`Search organizations and users`:`Search organizations`}),(0,q.jsx)(vm,{start:(0,q.jsx)(fx,{})})]}),(0,q.jsxs)(Gb,{children:[h,` `,y,i&&` · ${_} ${b}`]}),(0,q.jsxs)(Kb,{isReadOnly:!0,children:[(0,q.jsx)(dx,{children:`Hierarchy around the selected organization: its ancestors, direct children, and direct siblings`}),(0,q.jsx)(Cy,{children:(0,q.jsxs)(Ty,{children:[(0,q.jsx)(wy,{children:`Organization`}),!a&&(0,q.jsx)(wy,{width:`12%`,children:`Child orgs`}),i&&(0,q.jsx)(wy,{width:`10%`,children:`People`})]})}),(0,q.jsx)(_y,{children:l.map(t=>{let n=t.kind===`person`,r=!n&&t.node.id===e;return(0,q.jsxs)(qb,{$ruleInset:Vb(t.depth),$noRule:a,$selected:r,children:[(0,q.jsx)(Jb,{children:(0,q.jsxs)(Yb,{children:[t.isOpen&&(0,q.jsx)(Xb,{$depth:t.depth,"aria-hidden":`true`}),(0,q.jsx)(_x,{row:t}),t.isOpen?(0,q.jsx)(nx,{"aria-hidden":`true`,children:o?(0,q.jsx)(px,{$filled:!0}):(0,q.jsx)(hx,{direction:`down`})}):t.hasChildren?(0,q.jsx)(tx,{type:`button`,onClick:()=>v(t.node.id),"aria-label":`Show the hierarchy around ${t.node.name}`,children:o?(0,q.jsx)(px,{}):(0,q.jsx)(hx,{direction:`right`})}):(0,q.jsx)(ex,{"aria-hidden":`true`}),(0,q.jsxs)(rx,{children:[n||r?(0,q.jsx)(ax,{$current:r,title:t.node.name,children:t.node.name}):(0,q.jsx)(ix,{href:`#`,onClick:e=>{e.preventDefault(),v(t.node.id)},title:t.node.name,children:t.node.name}),a&&!n&&t.childOrgCount>0&&(0,q.jsxs)(ux,{children:[`(`,t.childOrgCount,`)`]}),n&&t.node.title&&(0,q.jsx)(ox,{children:t.node.title})]})]})}),!a&&(0,q.jsx)(xy,{children:n?(0,q.jsx)(sx,{children:`—`}):`${t.childOrgCount} child ${t.childOrgCount===1?`org`:`orgs`}`}),i&&(0,q.jsx)(xy,{children:n?(0,q.jsx)(sx,{children:`—`}):t.peopleCount})]},t.key)})})]}),m&&(0,q.jsxs)(q.Fragment,{children:[(0,q.jsxs)(lx,{children:[`Showing users `,d,`–`,f,` of `,u,` in `,x]}),(0,q.jsx)(cx,{children:(0,q.jsx)(_b,{currentPage:s,totalPages:p,onChange:c,"aria-label":`Pages of users in ${x}`})})]})]})}var yx=B.div`
+`,hx={down:`none`,right:`rotate(-90deg)`,up:`rotate(180deg)`},gx=({direction:e=`down`})=>(0,q.jsx)(`svg`,{width:`12`,height:`12`,viewBox:`0 0 12 12`,fill:`none`,stroke:`currentColor`,strokeWidth:`1.5`,strokeLinecap:`round`,strokeLinejoin:`round`,"aria-hidden":`true`,style:{transform:hx[e],transition:`transform 100ms ease`},children:(0,q.jsx)(`path`,{d:`M2.5 4.5 6 8l3.5-3.5`})}),_x=(e,t=!0,n=!1,r=1)=>{let i=[],a={rows:i,pagedTotal:0,pagedFrom:0,pagedTo:0},o=kb(e),s=o[o.length-1];if(!s)return a;let c={atScale:n},l=e=>Eb(e,c).length>0||t&&Db(e).length>0,u=o.slice(0,-1),d=[],f=[];u.forEach((e,t)=>{d=[...d,!0],f=[...f,e.id],i.push({key:`org-${e.id}`,kind:`org`,node:e,depth:t,isLast:!0,ancestorIsLast:d,ancestorIds:f,isOpen:!0,hasChildren:!0,childOrgCount:Eb(e.id,c).length,peopleCount:Ab(e.id,c)})});let p=d,m=f,h=u.length,g=Eb(s.id,c),_=t?Db(s.id):[],v=g.length>0||_.length>0,y=s.parentId?Eb(s.parentId,c):[s],b=e=>e.length>Vb,x=b(g)?`children`:b(y)?`siblings`:`none`,S=x===`children`?g.length:x===`siblings`?y.length:0,C=(r-1)*Vb,w=x===`children`?g.slice(C,C+Vb):g,T=x===`siblings`?y.slice(C,C+Vb):y,E=x===`children`?w.length:T.length,D=y[y.length-1]?.id,O=g[g.length-1]?.id;return T.forEach(e=>{let t=e.id===D,n=e.id===s.id,r=[...p,t],a=[...m,e.id];i.push({key:`org-${e.id}`,kind:`org`,node:e,depth:h,isLast:t,ancestorIsLast:r,ancestorIds:a,isOpen:n&&v,hasChildren:l(e.id),childOrgCount:Eb(e.id,c).length,peopleCount:Ab(e.id,c)}),n&&(w.forEach(e=>{let t=e.id===O&&_.length===0;i.push({key:`org-${e.id}`,kind:`org`,node:e,depth:h+1,isLast:t,ancestorIsLast:[...r,t],ancestorIds:[...a,e.id],isOpen:!1,hasChildren:l(e.id),childOrgCount:Eb(e.id,c).length,peopleCount:Ab(e.id,c)})}),_.forEach((e,t)=>{let n=t===_.length-1;i.push({key:`person-${e.id}-${s.id}`,kind:`person`,node:e,depth:h+1,isLast:n,ancestorIsLast:[...r,n],ancestorIds:[...a,e.id],isOpen:!1,hasChildren:!1})}))}),{rows:i,pagedTotal:S,pagedGroup:x,pagedFrom:S>0&&E>0?C+1:0,pagedTo:S>0?C+E:0}},vx=({row:e})=>e.depth===0?null:(0,q.jsx)(q.Fragment,{children:Array.from({length:e.depth},(t,n)=>n===e.depth-1?(0,q.jsxs)(Qb,{children:[(0,q.jsx)($b,{$stopAtMiddle:e.isLast}),(0,q.jsx)(ex,{})]},n):(0,q.jsx)(Qb,{children:!e.ancestorIsLast[n+1]&&(0,q.jsx)($b,{})},n))});function yx({selectedId:e,onSelectOrganization:t,version:n=`v1`}){let r=n===`v4`,i=n===`v2`||r,a=i&&!r,o=n===`v3`,s=r,[c,l]=(0,g.useState)(1),u=e=>{let t=Tb(e)?.parentId;if(!t)return 1;let n=Eb(t,{atScale:r});if(n.length<=Vb)return 1;let i=n.findIndex(t=>t.id===e);return i<0?1:Math.floor(i/Vb)+1};(0,g.useEffect)(()=>{l(u(e))},[e,n]);let{rows:d,pagedTotal:f,pagedGroup:p,pagedFrom:m,pagedTo:h}=(0,g.useMemo)(()=>_x(e,a,r,c),[e,a,r,c]),_=Math.ceil(f/Vb),v=_>1,y=(0,g.useMemo)(()=>1+Ob(e,{atScale:r}).length,[e,r]),b=(0,g.useMemo)(()=>i?Ab(e,{atScale:r}):0,[e,i,r]),x=n=>{n!==e&&t?.(n)},S=y===1?`organization`:`organizations`,C=b===1?`person`:`people`,w=Tb(p===`siblings`?Tb(e)?.parentId:e)?.name;return(0,q.jsxs)(Ub,{"data-comment-root":`true`,children:[(0,q.jsxs)(Wb,{children:[(0,q.jsx)(Gb,{children:a?`Search organizations and users`:`Search organizations`}),(0,q.jsx)(vm,{start:(0,q.jsx)(px,{})})]}),(0,q.jsxs)(Kb,{children:[y,` `,S,i&&` · ${b} ${C}`]}),(0,q.jsxs)(qb,{isReadOnly:!0,children:[(0,q.jsx)(fx,{children:`Hierarchy around the selected organization: its ancestors, direct children, and direct siblings`}),(0,q.jsx)(Cy,{children:(0,q.jsxs)(Ty,{children:[(0,q.jsx)(wy,{children:`Organization`}),!o&&(0,q.jsx)(wy,{width:`12%`,children:`Child orgs`}),i&&(0,q.jsx)(wy,{width:`10%`,children:`People`})]})}),(0,q.jsx)(_y,{children:d.map(t=>{let n=t.kind===`person`,r=!n&&t.node.id===e;return(0,q.jsxs)(Jb,{$ruleInset:Hb(t.depth),$noRule:o,$selected:r,children:[(0,q.jsx)(Yb,{children:(0,q.jsxs)(Xb,{children:[t.isOpen&&(0,q.jsx)(Zb,{$depth:t.depth,"aria-hidden":`true`}),(0,q.jsx)(vx,{row:t}),t.isOpen?(0,q.jsx)(rx,{"aria-hidden":`true`,children:s?(0,q.jsx)(mx,{$filled:!0}):(0,q.jsx)(gx,{direction:`down`})}):t.hasChildren?(0,q.jsx)(nx,{type:`button`,onClick:()=>x(t.node.id),"aria-label":`Show the hierarchy around ${t.node.name}`,children:s?(0,q.jsx)(mx,{}):(0,q.jsx)(gx,{direction:`right`})}):(0,q.jsx)(tx,{"aria-hidden":`true`}),(0,q.jsxs)(ix,{children:[n||r?(0,q.jsx)(ox,{$current:r,title:t.node.name,children:t.node.name}):(0,q.jsx)(ax,{href:`#`,onClick:e=>{e.preventDefault(),x(t.node.id)},title:t.node.name,children:t.node.name}),o&&!n&&t.childOrgCount>0&&(0,q.jsxs)(dx,{children:[`(`,t.childOrgCount,`)`]}),n&&t.node.title&&(0,q.jsx)(sx,{children:t.node.title})]})]})}),!o&&(0,q.jsx)(xy,{children:n?(0,q.jsx)(cx,{children:`—`}):`${t.childOrgCount} child ${t.childOrgCount===1?`org`:`orgs`}`}),i&&(0,q.jsx)(xy,{children:n?(0,q.jsx)(cx,{children:`—`}):t.peopleCount})]},t.key)})})]}),v&&(0,q.jsxs)(q.Fragment,{children:[(0,q.jsxs)(ux,{children:[`Showing organizations `,m,`–`,h,` of `,f,` in `,w]}),(0,q.jsx)(lx,{children:(0,q.jsx)(_b,{currentPage:c,totalPages:_,onChange:l,"aria-label":`Pages of organizations in ${w}`})})]})]})}var bx=B.div`
   display: flex;
   flex: 1;
   min-height: 0;
   overflow: hidden;
-`,bx=B.aside`
+`,xx=B.aside`
   width: 280px;
   min-width: 280px;
   padding: 16px;
   overflow-y: auto;
-`,xx=B.div`
+`,Sx=B.div`
   border: 1px solid #eae9e8;
   border-radius: 8px;
   padding: 12px 12px 4px;
-`,Sx=B.div`
+`,Cx=B.div`
   display: flex;
   align-items: flex-start;
   gap: 12px;
   margin-bottom: 14px;
-`,Cx=B.div`
+`,wx=B.div`
   width: 68px;
   min-width: 68px;
   font-size: 14px;
   color: #646864;
   text-align: right;
   padding-top: 3px;
-`,wx=B.div`
+`,Tx=B.div`
   flex: 1;
   min-width: 0;
   font-size: 14px;
   color: #2f3130;
   word-break: break-word;
   padding-top: 3px;
-`,Tx=B.div`
+`,Ex=B.div`
   flex: 1;
   min-width: 0;
   box-sizing: border-box;
@@ -1257,7 +1257,7 @@ Error generating stack: `+e.message+`
   border-radius: 4px;
   font-size: 14px;
   color: #2f3130;
-`,Ex=B.div`
+`,Dx=B.div`
   flex: 1;
   min-width: 0;
   display: flex;
@@ -1269,48 +1269,48 @@ Error generating stack: `+e.message+`
   padding: 4px 0;
   font-size: 14px;
   color: #2f3130;
-`,Dx=B.span`
+`,Ox=B.span`
   color: #646864;
   flex-shrink: 0;
   display: inline-flex;
-`,Ox=B.div`
+`,kx=B.div`
   margin-top: 16px;
   padding: 0 4px;
-`,kx=B.div`
+`,Ax=B.div`
   display: flex;
   gap: 8px;
   margin-bottom: 4px;
   font-size: 14px;
-`,Ax=B.span`
-  color: #646864;
 `,jx=B.span`
+  color: #646864;
+`,Mx=B.span`
   color: #999b97;
-`,Mx=B.div`
+`,Nx=B.div`
   display: flex;
   flex-direction: column;
   flex: 1;
   min-width: 0;
   overflow: hidden;
-`,Nx=B.div`
+`,Px=B.div`
   display: flex;
   align-items: center;
   gap: 16px;
   padding: 20px 32px 0;
   flex-shrink: 0;
-`,Px=B.div`
+`,Fx=B.div`
   display: flex;
   flex-direction: column;
   gap: 2px;
   margin-right: auto;
   min-width: 0;
-`,Fx=B.div`
+`,Ix=B.div`
   display: flex;
   gap: 4px;
   padding: 0 32px;
   border-bottom: 1px solid #eae9e8;
   margin-top: 16px;
   flex-shrink: 0;
-`,Ix=B.button`
+`,Lx=B.button`
   position: relative;
   border: none;
   background: transparent;
@@ -1334,7 +1334,7 @@ Error generating stack: `+e.message+`
   &:hover {
     color: #2f3130;
   }
-`,Lx=B.div`
+`,Rx=B.div`
   margin: 32px;
   padding: 32px;
   border: 1px dashed #dcdcda;
@@ -1343,13 +1343,13 @@ Error generating stack: `+e.message+`
   color: #646864;
   font-size: 14px;
   text-align: center;
-`,Rx=()=>(0,q.jsx)(`svg`,{width:`26`,height:`26`,viewBox:`0 0 16 16`,focusable:`false`,"aria-hidden":`true`,children:(0,q.jsxs)(`g`,{fill:`none`,stroke:`currentColor`,children:[(0,q.jsx)(`path`,{d:`M2.5 15.5V1.5a1 1 0 0 1 1-1h9a1 1 0 0 1 1 1v14`}),(0,q.jsx)(`path`,{strokeLinecap:`round`,d:`M.5 15.5h15`}),(0,q.jsx)(`path`,{d:`M5.5 3.5h2m1 0h2m-5 3h2m1 0h2m-5 3h2m1 0h2`,strokeLinecap:`round`}),(0,q.jsx)(`path`,{d:`M6.5 15.5v-3h3v3`})]})}),zx=()=>(0,q.jsx)(`svg`,{width:`12`,height:`12`,viewBox:`0 0 12 12`,fill:`none`,stroke:`currentColor`,strokeWidth:`1.5`,strokeLinecap:`round`,strokeLinejoin:`round`,"aria-hidden":`true`,children:(0,q.jsx)(`path`,{d:`M2.5 4.5 6 8l3.5-3.5`})}),Bx=e=>`${e.name.toLowerCase().replace(/\s+university$/,``).replace(/[^a-z0-9]+/g,``)}.edu`;function Vx({orgId:e,onSelectOrganization:t,version:n=`v1`}){let[r,i]=(0,g.useState)(`hierarchy`),a=wb(e),o=[{id:`tickets`,label:`Tickets (0)`},{id:`users`,label:`Users (${Eb(e,{atScale:n===`v4`}).length})`},{id:`related`,label:`Related`},{id:`hierarchy`,label:`Organization hierarchy`}],s=o.find(e=>e.id===r)?.label;return(0,q.jsxs)(yx,{children:[(0,q.jsxs)(bx,{children:[(0,q.jsxs)(xx,{children:[(0,q.jsxs)(Sx,{children:[(0,q.jsx)(Cx,{children:`Tags`}),(0,q.jsx)(Tx,{children:(0,q.jsx)(jx,{children:`—`})})]}),(0,q.jsxs)(Sx,{children:[(0,q.jsx)(Cx,{children:`Domains`}),(0,q.jsx)(wx,{children:Bx(a)})]}),(0,q.jsxs)(Sx,{children:[(0,q.jsx)(Cx,{children:`Group`}),(0,q.jsxs)(Ex,{children:[(0,q.jsx)(jx,{children:`—`}),(0,q.jsx)(Dx,{children:(0,q.jsx)(zx,{})})]})]}),(0,q.jsxs)(Sx,{children:[(0,q.jsx)(Cx,{children:`Users`}),(0,q.jsxs)(Ex,{children:[(0,q.jsx)(`span`,{children:`Can view tickets in this org and below`}),(0,q.jsx)(Dx,{children:(0,q.jsx)(zx,{})})]})]}),(0,q.jsxs)(Sx,{children:[(0,q.jsx)(Cx,{children:`Details`}),(0,q.jsx)(wx,{children:(0,q.jsx)(jx,{children:`—`})})]}),(0,q.jsxs)(Sx,{children:[(0,q.jsx)(Cx,{children:`Notes`}),(0,q.jsx)(wx,{children:(0,q.jsx)(jx,{children:`—`})})]})]}),(0,q.jsxs)(Ox,{children:[(0,q.jsxs)(kx,{children:[(0,q.jsx)(Ax,{children:`Created`}),(0,q.jsx)(`span`,{children:`1 minute ago`})]}),(0,q.jsxs)(kx,{children:[(0,q.jsx)(Ax,{children:`Updated`}),(0,q.jsx)(`span`,{children:`1 minute ago`})]})]})]}),(0,q.jsxs)(Mx,{children:[(0,q.jsxs)(Nx,{children:[(0,q.jsx)(Ks,{isSystem:!0,size:`large`,backgroundColor:`#646864`,foregroundColor:`#ffffff`,children:(0,q.jsx)(Rx,{})}),(0,q.jsx)(Px,{children:(0,q.jsx)(Yo,{tag:`h1`,style:{color:`#2f3130`},children:a.name})}),(0,q.jsxs)(Rv,{children:[`Actions`,(0,q.jsx)(`span`,{style:{marginLeft:8,display:`inline-flex`,verticalAlign:`middle`},children:(0,q.jsx)(zx,{})})]})]}),(0,q.jsx)(Fx,{children:o.map(e=>(0,q.jsx)(Ix,{$active:e.id===r,onClick:()=>i(e.id),children:e.label},e.id))}),r===`hierarchy`?(0,q.jsx)(vx,{selectedId:e,onSelectOrganization:t,version:n}):(0,q.jsxs)(Lx,{children:[s,` is out of scope for this prototype — the exploration lives in the Organization hierarchy tab.`]})]})]})}var Hx=B.div`
+`,zx=()=>(0,q.jsx)(`svg`,{width:`26`,height:`26`,viewBox:`0 0 16 16`,focusable:`false`,"aria-hidden":`true`,children:(0,q.jsxs)(`g`,{fill:`none`,stroke:`currentColor`,children:[(0,q.jsx)(`path`,{d:`M2.5 15.5V1.5a1 1 0 0 1 1-1h9a1 1 0 0 1 1 1v14`}),(0,q.jsx)(`path`,{strokeLinecap:`round`,d:`M.5 15.5h15`}),(0,q.jsx)(`path`,{d:`M5.5 3.5h2m1 0h2m-5 3h2m1 0h2m-5 3h2m1 0h2`,strokeLinecap:`round`}),(0,q.jsx)(`path`,{d:`M6.5 15.5v-3h3v3`})]})}),Bx=()=>(0,q.jsx)(`svg`,{width:`12`,height:`12`,viewBox:`0 0 12 12`,fill:`none`,stroke:`currentColor`,strokeWidth:`1.5`,strokeLinecap:`round`,strokeLinejoin:`round`,"aria-hidden":`true`,children:(0,q.jsx)(`path`,{d:`M2.5 4.5 6 8l3.5-3.5`})}),Vx=e=>`${e.name.toLowerCase().replace(/\s+university$/,``).replace(/[^a-z0-9]+/g,``)}.edu`;function Hx({orgId:e,onSelectOrganization:t,version:n=`v1`}){let[r,i]=(0,g.useState)(`hierarchy`),a=Tb(e),o=[{id:`tickets`,label:`Tickets (0)`},{id:`users`,label:`Users (${Db(e).length})`},{id:`related`,label:`Related`},{id:`hierarchy`,label:`Organization hierarchy`}],s=o.find(e=>e.id===r)?.label;return(0,q.jsxs)(bx,{children:[(0,q.jsxs)(xx,{children:[(0,q.jsxs)(Sx,{children:[(0,q.jsxs)(Cx,{children:[(0,q.jsx)(wx,{children:`Tags`}),(0,q.jsx)(Ex,{children:(0,q.jsx)(Mx,{children:`—`})})]}),(0,q.jsxs)(Cx,{children:[(0,q.jsx)(wx,{children:`Domains`}),(0,q.jsx)(Tx,{children:Vx(a)})]}),(0,q.jsxs)(Cx,{children:[(0,q.jsx)(wx,{children:`Group`}),(0,q.jsxs)(Dx,{children:[(0,q.jsx)(Mx,{children:`—`}),(0,q.jsx)(Ox,{children:(0,q.jsx)(Bx,{})})]})]}),(0,q.jsxs)(Cx,{children:[(0,q.jsx)(wx,{children:`Users`}),(0,q.jsxs)(Dx,{children:[(0,q.jsx)(`span`,{children:`Can view tickets in this org and below`}),(0,q.jsx)(Ox,{children:(0,q.jsx)(Bx,{})})]})]}),(0,q.jsxs)(Cx,{children:[(0,q.jsx)(wx,{children:`Details`}),(0,q.jsx)(Tx,{children:(0,q.jsx)(Mx,{children:`—`})})]}),(0,q.jsxs)(Cx,{children:[(0,q.jsx)(wx,{children:`Notes`}),(0,q.jsx)(Tx,{children:(0,q.jsx)(Mx,{children:`—`})})]})]}),(0,q.jsxs)(kx,{children:[(0,q.jsxs)(Ax,{children:[(0,q.jsx)(jx,{children:`Created`}),(0,q.jsx)(`span`,{children:`1 minute ago`})]}),(0,q.jsxs)(Ax,{children:[(0,q.jsx)(jx,{children:`Updated`}),(0,q.jsx)(`span`,{children:`1 minute ago`})]})]})]}),(0,q.jsxs)(Nx,{children:[(0,q.jsxs)(Px,{children:[(0,q.jsx)(Ks,{isSystem:!0,size:`large`,backgroundColor:`#646864`,foregroundColor:`#ffffff`,children:(0,q.jsx)(zx,{})}),(0,q.jsx)(Fx,{children:(0,q.jsx)(Yo,{tag:`h1`,style:{color:`#2f3130`},children:a.name})}),(0,q.jsxs)(Rv,{children:[`Actions`,(0,q.jsx)(`span`,{style:{marginLeft:8,display:`inline-flex`,verticalAlign:`middle`},children:(0,q.jsx)(Bx,{})})]})]}),(0,q.jsx)(Ix,{children:o.map(e=>(0,q.jsx)(Lx,{$active:e.id===r,onClick:()=>i(e.id),children:e.label},e.id))}),r===`hierarchy`?(0,q.jsx)(yx,{selectedId:e,onSelectOrganization:t,version:n}):(0,q.jsxs)(Rx,{children:[s,` is out of scope for this prototype — the exploration lives in the Organization hierarchy tab.`]})]})]})}var Ux=B.div`
   display: flex;
   align-items: center;
   height: 100%;
   padding: 0 8px;
   gap: 8px;
-`,Ux=B.div`
+`,Wx=B.div`
   display: flex;
   align-items: center;
   gap: 8px;
@@ -1363,11 +1363,11 @@ Error generating stack: `+e.message+`
   font-size: 12px;
   font-weight: 600;
   white-space: nowrap;
-`,Wx=B.span`
+`,Gx=B.span`
   display: inline-flex;
   align-items: center;
   justify-content: center;
-`,Gx=B.button`
+`,Kx=B.button`
   width: 32px;
   height: 32px;
   border: none;
@@ -1384,9 +1384,8 @@ Error generating stack: `+e.message+`
     background: #eae9e8;
     color: #2f3130;
   }
-`;function Kx({title:e}){return(0,q.jsxs)(Hx,{children:[(0,q.jsxs)(Ux,{children:[(0,q.jsx)(Wx,{children:(0,q.jsxs)(`svg`,{width:`14`,height:`14`,viewBox:`0 0 16 16`,fill:`none`,stroke:`currentColor`,strokeWidth:`1.3`,"aria-hidden":`true`,children:[(0,q.jsx)(`path`,{d:`M3 14.5V2a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v12.5`}),(0,q.jsx)(`path`,{d:`M1.5 14.5h13`,strokeLinecap:`round`}),(0,q.jsx)(`path`,{d:`M5.75 4h1.5m1.5 0h1.5m-4.5 3h1.5m1.5 0h1.5`,strokeLinecap:`round`}),(0,q.jsx)(`path`,{d:`M6.75 14.5v-2.5h2.5v2.5`})]})}),(0,q.jsx)(`span`,{children:e})]}),(0,q.jsx)(Gx,{type:`button`,"aria-label":`Add tab`,children:`+`})]})}var qx=`data-comment-root`,Jx=`data-comment-anchor`,Yx=[`[data-comment-anchor]`,`tr`,`th`,`button`,`a[href]`,`label`,`input`,`select`,`section`,`nav`],Xx=()=>document.querySelector(`[${qx}]`),Zx=(e,t)=>{let n=Xx();if(!n)return null;let r=document.elementsFromPoint(e,t).find(e=>n.contains(e));if(!r)return null;for(let e of Yx){let t=r.closest(e);if(t&&n.contains(t))return t}return r},Qx=e=>{let t=Xx();if(!t||!t.contains(e))return null;let n=[],r=e;for(;r&&r!==t;){let e=r.parentElement;if(!e)return null;let t=r.tagName.toLowerCase(),i=[...e.children].filter(e=>e.tagName===r.tagName);n.unshift(i.length>1?`${t}:nth-of-type(${i.indexOf(r)+1})`:t),r=e}return n.join(` > `)},$x=e=>{if(!e.children.length){let t=(e.textContent||``).replace(/\s+/g,` `).trim();return t&&t!==`—`?[t]:[]}return[...e.children].flatMap($x)},eS=e=>{if(!e)return``;let t=e.getAttribute(`aria-label`);if(t)return t.replace(/\s+/g,` `).trim().slice(0,80);let n=$x(e);return n.length?n.join(` · `).slice(0,80):(e.textContent||``).replace(/\s+/g,` `).trim().slice(0,80)},tS=(e,t,n)=>{let r=Zx(e,t);if(!r)return null;let i=r.getBoundingClientRect();return{context:n,id:r.getAttribute(Jx)||null,path:Qx(r),label:eS(r),fraction:{x:i.width?(e-i.left)/i.width:.5,y:i.height?(t-i.top)/i.height:.5}}},nS=e=>{let t=Xx();if(!t||!e)return null;if(e.id){let n=t.querySelector(`[${Jx}="${CSS.escape(e.id)}"]`);if(n)return n}if(!e.path)return null;let n=null;try{n=t.querySelector(e.path)}catch{return null}return n},rS=e=>{let t=nS(e);if(!t)return null;let n=t.getBoundingClientRect();if(!n.width&&!n.height)return null;let r=e.fraction||{x:.5,y:.5};return{x:n.left+r.x*n.width,y:n.top+r.y*n.height,drifted:!!e.label&&eS(t)!==e.label}},iS=(e,t)=>{if(!e||!t)return!1;let n=new Set([...Object.keys(e),...Object.keys(t)]);for(let r of n)if(e[r]!==t[r])return!1;return!0},aS=`https://thaugdzjxphjhviwdwgi.supabase.co`,oS=`sb_publishable_gnUhxN43I7bY6dKrNkVmPA_wjRmciBQ`,sS=`prototype_comments`,cS=`organization-hierarchy`,lS=!!oS,uS=`prototype-comments:${cS}`,dS=()=>{try{return JSON.parse(window.localStorage.getItem(uS)||`[]`)}catch{return[]}},fS=e=>{try{window.localStorage.setItem(uS,JSON.stringify(e))}catch{}},pS={apikey:oS,Authorization:`Bearer ${oS}`,"Content-Type":`application/json`},mS=async(e,t={})=>{let n=await fetch(`${aS}/rest/v1/${e}`,{...t,headers:{...pS,...t.headers}});if(!n.ok){let e=await n.text();throw Error(`Supabase ${n.status}: ${e.slice(0,200)}`)}return n.status===204?null:n.json()},hS=async()=>lS?(await mS(`${sS}?project=eq.${encodeURIComponent(cS)}&order=created_at.asc`)).map(yS):dS().map(yS),gS=async({author:e,body:t,anchor:n,parentId:r=null,number:i=null})=>{let a={project:cS,author:e,body:t,parent_id:r,number:i,anchor:n||null,resolved:!1};if(!lS){let e=dS(),t={...a,id:`local-${e.length+1}-${String(e.length)}`,created_at:new Date().toISOString()};return fS([...e,t]),yS(t)}let[o]=await mS(sS,{method:`POST`,headers:{Prefer:`return=representation`},body:JSON.stringify(a)});return yS(o)},_S=async(e,t)=>{if(!lS){fS(dS().map(n=>n.id===e?{...n,resolved:t}:n));return}await mS(`${sS}?id=eq.${encodeURIComponent(e)}`,{method:`PATCH`,body:JSON.stringify({resolved:t})})},vS=async e=>{if(!lS){fS(dS().filter(t=>t.id!==e&&t.parent_id!==e));return}await mS(`${sS}?parent_id=eq.${encodeURIComponent(e)}`,{method:`DELETE`}),await mS(`${sS}?id=eq.${encodeURIComponent(e)}`,{method:`DELETE`})},yS=e=>({id:e.id,author:e.author,body:e.body,parentId:e.parent_id??null,number:e.number??null,anchor:e.anchor??null,resolved:!!e.resolved,createdAt:e.created_at}),bS=`prototype-comments:author`,xS=()=>{try{return window.localStorage.getItem(bS)||``}catch{return``}},SS=e=>{try{window.localStorage.setItem(bS,e)}catch{}},CS=9e3,wS=B.button`
+`;function qx({title:e}){return(0,q.jsxs)(Ux,{children:[(0,q.jsxs)(Wx,{children:[(0,q.jsx)(Gx,{children:(0,q.jsxs)(`svg`,{width:`14`,height:`14`,viewBox:`0 0 16 16`,fill:`none`,stroke:`currentColor`,strokeWidth:`1.3`,"aria-hidden":`true`,children:[(0,q.jsx)(`path`,{d:`M3 14.5V2a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v12.5`}),(0,q.jsx)(`path`,{d:`M1.5 14.5h13`,strokeLinecap:`round`}),(0,q.jsx)(`path`,{d:`M5.75 4h1.5m1.5 0h1.5m-4.5 3h1.5m1.5 0h1.5`,strokeLinecap:`round`}),(0,q.jsx)(`path`,{d:`M6.75 14.5v-2.5h2.5v2.5`})]})}),(0,q.jsx)(`span`,{children:e})]}),(0,q.jsx)(Kx,{type:`button`,"aria-label":`Add tab`,children:`+`})]})}var Jx=`data-comment-root`,Yx=`data-comment-anchor`,Xx=[`[data-comment-anchor]`,`tr`,`th`,`button`,`a[href]`,`label`,`input`,`select`,`section`,`nav`],Zx=()=>document.querySelector(`[${Jx}]`),Qx=(e,t)=>{let n=Zx();if(!n)return null;let r=document.elementsFromPoint(e,t).find(e=>n.contains(e));if(!r)return null;for(let e of Xx){let t=r.closest(e);if(t&&n.contains(t))return t}return r},$x=e=>{let t=Zx();if(!t||!t.contains(e))return null;let n=[],r=e;for(;r&&r!==t;){let e=r.parentElement;if(!e)return null;let t=r.tagName.toLowerCase(),i=[...e.children].filter(e=>e.tagName===r.tagName);n.unshift(i.length>1?`${t}:nth-of-type(${i.indexOf(r)+1})`:t),r=e}return n.join(` > `)},eS=e=>{if(!e.children.length){let t=(e.textContent||``).replace(/\s+/g,` `).trim();return t&&t!==`—`?[t]:[]}return[...e.children].flatMap(eS)},tS=e=>{if(!e)return``;let t=e.getAttribute(`aria-label`);if(t)return t.replace(/\s+/g,` `).trim().slice(0,80);let n=eS(e);return n.length?n.join(` · `).slice(0,80):(e.textContent||``).replace(/\s+/g,` `).trim().slice(0,80)},nS=(e,t,n)=>{let r=Qx(e,t);if(!r)return null;let i=r.getBoundingClientRect();return{context:n,id:r.getAttribute(Yx)||null,path:$x(r),label:tS(r),fraction:{x:i.width?(e-i.left)/i.width:.5,y:i.height?(t-i.top)/i.height:.5}}},rS=e=>{let t=Zx();if(!t||!e)return null;if(e.id){let n=t.querySelector(`[${Yx}="${CSS.escape(e.id)}"]`);if(n)return n}if(!e.path)return null;let n=null;try{n=t.querySelector(e.path)}catch{return null}return n},iS=e=>{let t=rS(e);if(!t)return null;let n=t.getBoundingClientRect();if(!n.width&&!n.height)return null;let r=e.fraction||{x:.5,y:.5};return{x:n.left+r.x*n.width,y:n.top+r.y*n.height,drifted:!!e.label&&tS(t)!==e.label}},aS=(e,t)=>{if(!e||!t)return!1;let n=new Set([...Object.keys(e),...Object.keys(t)]);for(let r of n)if(e[r]!==t[r])return!1;return!0},oS=`https://thaugdzjxphjhviwdwgi.supabase.co`,sS=`sb_publishable_gnUhxN43I7bY6dKrNkVmPA_wjRmciBQ`,cS=`prototype_comments`,lS=`organization-hierarchy`,uS=!!sS,dS=`prototype-comments:${lS}`,fS=()=>{try{return JSON.parse(window.localStorage.getItem(dS)||`[]`)}catch{return[]}},pS=e=>{try{window.localStorage.setItem(dS,JSON.stringify(e))}catch{}},mS={apikey:sS,Authorization:`Bearer ${sS}`,"Content-Type":`application/json`},hS=async(e,t={})=>{let n=await fetch(`${oS}/rest/v1/${e}`,{...t,headers:{...mS,...t.headers}});if(!n.ok){let e=await n.text();throw Error(`Supabase ${n.status}: ${e.slice(0,200)}`)}return n.status===204?null:n.json()},gS=async()=>uS?(await hS(`${cS}?project=eq.${encodeURIComponent(lS)}&order=created_at.asc`)).map(bS):fS().map(bS),_S=async({author:e,body:t,anchor:n,parentId:r=null,number:i=null})=>{let a={project:lS,author:e,body:t,parent_id:r,number:i,anchor:n||null,resolved:!1};if(!uS){let e=fS(),t={...a,id:`local-${e.length+1}-${String(e.length)}`,created_at:new Date().toISOString()};return pS([...e,t]),bS(t)}let[o]=await hS(cS,{method:`POST`,headers:{Prefer:`return=representation`},body:JSON.stringify(a)});return bS(o)},vS=async(e,t)=>{if(!uS){pS(fS().map(n=>n.id===e?{...n,resolved:t}:n));return}await hS(`${cS}?id=eq.${encodeURIComponent(e)}`,{method:`PATCH`,body:JSON.stringify({resolved:t})})},yS=async e=>{if(!uS){pS(fS().filter(t=>t.id!==e&&t.parent_id!==e));return}await hS(`${cS}?parent_id=eq.${encodeURIComponent(e)}`,{method:`DELETE`}),await hS(`${cS}?id=eq.${encodeURIComponent(e)}`,{method:`DELETE`})},bS=e=>({id:e.id,author:e.author,body:e.body,parentId:e.parent_id??null,number:e.number??null,anchor:e.anchor??null,resolved:!!e.resolved,createdAt:e.created_at}),xS=`prototype-comments:author`,SS=()=>{try{return window.localStorage.getItem(xS)||``}catch{return``}},CS=e=>{try{window.localStorage.setItem(xS,e)}catch{}},wS=9e3,TS=B.button`
   position: fixed;
-  right: 24px;
   bottom: 24px;
   z-index: ${9002};
   display: flex;
@@ -1408,14 +1407,14 @@ Error generating stack: `+e.message+`
   &:hover {
     background-color: ${e=>e.$active?`#284173`:`#f7f7f7`};
   }
-`,TS=B.div`
+`,ES=B.div`
   position: fixed;
-  z-index: ${CS};
+  z-index: ${wS};
   cursor: crosshair;
   /* No background at all: a tint over the design would change the colours being
      reviewed, which is the one thing a design review can't tolerate. */
   background-color: transparent;
-`,ES=B.button`
+`,DS=B.button`
   position: fixed;
   z-index: ${9001};
   display: flex;
@@ -1442,7 +1441,7 @@ Error generating stack: `+e.message+`
   &:hover {
     background-color: ${e=>e.$resolved?`#646864`:`#284173`};
   }
-`,DS=B.div`
+`,OS=B.div`
   position: fixed;
   z-index: ${9002};
   box-sizing: border-box;
@@ -1453,17 +1452,17 @@ Error generating stack: `+e.message+`
   box-shadow: 0 6px 20px rgba(10, 13, 14, 0.32);
   color: #ffffff;
   font-size: 14px;
-`,OS=B.div`
+`,kS=B.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
   margin-bottom: 8px;
   color: #c2f0e0;
   font-size: 12px;
-`,kS=B.div`
+`,AS=B.div`
   display: flex;
   gap: 4px;
-`,AS=B.button`
+`,jS=B.button`
   box-sizing: border-box;
   padding: 2px 6px;
   border: 0;
@@ -1478,25 +1477,25 @@ Error generating stack: `+e.message+`
     background-color: rgba(255, 255, 255, 0.14);
     color: #ffffff;
   }
-`,jS=B.div`
+`,MS=B.div`
   margin-bottom: 10px;
 
   & + & {
     padding-top: 10px;
     border-top: 1px solid rgba(255, 255, 255, 0.16);
   }
-`,MS=B.div`
+`,NS=B.div`
   margin-bottom: 2px;
   color: #c2f0e0;
   font-size: 12px;
-`,NS=B.div`
+`,PS=B.div`
   white-space: pre-wrap;
   word-break: break-word;
-`,PS=B.form`
+`,FS=B.form`
   display: flex;
   flex-direction: column;
   gap: 6px;
-`,FS=B.textarea`
+`,IS=B.textarea`
   box-sizing: border-box;
   width: 100%;
   min-height: 60px;
@@ -1512,7 +1511,7 @@ Error generating stack: `+e.message+`
   &::placeholder {
     color: rgba(255, 255, 255, 0.6);
   }
-`,IS=B.input`
+`,LS=B.input`
   box-sizing: border-box;
   width: 100%;
   padding: 6px 8px;
@@ -1526,11 +1525,11 @@ Error generating stack: `+e.message+`
   &::placeholder {
     color: rgba(255, 255, 255, 0.6);
   }
-`,LS=B.div`
+`,RS=B.div`
   display: flex;
   justify-content: flex-end;
   gap: 8px;
-`,RS=B.button`
+`,zS=B.button`
   box-sizing: border-box;
   min-height: 32px;
   padding: 0 12px;
@@ -1547,12 +1546,12 @@ Error generating stack: `+e.message+`
     opacity: 0.5;
     cursor: default;
   }
-`,zS=B.div`
+`,BS=B.div`
   margin-bottom: 8px;
   color: #c2f0e0;
   font-size: 12px;
   word-break: break-word;
-`,BS=zn`
+`,VS=zn`
   #root {
     width: calc(100% - 320px);
     transition: width 120ms ease-out;
@@ -1565,7 +1564,7 @@ Error generating stack: `+e.message+`
   #root > * {
     max-width: 100%;
   }
-`,VS=B.aside`
+`,HS=B.aside`
   position: fixed;
   top: 0;
   right: 0;
@@ -1578,7 +1577,7 @@ Error generating stack: `+e.message+`
   border-left: 1px solid #dcdcda;
   background-color: #ffffff;
   box-shadow: -4px 0 16px rgba(10, 13, 14, 0.12);
-`,HS=B.div`
+`,US=B.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -1587,12 +1586,12 @@ Error generating stack: `+e.message+`
   border-bottom: 1px solid #eae9e8;
   font-size: 14px;
   font-weight: 600;
-`,US=B.div`
+`,WS=B.div`
   flex: 1;
   box-sizing: border-box;
   padding: 8px;
   overflow-y: auto;
-`,WS=B.button`
+`,GS=B.button`
   box-sizing: border-box;
   display: block;
   width: 100%;
@@ -1611,48 +1610,48 @@ Error generating stack: `+e.message+`
   &:hover {
     background-color: #f7f7f7;
   }
-`,GS=B.div`
+`,KS=B.div`
   display: flex;
   gap: 6px;
   margin-bottom: 4px;
   color: #646864;
   font-size: 12px;
-`,KS=B.div`
+`,qS=B.div`
   display: -webkit-box;
   overflow: hidden;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
-`,qS=B.div`
+`,JS=B.div`
   margin-top: 4px;
   overflow: hidden;
   color: #646864;
   font-size: 12px;
   text-overflow: ellipsis;
   white-space: nowrap;
-`,JS=B.div`
+`,YS=B.div`
   padding: 16px;
   color: #646864;
   font-size: 14px;
-`,YS={error:{background:`#fff0f1`,color:`#2f3130`},warn:{background:`#fff7d6`,color:`#2f3130`},info:{background:`#f7f7f7`,color:`#646864`}},XS=B.div`
+`,XS={error:{background:`#fff0f1`,color:`#2f3130`},warn:{background:`#fff7d6`,color:`#2f3130`},info:{background:`#f7f7f7`,color:`#646864`}},ZS=B.div`
   box-sizing: border-box;
   padding: 8px 16px;
-  background-color: ${e=>(YS[e.$tone]||YS.info).background};
-  color: ${e=>(YS[e.$tone]||YS.info).color};
+  background-color: ${e=>(XS[e.$tone]||XS.info).background};
+  color: ${e=>(XS[e.$tone]||XS.info).color};
   font-size: 12px;
-`,ZS=(e,t)=>{let n=new Date(e).getTime();if(Number.isNaN(n))return``;let r=Math.max(0,Math.round((t-n)/1e3));if(r<60)return`just now`;let i=Math.round(r/60);if(i<60)return`${i}m ago`;let a=Math.round(i/60);if(a<24)return`${a}h ago`;let o=Math.round(a/24);return o<31?`${o}d ago`:`${Math.round(o/30)}mo ago`};function QS({context:e,onRestoreContext:t}){let[n,r]=(0,g.useState)(!1),[i,a]=(0,g.useState)([]),[o,s]=(0,g.useState)(null),[c,l]=(0,g.useState)(xS),[u,d]=(0,g.useState)(()=>!xS()),[f,p]=(0,g.useState)(null),[m,h]=(0,g.useState)(null),[_,v]=(0,g.useState)(``),[y,b]=(0,g.useState)(``),[x,S]=(0,g.useState)(0),[C,w]=(0,g.useState)(()=>Date.now());(0,g.useEffect)(()=>{let e=!1;return hS().then(t=>{e||a(t)}).catch(t=>{e||s(t.message)}),()=>{e=!0}},[]),(0,g.useEffect)(()=>{if(!n)return;let e=()=>S(e=>e+1),t=Xx();window.addEventListener(`scroll`,e,!0),window.addEventListener(`resize`,e);let r=new ResizeObserver(e);t&&r.observe(t);let i=setTimeout(e,60);return()=>{window.removeEventListener(`scroll`,e,!0),window.removeEventListener(`resize`,e),r.disconnect(),clearTimeout(i)}},[n]),(0,g.useEffect)(()=>{if(!n)return;let e=setInterval(()=>w(Date.now()),3e4);return()=>clearInterval(e)},[n]),(0,g.useEffect)(()=>{if(!n)return;let e=e=>{e.key===`Escape`&&(f?p(null):m?h(null):r(!1))};return window.addEventListener(`keydown`,e),()=>window.removeEventListener(`keydown`,e)},[n,f,m]);let T=(0,g.useMemo)(()=>i.filter(e=>!e.parentId),[i]),E=(0,g.useCallback)(e=>i.filter(t=>t.parentId===e),[i]),D=(0,g.useMemo)(()=>T.map(t=>{if(!iS(t.anchor?.context,e))return null;let n=rS(t.anchor);return n?{comment:t,position:n}:null}).filter(Boolean),[T,e,x]),O=(0,g.useMemo)(()=>T.filter(t=>!iS(t.anchor?.context,e)),[T,e]),k=(0,g.useMemo)(()=>{let e=Xx();if(!e)return null;let t=e.getBoundingClientRect();return{left:t.left,top:t.top,width:t.width,height:t.height}},[x]),A=(0,g.useMemo)(()=>f?rS(f.anchor):null,[f,x]),j=m?i.find(e=>e.id===m):null,M=(0,g.useMemo)(()=>j?rS(j.anchor):null,[j,x]),N=t=>{if(t.metaKey||t.ctrlKey||t.altKey){let e=document.elementsFromPoint(t.clientX,t.clientY).find(e=>Xx()?.contains(e))?.closest(`a[href], button, input, select, [role="button"]`);e&&e.click();return}let n=tS(t.clientX,t.clientY,e);if(!n){h(null),p(null);return}h(null),v(``),p({anchor:n})},P=async e=>{if(e.preventDefault(),!(!_.trim()||!c.trim())){SS(c.trim()),d(!1);try{let e=await gS({author:c.trim(),body:_.trim(),anchor:f.anchor,number:T.length+1});a(t=>[...t,e]),p(null),v(``),h(e.id)}catch(e){s(e.message)}}},ee=async e=>{if(e.preventDefault(),!(!y.trim()||!c.trim()||!j)){SS(c.trim()),d(!1);try{let e=await gS({author:c.trim(),body:y.trim(),anchor:null,parentId:j.id});a(t=>[...t,e]),b(``)}catch(e){s(e.message)}}},F=async e=>{try{await _S(e.id,!e.resolved),a(t=>t.map(t=>t.id===e.id?{...t,resolved:!e.resolved}:t))}catch(e){s(e.message)}},te=async e=>{try{await vS(e.id),a(t=>t.filter(t=>t.id!==e.id&&t.parentId!==e.id)),m===e.id&&h(null)}catch(e){s(e.message)}},ne=n=>{let r=n.anchor?.context;r&&!iS(r,e)&&t?.(r),h(n.id),p(null),b(``);let i=0,a=()=>{let e=nS(n.anchor);if(e){e.scrollIntoView({block:`center`,inline:`nearest`}),S(e=>e+1);return}i++<10&&requestAnimationFrame(a)};requestAnimationFrame(a)},I=T.filter(e=>!e.resolved).length;return(0,q.jsxs)(q.Fragment,{children:[(0,q.jsxs)(wS,{type:`button`,$active:n,onClick:()=>{r(e=>!e),p(null),h(null)},"aria-pressed":n,children:[n?`Exit comment mode`:`Comment`,!n&&I>0?` (${I})`:``]}),n&&(0,q.jsxs)(q.Fragment,{children:[(0,q.jsx)(BS,{}),k&&(0,q.jsx)(TS,{onClick:N,style:{left:k.left,top:k.top,width:k.width,height:k.height}}),D.map(({comment:e,position:t})=>(0,q.jsx)(ES,{type:`button`,style:{left:t.x,top:t.y},$resolved:e.resolved,$dimmed:m!==null&&m!==e.id,onClick:t=>{t.stopPropagation(),p(null),b(``),h(e.id===m?null:e.id)},"aria-label":`Comment ${e.number??``} by ${e.author}`,children:e.number??`•`},e.id)),f&&A&&(0,q.jsxs)(q.Fragment,{children:[(0,q.jsx)(ES,{as:`div`,style:{left:A.x,top:A.y},"aria-hidden":`true`,children:`+`}),(0,q.jsxs)(DS,{style:rC(A),onClick:e=>e.stopPropagation(),children:[(0,q.jsxs)(OS,{children:[(0,q.jsx)(`span`,{children:`New comment`}),(0,q.jsx)(kS,{children:(0,q.jsx)(AS,{type:`button`,onClick:()=>p(null),children:`Cancel`})})]}),f.anchor.label&&(0,q.jsxs)(zS,{children:[`On: `,f.anchor.label]}),(0,q.jsxs)(PS,{onSubmit:P,children:[u&&(0,q.jsx)(IS,{value:c,onChange:e=>l(e.target.value),placeholder:`Your name`,"aria-label":`Your name`}),(0,q.jsx)(FS,{value:_,onChange:e=>v(e.target.value),placeholder:`Add a comment`,"aria-label":`Comment`,autoFocus:!0}),(0,q.jsx)(LS,{children:(0,q.jsx)(RS,{type:`submit`,disabled:!_.trim()||!c.trim(),children:`Comment`})})]})]})]}),j&&M&&!f&&(0,q.jsxs)(DS,{style:rC(M),onClick:e=>e.stopPropagation(),children:[(0,q.jsxs)(OS,{children:[(0,q.jsxs)(`span`,{children:[`#`,j.number??`—`,M.drifted?` · content changed since`:``]}),(0,q.jsxs)(kS,{children:[(0,q.jsx)(AS,{type:`button`,onClick:()=>F(j),children:j.resolved?`Unresolve`:`Resolve`}),(0,q.jsx)(AS,{type:`button`,onClick:()=>te(j),children:`Delete`}),(0,q.jsx)(AS,{type:`button`,onClick:()=>h(null),children:`Close`})]})]}),(0,q.jsxs)(jS,{children:[(0,q.jsxs)(MS,{children:[j.author,` · `,ZS(j.createdAt,C)]}),(0,q.jsx)(NS,{children:j.body})]}),E(j.id).map(e=>(0,q.jsxs)(jS,{children:[(0,q.jsxs)(MS,{children:[e.author,` · `,ZS(e.createdAt,C)]}),(0,q.jsx)(NS,{children:e.body})]},e.id)),(0,q.jsxs)(PS,{onSubmit:ee,children:[u&&(0,q.jsx)(IS,{value:c,onChange:e=>l(e.target.value),placeholder:`Your name`,"aria-label":`Your name`}),(0,q.jsx)(FS,{value:y,onChange:e=>b(e.target.value),placeholder:`Reply`,"aria-label":`Reply`}),(0,q.jsx)(LS,{children:(0,q.jsx)(RS,{type:`submit`,disabled:!y.trim()||!c.trim(),children:`Reply`})})]})]}),(0,q.jsxs)(VS,{"data-comment-sidebar":`true`,onClick:e=>e.stopPropagation(),children:[(0,q.jsxs)(HS,{children:[(0,q.jsxs)(`span`,{children:[`Comments (`,T.length,`)`]}),(0,q.jsx)(AS,{type:`button`,style:{color:`#646864`},onClick:()=>r(!1),children:`Close`})]}),lS?(0,q.jsx)(XS,{$tone:`info`,children:`Shared — everyone with this link sees these comments.`}):(0,q.jsx)(XS,{$tone:`warn`,children:`Stored in this browser only — others won't see these. See src/comments/SETUP.md to share them.`}),o&&(0,q.jsx)(XS,{$tone:`error`,children:o}),O.length>0&&(0,q.jsxs)(XS,{$tone:`info`,children:[O.length,` comment`,O.length===1?``:`s`,` on another view — click to jump there.`]}),(0,q.jsx)(XS,{$tone:`info`,children:`Click the design to comment. ⌘-click (or Ctrl-click) to navigate without leaving comment mode.`}),(0,q.jsx)(US,{children:T.length===0?(0,q.jsx)(JS,{children:`Click anywhere on the design to leave a comment.`}):T.map(e=>(0,q.jsxs)(WS,{type:`button`,$active:e.id===m,$resolved:e.resolved,onClick:()=>ne(e),children:[(0,q.jsxs)(GS,{children:[(0,q.jsxs)(`span`,{children:[`#`,e.number??`—`]}),(0,q.jsx)(`span`,{children:e.author}),(0,q.jsx)(`span`,{children:ZS(e.createdAt,C)}),e.resolved&&(0,q.jsx)(`span`,{children:`· resolved`})]}),(0,q.jsx)(KS,{children:e.body}),e.anchor?.label&&(0,q.jsxs)(qS,{children:[`On: `,e.anchor.label]})]},e.id))})]})]})]})}var $S=300,eC=320,tC=320,nC=12,rC=e=>{let t=window.innerWidth-tC-$S-nC,n=Math.max(nC,Math.min(e.x+16,t)),r=window.innerHeight-eC-nC;return{left:n,top:Math.max(nC,Math.min(e.y,r))}},iC=`bramblewick`,aC=B.div`
+`,QS=24,$S=200,eC=()=>{let e=[...document.querySelectorAll(`nav`)].map(e=>e.getBoundingClientRect()).find(e=>e.left<=0&&e.width>0);return Math.min((e?.width||0)+QS,$S)},tC=(e,t)=>{let n=new Date(e).getTime();if(Number.isNaN(n))return``;let r=Math.max(0,Math.round((t-n)/1e3));if(r<60)return`just now`;let i=Math.round(r/60);if(i<60)return`${i}m ago`;let a=Math.round(i/60);if(a<24)return`${a}h ago`;let o=Math.round(a/24);return o<31?`${o}d ago`:`${Math.round(o/30)}mo ago`};function nC({context:e,onRestoreContext:t}){let[n,r]=(0,g.useState)(!1),[i,a]=(0,g.useState)([]),[o,s]=(0,g.useState)(null),[c,l]=(0,g.useState)(SS),[u,d]=(0,g.useState)(()=>!SS()),[f,p]=(0,g.useState)(null),[m,h]=(0,g.useState)(null),[_,v]=(0,g.useState)(``),[y,b]=(0,g.useState)(``),[x,S]=(0,g.useState)(0),[C,w]=(0,g.useState)(()=>Date.now()),[T,E]=(0,g.useState)(QS);(0,g.useEffect)(()=>{let e=!1;return gS().then(t=>{e||a(t)}).catch(t=>{e||s(t.message)}),()=>{e=!0}},[]),(0,g.useEffect)(()=>{if(!n)return;let e=()=>S(e=>e+1),t=Zx();window.addEventListener(`scroll`,e,!0),window.addEventListener(`resize`,e);let r=new ResizeObserver(e);t&&r.observe(t);let i=setTimeout(e,60);return()=>{window.removeEventListener(`scroll`,e,!0),window.removeEventListener(`resize`,e),r.disconnect(),clearTimeout(i)}},[n]),(0,g.useEffect)(()=>{let e=()=>E(eC()),t=requestAnimationFrame(e),n=setTimeout(e,200);return window.addEventListener(`resize`,e),()=>{cancelAnimationFrame(t),clearTimeout(n),window.removeEventListener(`resize`,e)}},[]),(0,g.useEffect)(()=>{if(!n)return;let e=setInterval(()=>w(Date.now()),3e4);return()=>clearInterval(e)},[n]),(0,g.useEffect)(()=>{if(!n)return;let e=e=>{e.key===`Escape`&&(f?p(null):m?h(null):r(!1))};return window.addEventListener(`keydown`,e),()=>window.removeEventListener(`keydown`,e)},[n,f,m]);let D=(0,g.useMemo)(()=>i.filter(e=>!e.parentId),[i]),O=(0,g.useCallback)(e=>i.filter(t=>t.parentId===e),[i]),k=(0,g.useMemo)(()=>D.map(t=>{if(!aS(t.anchor?.context,e))return null;let n=iS(t.anchor);return n?{comment:t,position:n}:null}).filter(Boolean),[D,e,x]),A=(0,g.useMemo)(()=>D.filter(t=>!aS(t.anchor?.context,e)),[D,e]),j=(0,g.useMemo)(()=>{let e=Zx();if(!e)return null;let t=e.getBoundingClientRect();return{left:t.left,top:t.top,width:t.width,height:t.height}},[x]),M=(0,g.useMemo)(()=>f?iS(f.anchor):null,[f,x]),N=m?i.find(e=>e.id===m):null,P=(0,g.useMemo)(()=>N?iS(N.anchor):null,[N,x]),ee=t=>{if(t.metaKey||t.ctrlKey||t.altKey){let e=document.elementsFromPoint(t.clientX,t.clientY).find(e=>Zx()?.contains(e))?.closest(`a[href], button, input, select, [role="button"]`);e&&e.click();return}let n=nS(t.clientX,t.clientY,e);if(!n){h(null),p(null);return}h(null),v(``),p({anchor:n})},F=async e=>{if(e.preventDefault(),!(!_.trim()||!c.trim())){CS(c.trim()),d(!1);try{let e=await _S({author:c.trim(),body:_.trim(),anchor:f.anchor,number:D.length+1});a(t=>[...t,e]),p(null),v(``),h(e.id)}catch(e){s(e.message)}}},te=async e=>{if(e.preventDefault(),!(!y.trim()||!c.trim()||!N)){CS(c.trim()),d(!1);try{let e=await _S({author:c.trim(),body:y.trim(),anchor:null,parentId:N.id});a(t=>[...t,e]),b(``)}catch(e){s(e.message)}}},ne=async e=>{try{await vS(e.id,!e.resolved),a(t=>t.map(t=>t.id===e.id?{...t,resolved:!e.resolved}:t))}catch(e){s(e.message)}},I=async e=>{try{await yS(e.id),a(t=>t.filter(t=>t.id!==e.id&&t.parentId!==e.id)),m===e.id&&h(null)}catch(e){s(e.message)}},re=n=>{let r=n.anchor?.context;r&&!aS(r,e)&&t?.(r),h(n.id),p(null),b(``);let i=0,a=()=>{let e=rS(n.anchor);if(e){e.scrollIntoView({block:`center`,inline:`nearest`}),S(e=>e+1);return}i++<10&&requestAnimationFrame(a)};requestAnimationFrame(a)},ie=D.filter(e=>!e.resolved).length;return(0,q.jsxs)(q.Fragment,{children:[(0,q.jsxs)(TS,{type:`button`,style:{left:T},$active:n,onClick:()=>{r(e=>!e),p(null),h(null)},"aria-pressed":n,children:[n?`Exit comment mode`:`Comment`,!n&&ie>0?` (${ie})`:``]}),n&&(0,q.jsxs)(q.Fragment,{children:[(0,q.jsx)(VS,{}),j&&(0,q.jsx)(ES,{onClick:ee,style:{left:j.left,top:j.top,width:j.width,height:j.height}}),k.map(({comment:e,position:t})=>(0,q.jsx)(DS,{type:`button`,style:{left:t.x,top:t.y},$resolved:e.resolved,$dimmed:m!==null&&m!==e.id,onClick:t=>{t.stopPropagation(),p(null),b(``),h(e.id===m?null:e.id)},"aria-label":`Comment ${e.number??``} by ${e.author}`,children:e.number??`•`},e.id)),f&&M&&(0,q.jsxs)(q.Fragment,{children:[(0,q.jsx)(DS,{as:`div`,style:{left:M.x,top:M.y},"aria-hidden":`true`,children:`+`}),(0,q.jsxs)(OS,{style:sC(M),onClick:e=>e.stopPropagation(),children:[(0,q.jsxs)(kS,{children:[(0,q.jsx)(`span`,{children:`New comment`}),(0,q.jsx)(AS,{children:(0,q.jsx)(jS,{type:`button`,onClick:()=>p(null),children:`Cancel`})})]}),f.anchor.label&&(0,q.jsxs)(BS,{children:[`On: `,f.anchor.label]}),(0,q.jsxs)(FS,{onSubmit:F,children:[u&&(0,q.jsx)(LS,{value:c,onChange:e=>l(e.target.value),placeholder:`Your name`,"aria-label":`Your name`}),(0,q.jsx)(IS,{value:_,onChange:e=>v(e.target.value),placeholder:`Add a comment`,"aria-label":`Comment`,autoFocus:!0}),(0,q.jsx)(RS,{children:(0,q.jsx)(zS,{type:`submit`,disabled:!_.trim()||!c.trim(),children:`Comment`})})]})]})]}),N&&P&&!f&&(0,q.jsxs)(OS,{style:sC(P),onClick:e=>e.stopPropagation(),children:[(0,q.jsxs)(kS,{children:[(0,q.jsxs)(`span`,{children:[`#`,N.number??`—`,P.drifted?` · content changed since`:``]}),(0,q.jsxs)(AS,{children:[(0,q.jsx)(jS,{type:`button`,onClick:()=>ne(N),children:N.resolved?`Unresolve`:`Resolve`}),(0,q.jsx)(jS,{type:`button`,onClick:()=>I(N),children:`Delete`}),(0,q.jsx)(jS,{type:`button`,onClick:()=>h(null),children:`Close`})]})]}),(0,q.jsxs)(MS,{children:[(0,q.jsxs)(NS,{children:[N.author,` · `,tC(N.createdAt,C)]}),(0,q.jsx)(PS,{children:N.body})]}),O(N.id).map(e=>(0,q.jsxs)(MS,{children:[(0,q.jsxs)(NS,{children:[e.author,` · `,tC(e.createdAt,C)]}),(0,q.jsx)(PS,{children:e.body})]},e.id)),(0,q.jsxs)(FS,{onSubmit:te,children:[u&&(0,q.jsx)(LS,{value:c,onChange:e=>l(e.target.value),placeholder:`Your name`,"aria-label":`Your name`}),(0,q.jsx)(IS,{value:y,onChange:e=>b(e.target.value),placeholder:`Reply`,"aria-label":`Reply`}),(0,q.jsx)(RS,{children:(0,q.jsx)(zS,{type:`submit`,disabled:!y.trim()||!c.trim(),children:`Reply`})})]})]}),(0,q.jsxs)(HS,{"data-comment-sidebar":`true`,onClick:e=>e.stopPropagation(),children:[(0,q.jsxs)(US,{children:[(0,q.jsxs)(`span`,{children:[`Comments (`,D.length,`)`]}),(0,q.jsx)(jS,{type:`button`,style:{color:`#646864`},onClick:()=>r(!1),children:`Close`})]}),uS?(0,q.jsx)(ZS,{$tone:`info`,children:`Shared — everyone with this link sees these comments.`}):(0,q.jsx)(ZS,{$tone:`warn`,children:`Stored in this browser only — others won't see these. See src/comments/SETUP.md to share them.`}),o&&(0,q.jsx)(ZS,{$tone:`error`,children:o}),A.length>0&&(0,q.jsxs)(ZS,{$tone:`info`,children:[A.length,` comment`,A.length===1?``:`s`,` on another view — click to jump there.`]}),(0,q.jsx)(ZS,{$tone:`info`,children:`Click the design to comment. ⌘-click (or Ctrl-click) to navigate without leaving comment mode.`}),(0,q.jsx)(WS,{children:D.length===0?(0,q.jsx)(YS,{children:`Click anywhere on the design to leave a comment.`}):D.map(e=>(0,q.jsxs)(GS,{type:`button`,$active:e.id===m,$resolved:e.resolved,onClick:()=>re(e),children:[(0,q.jsxs)(KS,{children:[(0,q.jsxs)(`span`,{children:[`#`,e.number??`—`]}),(0,q.jsx)(`span`,{children:e.author}),(0,q.jsx)(`span`,{children:tC(e.createdAt,C)}),e.resolved&&(0,q.jsx)(`span`,{children:`· resolved`})]}),(0,q.jsx)(qS,{children:e.body}),e.anchor?.label&&(0,q.jsxs)(JS,{children:[`On: `,e.anchor.label]})]},e.id))})]})]})]})}var rC=300,iC=320,aC=320,oC=12,sC=e=>{let t=window.innerWidth-aC-rC-oC,n=Math.max(oC,Math.min(e.x+16,t)),r=window.innerHeight-iC-oC;return{left:n,top:Math.max(oC,Math.min(e.y,r))}},cC=`bramblewick`,lC=B.div`
   display: flex;
   flex-direction: column;
   height: 100vh;
   width: 100vw;
   background-color: #f8f9f9;
   overflow: hidden;
-`,oC=B.div`
+`,uC=B.div`
   display: flex;
   flex: 1;
   min-height: 0;
   width: 100%;
   overflow: hidden;
-`,sC=B.main`
+`,dC=B.main`
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
@@ -1662,10 +1661,10 @@ Error generating stack: `+e.message+`
   border-radius: 8px 0px 0px 0px;
   box-shadow: 0px 0px 4px rgba(10, 13, 14, 0.16);
   overflow: hidden;
-`,cC=B.div`
+`,fC=B.div`
   position: relative;
   flex-shrink: 0;
-`,lC=B.div`
+`,pC=B.div`
   position: absolute;
   top: 0;
   left: 140px;
@@ -1673,7 +1672,7 @@ Error generating stack: `+e.message+`
   display: flex;
   align-items: center;
   z-index: 10;
-`,uC=B.div`
+`,mC=B.div`
   position: absolute;
   top: 0;
   right: 428px;
@@ -1681,6 +1680,6 @@ Error generating stack: `+e.message+`
   display: flex;
   align-items: center;
   z-index: 10;
-`,dC=B.div`
+`,hC=B.div`
   min-width: 200px;
-`,fC=[{id:`v1`,label:`V1 MVP`},{id:`v2`,label:`V2 with end-users`},{id:`v3`,label:`V3 Sans lines`},{id:`v4`,label:`V4 100 end users`}];function pC(){let[e,t]=(0,g.useState)(`support`),[n,r]=(0,g.useState)(2),[i,a]=(0,g.useState)(!1),[o,s]=(0,g.useState)(`v1`),c=fC.find(e=>e.id===o)?.label,[l,u]=(0,g.useState)(iC),d=wb(l);return(0,g.useEffect)(()=>{document.title=`${d.name} — Organization hierarchy`},[d.name]),(0,q.jsx)(zo,{children:(0,q.jsxs)(aC,{children:[(0,q.jsxs)(cC,{children:[(0,q.jsx)(ll,{currentProduct:e,onProductChange:t}),(0,q.jsx)(lC,{children:(0,q.jsx)(Kx,{title:d.name})}),(0,q.jsx)(uC,{children:(0,q.jsx)(dC,{children:(0,q.jsx)(q_,{children:(0,q.jsx)(H_,{isCompact:!0,isEditable:!1,inputValue:c,selectionValue:o,onChange:({selectionValue:e})=>{e&&s(e)},children:fC.map(e=>(0,q.jsx)(hv,{value:e.id,label:e.label,children:e.label},e.id))})})})})]}),(0,q.jsxs)(oC,{children:[(0,q.jsx)(El,{currentProduct:`support`,activeNavItem:n,setActiveNavItem:r,isSubnavExpanded:i,setIsSubnavExpanded:a}),(0,q.jsx)(sC,{children:(0,q.jsx)(Vx,{orgId:l,onSelectOrganization:u,version:o})})]}),(0,q.jsx)(QS,{context:{version:o,orgId:l},onRestoreContext:e=>{e.version&&s(e.version),e.orgId&&u(e.orgId)}})]})})}(0,_.createRoot)(document.getElementById(`root`)).render((0,q.jsx)(g.StrictMode,{children:(0,q.jsx)(pC,{})}));
+`,gC=[{id:`v1`,label:`V1 MVP`},{id:`v2`,label:`V2 with end-users`},{id:`v3`,label:`V3 Sans lines`},{id:`v4`,label:`V4 100 departments`}];function _C(){let[e,t]=(0,g.useState)(`support`),[n,r]=(0,g.useState)(2),[i,a]=(0,g.useState)(!1),[o,s]=(0,g.useState)(`v1`),c=gC.find(e=>e.id===o)?.label,[l,u]=(0,g.useState)(cC),d=Tb(l);return(0,g.useEffect)(()=>{o!==`v4`&&wb(l)&&u(xb)},[o,l]),(0,g.useEffect)(()=>{document.title=`${d.name} — Organization hierarchy`},[d.name]),(0,q.jsx)(zo,{children:(0,q.jsxs)(lC,{children:[(0,q.jsxs)(fC,{children:[(0,q.jsx)(ll,{currentProduct:e,onProductChange:t}),(0,q.jsx)(pC,{children:(0,q.jsx)(qx,{title:d.name})}),(0,q.jsx)(mC,{children:(0,q.jsx)(hC,{children:(0,q.jsx)(q_,{children:(0,q.jsx)(H_,{isCompact:!0,isEditable:!1,inputValue:c,selectionValue:o,onChange:({selectionValue:e})=>{e&&s(e)},children:gC.map(e=>(0,q.jsx)(hv,{value:e.id,label:e.label,children:e.label},e.id))})})})})]}),(0,q.jsxs)(uC,{children:[(0,q.jsx)(El,{currentProduct:`support`,activeNavItem:n,setActiveNavItem:r,isSubnavExpanded:i,setIsSubnavExpanded:a}),(0,q.jsx)(dC,{children:(0,q.jsx)(Hx,{orgId:l,onSelectOrganization:u,version:o})})]}),(0,q.jsx)(nC,{context:{version:o,orgId:l},onRestoreContext:e=>{e.version&&s(e.version),e.orgId&&u(e.orgId)}})]})})}(0,_.createRoot)(document.getElementById(`root`)).render((0,q.jsx)(g.StrictMode,{children:(0,q.jsx)(_C,{})}));
