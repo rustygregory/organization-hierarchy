@@ -4,11 +4,19 @@
 -- safe: there are no markdown fences here to confuse the editor, which is the
 -- one thing that goes wrong when copying this out of SETUP.md.
 --
+-- Safe to run more than once. Every statement is written to tolerate the objects
+-- already existing, because the realistic failure mode is a partial run: the
+-- table gets created, something later fails, and re-running then dies on
+-- `relation "prototype_comments" already exists` with no clue about which of the
+-- index, the security setting, and the four policies actually made it. Re-running
+-- this converges on the right state from any starting point. It never drops the
+-- table, so existing comments survive.
+--
 -- Runs once per Supabase project, not once per prototype. The `project` column
 -- keeps each prototype's comments separate, so the next prototype needs no SQL
 -- at all.
 
-create table public.prototype_comments (
+create table if not exists public.prototype_comments (
   id          uuid primary key default gen_random_uuid(),
   -- Which prototype this comment belongs to. One Supabase project can serve all
   -- of them; without this column, dropping the comment layer into the next
@@ -32,9 +40,10 @@ create table public.prototype_comments (
 
 -- Every read filters by project and sorts by time. This is the only query the
 -- app makes, so it's the only index worth having.
-create index prototype_comments_project_created_idx
+create index if not exists prototype_comments_project_created_idx
   on public.prototype_comments (project, created_at);
 
+-- Already idempotent: enabling this twice is not an error.
 alter table public.prototype_comments enable row level security;
 
 -- What anonymous link-holders may do. Read, post, and edit — which covers
@@ -47,9 +56,20 @@ alter table public.prototype_comments enable row level security;
 -- anything where attribution has to be trustworthy. Don't put customer data or
 -- anything confidential in here.
 --
--- To lock it down instead, drop the last two statements: reviewers can then post
--- and read, but not resolve or delete anything.
-create policy "anon can read"   on public.prototype_comments for select using (true);
+-- To lock it down instead, delete the update and delete pairs below: reviewers
+-- can then post and read, but not resolve or delete anything.
+--
+-- Dropped before being created because Postgres has no `create policy if not
+-- exists`. Dropping a policy that isn't there is a no-op, so this is safe on a
+-- first run as well as a repeat.
+drop policy if exists "anon can read" on public.prototype_comments;
+create policy "anon can read" on public.prototype_comments for select using (true);
+
+drop policy if exists "anon can insert" on public.prototype_comments;
 create policy "anon can insert" on public.prototype_comments for insert with check (true);
+
+drop policy if exists "anon can update" on public.prototype_comments;
 create policy "anon can update" on public.prototype_comments for update using (true);
+
+drop policy if exists "anon can delete" on public.prototype_comments;
 create policy "anon can delete" on public.prototype_comments for delete using (true);
