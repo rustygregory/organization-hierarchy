@@ -1558,10 +1558,10 @@ Error generating stack: `+e.message+`
     transition: width 120ms ease-out;
   }
 
-  /* Neutralises viewport-relative widths inside the app. This prototype's page
-     container is width: 100vw, which ignores a narrower #root entirely and would
-     keep sliding under the sidebar — max-width re-anchors it to its parent
-     without the app needing to know the comment layer exists. */
+  /* Neutralises viewport-relative widths inside the app. A page container set to
+     width: 100vw ignores a narrower #root entirely and keeps sliding under the
+     sidebar — max-width re-anchors it to its parent without the app needing to
+     know the comment layer exists. */
   #root > * {
     max-width: 100%;
   }
