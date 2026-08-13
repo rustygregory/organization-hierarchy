@@ -214,89 +214,88 @@ export const PEOPLE = [
 ]
 
 /**
- * The at-scale roster: an oversized list of end users for V4.
+ * The at-scale roster: an oversized list of *departments* for V4.
  *
- * It hangs off **Bramblewick University**, the organization the prototype opens
+ * They hang off **Bramblewick University**, the organization the prototype opens
  * on, so the at-scale case is the first thing V4 shows rather than something you
- * have to drill two levels to reach. Bramblewick also has three child
- * organizations, so the people list sits below a real set of child rows — the
- * arrangement a reader would actually meet.
+ * have to drill two levels to reach. Bramblewick also has three hand-written
+ * child organizations, which stay at the top of the list — the arrangement a
+ * reader would actually meet.
  *
- * Kept out of PEOPLE and layered in only when the view asks for it, so V2 keeps
- * the small hand-written set that makes its treatment readable. V4 is the stress
- * test — the "hundreds wide" case the focused view doesn't bound, since centring
- * on a node caps how *deep* the tree goes but not how many people sit in it.
+ * Departments rather than end users because the question V4 asks is about the
+ * *hierarchy* at width: centring the view caps how deep the tree goes but says
+ * nothing about how many children one node can have. A hundred sibling
+ * organizations is the case the focused view doesn't bound. End users are V2's
+ * subject and stay there.
  *
- * The roster runs past one page on purpose. V4 shows up to 100 users at a time
- * and paginates beyond that, so a roster that stopped at 100 would sit on the
- * boundary and never draw the pager — there'd be nothing to stress test.
+ * These are leaves — nothing hangs below them. A department with its own
+ * sub-structure would be a second variable, and depth is already covered by the
+ * hand-written Computer Science chain.
  *
- * Names and titles are zipped from fixed lists rather than randomised: the row
- * count is the variable under test, and a list that reshuffles every render would
- * make screenshots from a review meeting impossible to compare.
+ * Kept out of ORGANIZATIONS and layered in only when the view asks for it, so
+ * V1–V3 keep the small hand-written tree that makes their treatments readable.
+ *
+ * The roster runs past one page on purpose. V4 shows up to 100 rows at a time and
+ * paginates beyond that, so a list that stopped at 100 would sit on the boundary
+ * and never draw the pager — there'd be nothing to stress test.
+ *
+ * Names come from a fixed list rather than being generated: the row count is the
+ * variable under test, and a list that reshuffles every render would make
+ * screenshots from a review meeting impossible to compare.
  */
-const AT_SCALE_NAMES = [
-  'Aaliyah Bennett', 'Adrian Cole', 'Aiko Watanabe', 'Amara Osei', 'Anton Kovac',
-  'Ariana Fuentes', 'Arjun Malhotra', 'Astrid Lund', 'Ayodele Bakare', 'Beatriz Campos',
-  'Bilal Chaudhry', 'Bronwyn Price', 'Camille Roussel', 'Carlos Ibarra', 'Cecelia Nagy',
-  'Chidi Okonkwo', 'Clara Vogt', 'Cormac Sheehan', 'Dagny Olsen', 'Damaris Leon',
-  'Darius Petrescu', 'Delphine Marchand', 'Dmitri Volkov', 'Eartha Simmons', 'Edwin Baptiste',
-  'Efua Mensah', 'Eleni Papadaki', 'Elias Thorne', 'Emiko Sato', 'Enzo Barbieri',
-  'Esme Callahan', 'Faisal Al-Amin', 'Fatima Zahra', 'Fernanda Lopes', 'Finley Brooks',
-  'Frida Karlsen', 'Gabriel Anaya', 'Genevieve Roux', 'Gideon Marsh', 'Giulia Ferretti',
-  'Hakim Toure', 'Harriet Bellweather', 'Henrik Dahl', 'Hina Iqbal', 'Ian Prescott',
-  'Idris Suleiman', 'Imani Robinson', 'Ines Cabral', 'Ivo Jelinek', 'Jae-won Park',
-  'Jasmine Aldridge', 'Javier Quintero', 'Jelena Markovic', 'Joaquin Rivas', 'Josephine Adeyemo',
-  'Junko Maeda', 'Kaia Solberg', 'Kalinda Rao', 'Kwabena Boateng', 'Larissa Duval',
-  'Leif Andersen', 'Leticia Moraes', 'Liam Gallagher', 'Lucia Serrano', 'Magnus Eriksen',
-  'Maia Tupou', 'Malika Benali', 'Marcus Whitfield', 'Mariam Sesay', 'Matteo Riva',
-  'Meera Krishnan', 'Mikhail Sokolov', 'Nadine Achebe', 'Nikolai Brandt', 'Nia Copeland',
-  'Olamide Adesina', 'Oona Lehtinen', 'Pablo Cifuentes', 'Petra Novotna', 'Quentin Ashford',
-  'Rafael Duarte', 'Rania Fadel', 'Reza Tehrani', 'Rowan Kinsella', 'Ruth Nakamura',
-  'Salma Haddad', 'Sander de Groot', 'Sebastian Kruger', 'Selin Demir', 'Sinead Murphy',
-  'Solomon Grant', 'Sunniva Aas', 'Tariq Mansour', 'Thea Lindberg', 'Tobias Wren',
-  'Ulrika Persson', 'Vikram Chandra', 'Wren Ellery', 'Yusuf Kaya', 'Zane Whitmore',
-  /* Page two onward — 47 more. With Bramblewick's three hand-written staff that
-     totals 150, so the second page holds 50: enough to read as a real page rather
-     than a stray remainder, and not a round multiple of the page size, which would
-     hide the part-full last page. */
-  'Abebe Girma', 'Alina Kovalenko', 'Anneke Visser', 'Bartholomew Quill', 'Blessing Eze',
-  'Caterina Lombardi', 'Cyrus Bahrami', 'Desmond Achterberg', 'Dilnoza Karimova', 'Eirik Haugen',
-  'Elodie Charpentier', 'Farrukh Nazarov', 'Freya Ashworth', 'Gunter Hoffmann', 'Halima Yusuf',
-  'Hyun-woo Choi', 'Ignacio Peralta', 'Isabela Fonseca', 'Jonas Bergstrom', 'Kabir Sethi',
-  'Katarina Blazek', 'Kofi Asante', 'Lachlan Fitzroy', 'Linnea Wickstrom', 'Lorenzo Battaglia',
-  'Manon Lefebvre', 'Marguerite Osei', 'Nabila Rahman', 'Nikoloz Beridze', 'Odalys Restrepo',
-  'Orla Concannon', 'Priya Venkatesan', 'Rasmus Kjaer', 'Rosalind Trewin', 'Sabina Iliescu',
-  'Santiago Ocampo', 'Seraphina Vance', 'Sofiya Danylenko', 'Takeshi Fujimoto', 'Tamsin Wilde',
-  'Teodora Ristic', 'Ulises Bermudez', 'Valentina Rojas', 'Wanjiru Kamau', 'Xiomara Delgado',
-  'Yannick Dubois', 'Zohra Belkacem',
+const AT_SCALE_DEPARTMENT_NAMES = [
+  'Accounting', 'Aerospace Engineering', 'African Studies', 'Agricultural Sciences', 'American Literature',
+  'Anatomy', 'Ancient History', 'Anthropology', 'Applied Linguistics', 'Applied Physics',
+  'Arabic Studies', 'Archaeology', 'Architecture', 'Art History', 'Astronomy',
+  'Astrophysics', 'Athletics Administration', 'Audiology', 'Biochemistry', 'Bioinformatics',
+  'Biomedical Engineering', 'Botany', 'Business Administration', 'Cardiology Research', 'Cartography',
+  'Ceramics', 'Chemical Engineering', 'Chemistry', 'Chinese Studies', 'Civil Engineering',
+  'Classics', 'Climate Science', 'Cognitive Science', 'Communications', 'Comparative Literature',
+  'Composition Studies', 'Conservation Biology', 'Construction Management', 'Criminology', 'Cultural Studies',
+  'Curriculum Studies', 'Dance', 'Data Science', 'Demography', 'Dentistry',
+  'Dermatology Research', 'Development Studies', 'Digital Humanities', 'Drama', 'Earth Sciences',
+  'East Asian Studies', 'Ecology', 'Econometrics', 'Economics', 'Education Policy',
+  'Electrical Engineering', 'Electronics', 'Elementary Education', 'Endocrinology Research', 'Energy Systems',
+  'English Literature', 'Entomology', 'Entrepreneurship', 'Environmental Engineering', 'Environmental Law',
+  'Epidemiology', 'Ethics', 'Ethnomusicology', 'European Studies', 'Exercise Science',
+  'Film Studies', 'Finance', 'Fine Arts', 'Food Science', 'Forestry',
+  'French Studies', 'Gastronomy', 'Genetics', 'Geochemistry', 'Geography',
+  'Geology', 'Geophysics', 'German Studies', 'Gerontology', 'Global Health',
+  'Graphic Design', 'Greek Studies', 'Health Informatics', 'Hebrew Studies', 'Hispanic Studies',
+  'History of Science', 'Horticulture', 'Hospitality Management', 'Human Resources', 'Hydrology',
+  'Immunology', 'Industrial Design', 'Industrial Engineering', 'Information Systems', 'Interior Architecture',
+  /* Page two onward — 47 more. With Bramblewick's three hand-written child orgs
+     that totals 150, so the second page holds 50: enough to read as a real page
+     rather than a stray remainder, and not a round multiple of the page size,
+     which would hide the part-full last page. */
+  'International Relations', 'Islamic Studies', 'Italian Studies', 'Japanese Studies', 'Jazz Studies',
+  'Journalism', 'Judaic Studies', 'Kinesiology', 'Korean Studies', 'Labour Economics',
+  'Landscape Architecture', 'Latin American Studies', 'Law', 'Library Science', 'Linguistics',
+  'Logistics', 'Marine Biology', 'Marketing', 'Materials Science', 'Mechanical Engineering',
+  'Media Studies', 'Medical Physics', 'Medieval Studies', 'Meteorology', 'Microbiology',
+  'Middle Eastern Studies', 'Military History', 'Mineralogy', 'Molecular Biology', 'Museum Studies',
+  'Music Theory', 'Nanotechnology', 'Naval Architecture', 'Neuroscience', 'Nuclear Engineering',
+  'Nursing', 'Nutrition Science', 'Occupational Therapy', 'Oceanography', 'Oncology Research',
+  'Operations Research', 'Ophthalmology Research', 'Optometry', 'Organic Chemistry', 'Orthopaedics Research',
+  'Paediatrics Research', 'Palaeontology',
 ]
 
-/** The organization the at-scale roster is attached to. */
-export const AT_SCALE_ORG_ID = 'bramblewick'
+/** The organization the at-scale departments hang off. */
+export const AT_SCALE_PARENT_ID = 'bramblewick'
 
-/* Titles for a university's own roster rather than a product department's. The
-   list is short and cycled: a real institution of this size is mostly a handful of
-   repeated roles, and identical titles down the column are part of what makes a
-   list this long hard to scan — worth showing rather than hiding behind variety. */
-const AT_SCALE_UNIVERSITY_TITLES = [
-  'Lecturer',
-  'Research Assistant',
-  'Administrator',
-  'Postgraduate Researcher',
-  'Facilities Coordinator',
-  'Student Advisor',
-  'Librarian',
-]
-
-const AT_SCALE_PEOPLE = AT_SCALE_NAMES.map((name, index) => ({
-  // `scale-` prefixed so these can never collide with a hand-written person.
+const AT_SCALE_DEPARTMENTS = AT_SCALE_DEPARTMENT_NAMES.map((name) => ({
+  // `scale-` prefixed so these can never collide with a hand-written organization.
   id: `scale-${name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`,
   name,
-  type: 'End user',
-  title: AT_SCALE_UNIVERSITY_TITLES[index % AT_SCALE_UNIVERSITY_TITLES.length],
-  orgIds: [AT_SCALE_ORG_ID],
+  // Cost Center, the same type the hand-written departments carry.
+  type: 'Cost Center',
+  parentId: AT_SCALE_PARENT_ID,
 }))
+
+const AT_SCALE_IDS = new Set(AT_SCALE_DEPARTMENTS.map((org) => org.id))
+
+/** Is this one of V4's at-scale departments? True for nothing V1–V3 can show. */
+export const isAtScaleOrg = (orgId) => AT_SCALE_IDS.has(orgId)
 
 /**
  * The personas the prototype can switch between. `attachedOrgId` is the single
@@ -347,29 +346,41 @@ export const PERSONAS = [
 
 /* ---------------------------------------------------------------- selectors */
 
-export const getOrganization = (orgId) => ORGANIZATIONS.find((org) => org.id === orgId)
-
-export const getChildren = (orgId) => ORGANIZATIONS.filter((org) => org.parentId === orgId)
+/* The at-scale departments are layered in by option rather than living in
+   ORGANIZATIONS, so V1–V3 never see them. `getOrganization` is the exception: it
+   resolves them unconditionally, because once V4 has re-centred the page on
+   "Nanotechnology" the header, the breadcrumb path and the tab counts all have to
+   name it — and the option isn't threaded through every one of those call sites.
+   Nothing can reach these ids in V1–V3 anyway: no row links to them. */
+export const getOrganization = (orgId) =>
+  ORGANIZATIONS.find((org) => org.id === orgId) ||
+  AT_SCALE_DEPARTMENTS.find((org) => org.id === orgId)
 
 /**
- * People sitting directly in `orgId`.
+ * Organizations sitting directly under `orgId`.
  *
- * `atScale` layers the oversized roster onto the organization it belongs to —
- * V4's whole subject. It appends rather than replaces, because Bramblewick's three
- * hand-written staff include the personas the prototype is built around, and
- * dropping Adrian Whitlock out of the tree to reach a round number would cost more
- * than the round number is worth. The hand-written three come first, so the two
- * agents at the top of the list are the same in V2 and V4.
+ * `atScale` appends V4's oversized department list to the organization it hangs
+ * off. It appends rather than replaces, because Bramblewick's three hand-written
+ * children (Computer Science, Mathematics, Engineering) carry the deep chain the
+ * other versions are built around, and dropping them to reach a round number
+ * would cost more than the round number is worth. They come first, so the top of
+ * V4's list is the same as V2's.
  */
-export const getPeopleIn = (orgId, { atScale = false } = {}) => {
-  const own = PEOPLE.filter((person) => person.orgIds.includes(orgId))
-  if (atScale && orgId === AT_SCALE_ORG_ID) return [...own, ...AT_SCALE_PEOPLE]
+export const getChildren = (orgId, { atScale = false } = {}) => {
+  const own = ORGANIZATIONS.filter((org) => org.parentId === orgId)
+  if (atScale && orgId === AT_SCALE_PARENT_ID) return [...own, ...AT_SCALE_DEPARTMENTS]
   return own
 }
 
+/** People sitting directly in `orgId`. */
+export const getPeopleIn = (orgId) => PEOPLE.filter((person) => person.orgIds.includes(orgId))
+
 /** Every organization beneath `orgId`, at any depth. Excludes `orgId` itself. */
-export const getDescendantIds = (orgId) =>
-  getChildren(orgId).flatMap((child) => [child.id, ...getDescendantIds(child.id)])
+export const getDescendantIds = (orgId, options) =>
+  getChildren(orgId, options).flatMap((child) => [
+    child.id,
+    ...getDescendantIds(child.id, options),
+  ])
 
 /** Root-to-node path, inclusive of `orgId`. */
 export const getPath = (orgId) => {
@@ -380,8 +391,8 @@ export const getPath = (orgId) => {
 
 /** Count of people in `orgId` and everything below it — the "reach" of a node. */
 export const countPeopleAtOrBelow = (orgId, options) =>
-  [orgId, ...getDescendantIds(orgId)].reduce(
-    (total, id) => total + getPeopleIn(id, options).length,
+  [orgId, ...getDescendantIds(orgId, options)].reduce(
+    (total, id) => total + getPeopleIn(id).length,
     0,
   )
 

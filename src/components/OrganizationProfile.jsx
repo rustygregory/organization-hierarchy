@@ -222,9 +222,9 @@ export default function OrganizationProfile({ orgId, onSelectOrganization, versi
 
   const org = getOrganization(orgId)
   // The Users tab counts direct members only — the reach below this node is what
-  // the hierarchy tab is for. V4 swaps in the 100-user roster, and the tab count
-  // has to move with it or the page contradicts its own tree.
-  const directUserCount = getPeopleIn(orgId, { atScale: version === 'v4' }).length
+  // the hierarchy tab is for. V4 scales the child organizations rather than the
+  // people, so this count is the same in every version.
+  const directUserCount = getPeopleIn(orgId).length
 
   const tabs = [
     { id: 'tickets', label: 'Tickets (0)' },

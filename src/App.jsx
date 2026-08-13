@@ -6,7 +6,7 @@ import styled from 'styled-components'
 import OrganizationProfile from './components/OrganizationProfile'
 import TabBar from './components/TabBar'
 import CommentLayer from './comments/CommentLayer'
-import { getOrganization } from './data/hierarchy'
+import { AT_SCALE_PARENT_ID, getOrganization, isAtScaleOrg } from './data/hierarchy'
 import './App.css'
 
 // The organization whose profile this prototype opens on. Clicking through the
@@ -78,7 +78,7 @@ const VERSIONS = [
   { id: 'v1', label: 'V1 MVP' },
   { id: 'v2', label: 'V2 with end-users' },
   { id: 'v3', label: 'V3 Sans lines' },
-  { id: 'v4', label: 'V4 100 end users' },
+  { id: 'v4', label: 'V4 100 departments' },
 ]
 
 export default function App() {
@@ -89,7 +89,7 @@ export default function App() {
 
   // V1 MVP shows organizations only; V2 adds the end users inside them; V3 is
   // V1 without row dividers, with the child count moved beside each name; V4 is
-  // V2 against Bramblewick's full 150-user roster, paged 100 at a time.
+  // V2 against Bramblewick's full 150 child departments, paged 100 at a time.
   const [version, setVersion] = useState('v1')
   const versionLabel = VERSIONS.find((option) => option.id === version)?.label
 
@@ -97,6 +97,16 @@ export default function App() {
   // the profile header both name it, and the hierarchy tab re-points it.
   const [orgId, setOrgId] = useState(INITIAL_ORG_ID)
   const org = getOrganization(orgId)
+
+  /* Leaving V4 while sitting on one of its departments.
+     V4 is the only version with the hundred at-scale departments, so switching
+     away from it while centred on, say, Palaeontology would leave the page on an
+     organization the other versions cannot show: a tree of one row, and no way
+     back except reloading. Falls back to the department's parent, which every
+     version has. */
+  useEffect(() => {
+    if (version !== 'v4' && isAtScaleOrg(orgId)) setOrgId(AT_SCALE_PARENT_ID)
+  }, [version, orgId])
 
   // Browser tab follows the organization, the way a real Support tab does.
   useEffect(() => {

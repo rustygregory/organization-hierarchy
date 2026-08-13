@@ -70,7 +70,7 @@ The tab is a **focused view on one organization**, not a browsable tree. For the
 organization whose profile you're on it shows exactly three things:
 
 1. **Its ancestors**, as a single path down from the top-level organization
-2. **Its direct children** (and, in V2 and V4, the people who sit directly in it)
+2. **Its direct children** (and, in V2, the people who sit directly in it)
 3. **Its direct siblings**
 
 Nothing else expands. A sibling's children, an ancestor's other branches, and
@@ -147,9 +147,10 @@ second branch to contrast against.
 | **V1 MVP** | — | Child orgs | yes |
 | **V2 with end-users** | yes | Child orgs · People | yes |
 | **V3 Sans lines** | — | none — count moves inline as `(4)` | no |
-| **V4 100 end users** | yes, up to 100 per page | same as V2 | yes |
+| **V4 100 departments** | — | same as V2 | yes |
 
-V4 also swaps the chevrons for dots — see below.
+V4 also pages its child organizations 100 at a time and swaps the chevrons for
+dots — see below.
 
 V1 is the MVP scope: organizations only, one supporting column. V2 adds the
 people who sit directly in the selected organization, plus a People count. V3
@@ -160,40 +161,61 @@ guides carry the structure.
 
 ### V4: the at-scale case
 
-V4 is V2's treatment run against an organization that actually has a roster —
-**Bramblewick University carries 150 users** instead of three. Same columns, same
-rows, one number changed. It exists because centring the view bounds how *deep* the
-tree goes and says nothing about how *wide* one node is, so this is the case the
-focused view doesn't answer on its own.
+V4 is V2's treatment run against an organization that is genuinely wide —
+**Bramblewick University carries 150 child departments** instead of three.
+Accounting, Aerospace Engineering, African Studies, … Palaeontology: departments
+rather than people, because the question V4 asks is how much of *the hierarchy*
+one level can hold. Centring the view bounds how *deep* the tree goes and says
+nothing about how *wide* a node is, so this is the case the focused view doesn't
+answer on its own.
 
-The roster hangs off **Bramblewick**, the organization the prototype opens on, so
-switching to V4 puts you in the at-scale case immediately — no drilling. Bramblewick
-also has three child organizations, so the long people list sits below a real set of
-child rows rather than on its own, which is the arrangement a reader would meet.
+The departments hang off **Bramblewick**, the organization the prototype opens on,
+so switching to V4 puts you in the at-scale case immediately — no drilling. They're
+listed alphabetically, which is what makes a hundred rows navigable at all and what
+makes paging legible: page one ends at Interior Architecture, page two picks up at
+International Relations.
 
-It shows **up to 100 users per page** and paginates past that, with Garden's
-`OffsetPagination` centred under the table — it takes Flora's tokens from the
-ThemeProvider, so the current page reads in Flora's blue. Above it, `Showing users
-1–100 of 150 in Bramblewick University`, because otherwise a hundred rows sit under
-a node whose People column says 150 and the two look like they disagree.
+**The departments are leaves.** None has children of its own, so drilling into one
+lands on a page with a path above it and nothing below — deliberately, since V4 is
+about breadth and the ten-level depth case is already covered by Computer Science
+in V1–V3.
 
-Two details worth knowing:
+It shows **up to 100 child organizations per page** and paginates past that, with
+Garden's `OffsetPagination` centred under the table — it takes Flora's tokens from
+the ThemeProvider, so the current page reads in Flora's blue. Above it, `Showing
+organizations 1–100 of 150 in Bramblewick University`, because otherwise a hundred
+rows sit under a node whose Child orgs column says 150 and the two look like they
+disagree.
 
-- **Only the people rows page.** The ancestor path, the child organizations, and
-  the siblings are the structure of the view rather than its contents, so they
-  stay on every page. Paging them away would leave a page-two reader with a list
-  of names and nothing saying whose they are.
-- **150 = Bramblewick's three hand-written staff plus a 147-name roster**, appended
-  rather than substituted. Those three include the personas the prototype is built
-  around, and dropping Adrian Whitlock out of the tree to reach a round number
-  would cost more than the round number is worth. It also leaves page two at 50 —
-  a real page rather than a stray remainder, and not a round multiple of the page
+Three details worth knowing:
+
+- **Whichever long group is on screen is the one that pages.** Children and
+  siblings are the same list seen from either side of a drill-in, so after clicking
+  into Accounting the hundred-odd rows are its *siblings* rather than its children.
+  Only one of the two can be over a page long, so the pager follows it, and the
+  caption names whichever organization owns the list. The alternative — paging only
+  children — made the control appear and vanish as you moved one level.
+- **Drilling into a department on page two stays on page two.** The page resets to
+  wherever the newly selected organization actually falls in its sibling group, so
+  clicking Palaeontology doesn't bounce the list back to Accounting.
+- **150 = Bramblewick's three hand-written departments plus 147 generated ones**,
+  appended rather than substituted. The three are the ones the deep Computer
+  Science branch hangs off, so they have to stay. It also leaves page two at 50 — a
+  real page rather than a stray remainder, and not a round multiple of the page
   size, which would hide the part-full last page.
+
+**V4 has no people rows**, though it keeps the People column. Its subject is the
+width of one level of the hierarchy, so putting users in the tree as well would
+confound the two. The column stays because "150 child orgs" says nothing about how
+many people the cascade actually reaches, which is the number the feature is
+ultimately about. For the same reason the search field reads *Search
+organizations* here rather than *Search organizations and users* — offering to
+search users would promise something this tree can't show.
 
 100 is a high page size; Support's own lists sit nearer 30. That is the thing
 under test. Page one is roughly 4,300px of scroll, which is either an acceptable
 price for never paging or an argument for bringing the number down — worth
-watching someone actually look for a name in it before deciding.
+watching someone actually look for a department in it before deciding.
 
 **Dots instead of chevrons.** V4 marks each organization with a 7px dot in the
 slot the chevron used to occupy. The chevron is directional — down means "children
@@ -218,7 +240,7 @@ V4.
 ## Comment mode
 
 Anyone with the link can annotate the prototype in place, Figma-style: click
-**Comment** in the top right, click the thing you want to talk about, and a
+**Comment** in the bottom left, click the thing you want to talk about, and a
 numbered pin and a thread appear. Pins persist, so you can come back and read
 what people said. Replies are one level deep; threads can be resolved or deleted.
 
@@ -237,8 +259,8 @@ it.
 obvious. A Figma pin can be a plain x/y coordinate because the canvas doesn't
 change underneath it. Here the same screen position shows entirely different
 content depending on which version is selected and which organization the tree is
-centred on — a pin dropped on a user row in V4 would float over blank space in
-V1. So a pin stores the version, the selected organization, a structural path to
+centred on — a pin dropped on a department row in V4 would float over blank
+space in V1. So a pin stores the version, the selected organization, a structural path to
 the element, and where inside that element the click fell as a fraction of its
 box. Opening a comment restores the version and organization first, then scrolls
 its row into view. Comments made on another view aren't drawn on the current one;
@@ -246,6 +268,11 @@ the sidebar lists them with a "on another view — click to jump there" note.
 
 Two smaller decisions worth knowing:
 
+- **The toggle sits bottom-left, and its offset is measured rather than
+  hard-coded.** The sidebar opens from the right and narrows the app, so a
+  bottom-right button ends up sitting on the panel it just opened. The layer finds
+  the nav rail touching the left edge and clears its width — 56px here — instead of
+  assuming that number, so the file drops into another prototype unedited.
 - **⌘-click (Ctrl-click) navigates** without leaving comment mode. The click
   catcher covers the design area, so plain clicks can't reach the links
   underneath — and an early version covered the whole viewport, which trapped
@@ -307,9 +334,9 @@ Deliberately out of scope for this pass, worth a PM conversation first:
 - Real navigation. Re-centring swaps the page contents in place; there is no
   back, no history, and no second tab. Support would open a new tab per
   organization.
-- Lazy loading for the "hundreds wide" case. V4 pages the rows, but every user is
-  still in memory and the whole page renders at once; a real 150-user organization
-  would fetch per page.
+- Lazy loading for the "hundreds wide" case. V4 pages the rows, but every
+  department is still in memory and the whole page renders at once; a real
+  150-child organization would fetch per page.
 - The org-chart / node-graph visualization from the FigJam board
 
 ## Open questions
@@ -324,11 +351,16 @@ Deliberately out of scope for this pass, worth a PM conversation first:
   kind of account they hold. But if review wants it back, it belongs beside the
   name like the job title already is, not in a column of its own.
 - Does *People* belong as a column, or is a count link into a separate list
-  better once a department has 100+ users? V4 takes the other road — it puts all
-  100 in the tree and pages them — so the two can be compared rather than argued
-  about.
+  better once a department has 100+ users? V2 puts the people in the tree; V4
+  keeps the column with no people rows at all, so the column can be judged on its
+  own.
 - Is 100 the right page size? It's the number under test in V4. Lower means less
   scroll and more paging; Support's own lists sit nearer 30.
+- **Does paging belong in the tree at all?** A hundred child organizations is a
+  list, and V4 renders it as tree rows because that's what the tab is — but an
+  alphabetical index, a filter, or a count link into a normal paged list are all
+  plausible answers to "this node has 150 children" that don't put 150 rows on a
+  hierarchy page.
 - Do the row dividers help or hurt? V3 removes them to find out.
 - Is the chevron's direction doing work the guide lines don't already do? V4 uses
   dots — filled vs. ring — to find out. The risk is affordance: a dot looks less

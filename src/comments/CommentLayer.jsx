@@ -43,9 +43,17 @@ import {
    them. */
 const Z = 9000
 
+/* Bottom-left rather than bottom-right, which is where a floating action button
+   conventionally sits. Two reasons it moved: the sidebar opens from the right and
+   slides the app out from under a right-hand button, so the toggle ended up
+   sitting on top of the panel it had just opened; and the right-hand end of a page
+   is where the design's own content runs to, while the left edge is usually nav
+   chrome the review is not about.
+
+   `left` is supplied at render from the measured nav rail (see leftNavWidth) so the
+   button clears it instead of covering a nav item. */
 const ToggleButton = styled.button`
   position: fixed;
-  right: 24px;
   bottom: 24px;
   z-index: ${Z + 2};
   display: flex;
@@ -387,6 +395,28 @@ const Banner = styled.div`
   font-size: 12px;
 `
 
+/* How far in from the left edge the toggle sits, measured rather than assumed.
+ *
+ * The button lives bottom-left, and most of these prototypes put a global nav rail
+ * there — 56px in the globalnav template, wider in an expanded nav. Hard-coding
+ * that would make the button cover a nav item in any prototype whose rail differs,
+ * and this file is meant to drop in unedited.
+ *
+ * So: find a `nav` touching the left edge and clear its width. Nothing else is
+ * consulted — the commentable root would be the obvious candidate but it often sits
+ * behind a properties or filter panel, which would push the button 300px in.
+ *
+ * Capped in case a nav turns out to be the full width of the page. */
+const TOGGLE_GUTTER = 24
+const TOGGLE_MAX_LEFT = 200
+
+const toggleLeftOffset = () => {
+  const rail = [...document.querySelectorAll('nav')]
+    .map((el) => el.getBoundingClientRect())
+    .find((box) => box.left <= 0 && box.width > 0)
+  return Math.min((rail?.width || 0) + TOGGLE_GUTTER, TOGGLE_MAX_LEFT)
+}
+
 /* Relative time, because an absolute timestamp on a design comment is noise —
    "2 months ago" is what Figma shows and what a reader actually wants. */
 const relativeTime = (iso, now) => {
@@ -428,6 +458,11 @@ export default function CommentLayer({ context, onRestoreContext }) {
      can go stale. */
   const [tick, setTick] = useState(0)
   const [now, setNow] = useState(() => Date.now())
+  /* The toggle's distance from the left edge. Held in state rather than measured
+     inline because the nav rail is 0px wide on the first paint — the host hasn't
+     laid out yet — and a button that starts at the far left and jumps right is
+     worse than one that arrives correct a frame late. */
+  const [toggleLeft, setToggleLeft] = useState(TOGGLE_GUTTER)
 
   useEffect(() => {
     let cancelled = false
@@ -470,6 +505,22 @@ export default function CommentLayer({ context, onRestoreContext }) {
       clearTimeout(timer)
     }
   }, [isOn])
+
+  /* Position the toggle clear of the nav rail. Not gated on `isOn` — the button is
+     visible whether or not comment mode is running, so this has to track a resize
+     either way. Measured after a frame, since on the very first paint the host's
+     nav has no width yet. */
+  useEffect(() => {
+    const measure = () => setToggleLeft(toggleLeftOffset())
+    const frame = requestAnimationFrame(measure)
+    const timer = setTimeout(measure, 200)
+    window.addEventListener('resize', measure)
+    return () => {
+      cancelAnimationFrame(frame)
+      clearTimeout(timer)
+      window.removeEventListener('resize', measure)
+    }
+  }, [])
 
   // Keeps "2m ago" honest without re-rendering constantly.
   useEffect(() => {
@@ -685,6 +736,7 @@ export default function CommentLayer({ context, onRestoreContext }) {
     <>
       <ToggleButton
         type="button"
+        style={{ left: toggleLeft }}
         $active={isOn}
         onClick={() => {
           setIsOn((value) => !value)

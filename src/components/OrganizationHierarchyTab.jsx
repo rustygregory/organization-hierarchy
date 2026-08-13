@@ -64,12 +64,12 @@ const HOVER_ROW_BG = '#f7f7f7'
 const SELECTION_BAR_COLOR = '#406cc4'
 const SELECTION_BAR_WIDTH = 2
 
-/* How many people rows one page of the tree shows before the pager takes over.
-   Only V4 has a roster big enough to reach it. 100 is high for a page size —
-   Support's own lists sit at 30 — and that is the thing under test: whether a
-   hundred rows of one department is a scroll a reader will accept in exchange for
-   never paging, or whether the number wants to come down. */
-const PEOPLE_PER_PAGE = 100
+/* How many child-organization rows one page of the tree shows before the pager
+   takes over. Only V4 has a list long enough to reach it. 100 is high for a page
+   size — Support's own lists sit at 30 — and that is the thing under test:
+   whether a hundred sibling departments is a scroll a reader will accept in
+   exchange for never paging, or whether the number wants to come down. */
+const CHILDREN_PER_PAGE = 100
 
 /* Where a row's name text begins, measured from the left edge of the name
    cell — the point its horizontal rule starts from. */
@@ -402,9 +402,9 @@ const PaginationRow = styled.div`
   margin-top: 24px;
 `
 
-/* Sits above the pager, left-aligned with the table: which slice of the roster is
-   on screen. Without it the tree shows a hundred names under a node whose People
-   column reads 150, and the two look like they disagree. */
+/* Sits above the pager, left-aligned with the table: which slice of the list is
+   on screen. Without it the tree shows a hundred rows under a node whose Child
+   orgs column reads 150, and the two look like they disagree. */
 const PageStatus = styled(SM)`
   display: block;
   color: #646864;
@@ -526,25 +526,30 @@ const Chevron = ({ direction = 'down' }) => (
  *   hasChildren    it has a subtree this view is holding back — drives the
  *                  right-pointing chevron that drills into it
  *
- * `page` windows the selected organization's *people* only. The ancestors,
- * children, and siblings are the structure of the view rather than its contents,
- * so they stay on every page — paging away the path would leave a page-two reader
- * with a list of names and no indication of whose they are.
+ * `page` windows one group of organization rows: whichever of the selected node's
+ * children or its own sibling group is longer than a page. Those are the same list
+ * seen from either side — drilling into one of Bramblewick's 150 departments turns
+ * its children into that department's siblings — so at most one of them is ever
+ * long, and paging them the same way keeps the pager from appearing and vanishing
+ * as you drill. The ancestor path is never paged: it's the structure of the view
+ * rather than its contents, and paging it away would leave a page-two reader with
+ * a list of departments and no indication of whose they are.
  *
- * Returns `{ rows, peopleTotal, peopleFrom, peopleTo }` so the caller can caption
- * the slice without recounting it.
+ * Returns `{ rows, pagedTotal, pagedFrom, pagedTo }` so the caller can caption the
+ * slice without recounting it. `pagedTotal` is 0 when nothing needed paging.
  */
 const buildFocusedRows = (selectedId, showPeople = true, atScale = false, page = 1) => {
   const rows = []
-  const empty = { rows, peopleTotal: 0, peopleFrom: 0, peopleTo: 0 }
+  const empty = { rows, pagedTotal: 0, pagedFrom: 0, pagedTo: 0 }
   const path = getPath(selectedId)
   const selected = path[path.length - 1]
   if (!selected) return empty
 
-  const peopleOptions = { atScale }
+  const orgOptions = { atScale }
 
   const hasChildren = (orgId) =>
-    getChildren(orgId).length > 0 || (showPeople && getPeopleIn(orgId, peopleOptions).length > 0)
+    getChildren(orgId, orgOptions).length > 0 ||
+    (showPeople && getPeopleIn(orgId).length > 0)
 
   const ancestors = path.slice(0, -1)
 
@@ -566,8 +571,8 @@ const buildFocusedRows = (selectedId, showPeople = true, atScale = false, page =
       ancestorIds: idChain,
       isOpen: true,
       hasChildren: true,
-      childOrgCount: getChildren(org.id).length,
-      peopleCount: countPeopleAtOrBelow(org.id, peopleOptions),
+      childOrgCount: getChildren(org.id, orgOptions).length,
+      peopleCount: countPeopleAtOrBelow(org.id, orgOptions),
     })
   })
 
@@ -575,14 +580,12 @@ const buildFocusedRows = (selectedId, showPeople = true, atScale = false, page =
   const ancestorIdChain = idChain
   const selectedDepth = ancestors.length
 
-  const childOrgs = getChildren(selected.id)
+  const allChildOrgs = getChildren(selected.id, orgOptions)
   // V1 MVP and V3 are organizations-only views, so people never enter the tree.
-  const allPeople = showPeople ? getPeopleIn(selected.id, peopleOptions) : []
-  // The window on screen. `isOpen` is decided by the full roster, not the slice,
-  // so a node with people always reads as open even on a page that shows none.
-  const pageStart = (page - 1) * PEOPLE_PER_PAGE
-  const people = allPeople.slice(pageStart, pageStart + PEOPLE_PER_PAGE)
-  const isOpen = childOrgs.length > 0 || allPeople.length > 0
+  const people = showPeople ? getPeopleIn(selected.id) : []
+  // `isOpen` is decided by the full list, not the paged slice, so a node with
+  // children always reads as open even on a page that shows none of them.
+  const isOpen = allChildOrgs.length > 0 || people.length > 0
 
   // The whole sibling group in its own order, with the selected organization
   // sitting wherever it actually sits. Hoisting it to the top of the group would
@@ -590,10 +593,51 @@ const buildFocusedRows = (selectedId, showPeople = true, atScale = false, page =
   // and it jumps to first, which reads as the list rearranging itself rather
   // than as one row being selected. The tree holds still; only the selection bar
   // and the row tint move.
-  const siblingGroup = selected.parentId ? getChildren(selected.parentId) : [selected]
+  const allSiblings = selected.parentId
+    ? getChildren(selected.parentId, orgOptions)
+    : [selected]
 
-  siblingGroup.forEach((org, index) => {
-    const isLast = index === siblingGroup.length - 1
+  /* Which group the pager drives. The children and the sibling group are the same
+     list from either side of a drill-in, so only one can be over a page long, and
+     paging whichever it is keeps the control in place as you move between them.
+     Sibling paging is windowed around the selected row rather than from index 0 —
+     see keepSelectedVisible — because the alternative is a page-one reader looking
+     for a selected row that is on page two. */
+  const pagesOver = (list) => list.length > CHILDREN_PER_PAGE
+  const pagedGroup = pagesOver(allChildOrgs)
+    ? 'children'
+    : pagesOver(allSiblings)
+      ? 'siblings'
+      : 'none'
+  const pagedTotal =
+    pagedGroup === 'children'
+      ? allChildOrgs.length
+      : pagedGroup === 'siblings'
+        ? allSiblings.length
+        : 0
+  const pageStart = (page - 1) * CHILDREN_PER_PAGE
+
+  const childOrgs =
+    pagedGroup === 'children'
+      ? allChildOrgs.slice(pageStart, pageStart + CHILDREN_PER_PAGE)
+      : allChildOrgs
+  const siblingGroup =
+    pagedGroup === 'siblings'
+      ? allSiblings.slice(pageStart, pageStart + CHILDREN_PER_PAGE)
+      : allSiblings
+
+  const pagedShown = pagedGroup === 'children' ? childOrgs.length : siblingGroup.length
+
+  const lastSiblingId = allSiblings[allSiblings.length - 1]?.id
+  const lastChildId = allChildOrgs[allChildOrgs.length - 1]?.id
+
+  siblingGroup.forEach((org) => {
+    /* `isLast` decides whether this row closes its parent's vertical guide with an
+       elbow, and that has to be judged against the *full* group, not the page. On
+       a first page of 100 out of 150 the hundredth row is not the last child, so
+       the line has to carry on past it — otherwise the rail closes mid-list and
+       the tree looks like it ends there. */
+    const isLast = org.id === lastSiblingId
     const isSelected = org.id === selected.id
     const chainHere = [...ancestorChain, isLast]
     const idChainHere = [...ancestorIdChain, org.id]
@@ -610,16 +654,16 @@ const buildFocusedRows = (selectedId, showPeople = true, atScale = false, page =
       // subtrees folded away until they're clicked in turn.
       isOpen: isSelected && isOpen,
       hasChildren: hasChildren(org.id),
-      childOrgCount: getChildren(org.id).length,
-      peopleCount: countPeopleAtOrBelow(org.id, peopleOptions),
+      childOrgCount: getChildren(org.id, orgOptions).length,
+      peopleCount: countPeopleAtOrBelow(org.id, orgOptions),
     })
 
     if (!isSelected) return
 
     // Direct children, nested under the selected organization. Each is a leaf
     // *here* — whatever hangs below it stays out of the view until it is clicked.
-    childOrgs.forEach((child, childIndex) => {
-      const isLastChild = childIndex === childOrgs.length - 1 && people.length === 0
+    childOrgs.forEach((child) => {
+      const isLastChild = child.id === lastChildId && people.length === 0
       rows.push({
         key: `org-${child.id}`,
         kind: 'org',
@@ -630,8 +674,8 @@ const buildFocusedRows = (selectedId, showPeople = true, atScale = false, page =
         ancestorIds: [...idChainHere, child.id],
         isOpen: false,
         hasChildren: hasChildren(child.id),
-        childOrgCount: getChildren(child.id).length,
-        peopleCount: countPeopleAtOrBelow(child.id, peopleOptions),
+        childOrgCount: getChildren(child.id, orgOptions).length,
+        peopleCount: countPeopleAtOrBelow(child.id, orgOptions),
       })
     })
 
@@ -655,11 +699,12 @@ const buildFocusedRows = (selectedId, showPeople = true, atScale = false, page =
 
   return {
     rows,
-    peopleTotal: allPeople.length,
-    // 1-indexed and inclusive, for "Showing 101–150 of 150". Zero when the slice
-    // is empty, so the caption can be left off entirely.
-    peopleFrom: people.length > 0 ? pageStart + 1 : 0,
-    peopleTo: pageStart + people.length,
+    pagedTotal,
+    pagedGroup,
+    // 1-indexed and inclusive, for "Showing 101–150 of 150". Zero when nothing is
+    // paged, so the caption can be left off entirely.
+    pagedFrom: pagedTotal > 0 && pagedShown > 0 ? pageStart + 1 : 0,
+    pagedTo: pagedTotal > 0 ? pageStart + pagedShown : 0,
   }
 }
 
@@ -702,44 +747,70 @@ export default function OrganizationHierarchyTab({
   onSelectOrganization,
   version = 'v1',
 }) {
-  // V4 is V2's treatment against an organization with a real roster — same
-  // columns, same people rows, one organization's user list swapped for a
-  // full-sized one. It hangs off Bramblewick, the node the prototype opens on, so
-  // the at-scale case is what V4 shows first rather than something to drill for.
-  // The long scroll it produces is the point: centring the view bounds how deep
-  // the tree goes, not how many people sit in one node, so this is the case the
-  // focused view does not answer.
+  // V4 is V2's treatment against an organization with a hundred child
+  // departments — same columns, same people rows, one organization's child list
+  // swapped for a full-sized one. It hangs off Bramblewick, the node the prototype
+  // opens on, so the at-scale case is what V4 shows first rather than something to
+  // drill for. The long scroll it produces is the point: centring the view bounds
+  // how deep the tree goes, not how wide one level of it is, so this is the case
+  // the focused view does not answer.
   const atScale = version === 'v4'
-  // V1 MVP and V3: organizations only — no people rows, no People column.
+  /* The People column: a count of everyone at or below each row. V1 MVP and V3
+     drop it along with their people rows; V2 and V4 keep it. */
   const showPeople = version === 'v2' || atScale
+  /* People *rows* are V2's alone. V4 replaced its end users with departments — its
+     subject is how wide one level of the hierarchy can get — so it has no people in
+     the tree, but it keeps the column, because "150 child orgs" says nothing about
+     which of them anyone can actually reach. */
+  const showPeopleRows = showPeople && !atScale
   // V3 Sans lines: no row dividers, and the child count moves out of its own
   // column into a parenthetical beside each organization's name.
   const isSansLines = version === 'v3'
   // V4 marks nodes with dots instead of chevrons.
   const isDotted = atScale
 
-  // Which page of the selected organization's people is on screen.
+  // Which page of the paged organization group is on screen.
   const [page, setPage] = useState(1)
 
-  // Back to page one whenever the subject changes. Landing on page 3 of a
-  // department you just navigated to — because the last one happened to have that
-  // many — would look like rows had gone missing.
+  /* Which page the subject sits on when the *sibling group* is what's paged.
+     Clicking the 120th of Bramblewick's departments makes it the selected node
+     inside a 153-row sibling group, and page one holds rows 1–100 — so the row you
+     just clicked would not be on screen. Opening on its page instead means the
+     selection is always visible when the page loads. Returns 1 for every other
+     case, which is what the reset below wants anyway. */
+  const pageForSelected = (orgId) => {
+    const parentId = getOrganization(orgId)?.parentId
+    if (!parentId) return 1
+    const siblings = getChildren(parentId, { atScale })
+    if (siblings.length <= CHILDREN_PER_PAGE) return 1
+    const index = siblings.findIndex((org) => org.id === orgId)
+    return index < 0 ? 1 : Math.floor(index / CHILDREN_PER_PAGE) + 1
+  }
+
+  /* Re-page whenever the subject changes. Usually back to page one: landing on
+     page 3 of a department you just navigated to — because the last one happened
+     to have that many — would look like rows had gone missing. The exception is
+     the case above, where page one would hide the row that was just clicked. */
   useEffect(() => {
-    setPage(1)
+    setPage(pageForSelected(selectedId))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedId, version])
 
-  const { rows, peopleTotal, peopleFrom, peopleTo } = useMemo(
-    () => buildFocusedRows(selectedId, showPeople, atScale, page),
-    [selectedId, showPeople, atScale, page],
+  const { rows, pagedTotal, pagedGroup, pagedFrom, pagedTo } = useMemo(
+    () => buildFocusedRows(selectedId, showPeopleRows, atScale, page),
+    [selectedId, showPeopleRows, atScale, page],
   )
 
-  const totalPages = Math.ceil(peopleTotal / PEOPLE_PER_PAGE)
+  const totalPages = Math.ceil(pagedTotal / CHILDREN_PER_PAGE)
   const isPaginated = totalPages > 1
 
   // The counter still describes reach, not the rows on screen: the point of the
   // feature is how far access cascades below the selected organization, and that
   // is a number the focused view no longer shows in full.
-  const reachOrgCount = useMemo(() => 1 + getDescendantIds(selectedId).length, [selectedId])
+  const reachOrgCount = useMemo(
+    () => 1 + getDescendantIds(selectedId, { atScale }).length,
+    [selectedId, atScale],
+  )
   const peopleReach = useMemo(
     () => (showPeople ? countPeopleAtOrBelow(selectedId, { atScale }) : 0),
     [selectedId, showPeople, atScale],
@@ -754,8 +825,12 @@ export default function OrganizationHierarchyTab({
   const orgLabel = reachOrgCount === 1 ? 'organization' : 'organizations'
   const peopleLabel = peopleReach === 1 ? 'person' : 'people'
   // Named in the pager's caption and its accessible label, so a reader arriving at
-  // the control knows which node's roster it walks.
-  const selectedName = getOrganization(selectedId)?.name
+  // the control knows whose list it walks. When the *siblings* are what's paged
+  // the list belongs to the parent, not to the selected node — captioning it with
+  // the selected department would name a node that holds none of these rows.
+  const pagedOwnerId =
+    pagedGroup === 'siblings' ? getOrganization(selectedId)?.parentId : selectedId
+  const pagedOwnerName = getOrganization(pagedOwnerId)?.name
 
   // data-comment-root marks the subtree comment pins may anchor inside. The
   // global nav and the comment layer itself sit outside it deliberately: the nav
@@ -766,8 +841,11 @@ export default function OrganizationHierarchyTab({
       {/* No Hint — the label carries the explanation, and a hint line here
           pushed the counts and the table down for no added meaning. */}
       <SearchField>
+        {/* Follows the rows, not the column: V4 shows a People count but no people,
+            so offering to search users would promise something its tree can't
+            show. */}
         <SearchLabel>
-          {showPeople ? 'Search organizations and users' : 'Search organizations'}
+          {showPeopleRows ? 'Search organizations and users' : 'Search organizations'}
         </SearchLabel>
         <MediaInput start={<SearchIcon />} />
       </SearchField>
@@ -884,19 +962,19 @@ export default function OrganizationHierarchyTab({
         </Body>
       </TreeTable>
 
-      {/* Only appears once a roster runs past one page, which today only V4's
-          does. V1–V3 end at the table, unchanged. */}
+      {/* Only appears once a list of child organizations runs past one page, which
+          today only V4's does. V1–V3 end at the table, unchanged. */}
       {isPaginated && (
         <>
           <PageStatus>
-            Showing users {peopleFrom}–{peopleTo} of {peopleTotal} in {selectedName}
+            Showing organizations {pagedFrom}–{pagedTo} of {pagedTotal} in {pagedOwnerName}
           </PageStatus>
           <PaginationRow>
             <OffsetPagination
               currentPage={page}
               totalPages={totalPages}
               onChange={setPage}
-              aria-label={`Pages of users in ${selectedName}`}
+              aria-label={`Pages of organizations in ${pagedOwnerName}`}
             />
           </PaginationRow>
         </>
