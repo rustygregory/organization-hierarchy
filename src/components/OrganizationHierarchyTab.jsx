@@ -710,7 +710,7 @@ export default function OrganizationHierarchyTab({
   // the tree goes, not how many people sit in one node, so this is the case the
   // focused view does not answer.
   const atScale = version === 'v4'
-  // V1 MVP and V3: organizations only — no people rows, no type/people columns.
+  // V1 MVP and V3: organizations only — no people rows, no People column.
   const showPeople = version === 'v2' || atScale
   // V3 Sans lines: no row dividers, and the child count moves out of its own
   // column into a parenthetical beside each organization's name.
@@ -781,7 +781,12 @@ export default function OrganizationHierarchyTab({
         <Head>
           <HeaderRow>
             <HeaderCell>Organization</HeaderCell>
-            {showPeople && <HeaderCell width="22%">Organization type</HeaderCell>}
+            {/* No Organization type column. It carried Company / Cost Center /
+                Supervisory for organizations and Agent / End user for people —
+                two different things in one column, and the 22% it took came out
+                of the Organization column, which is the one that has to absorb
+                ten levels of indent. Note what went with it: Agent vs End user
+                is no longer stated anywhere in the tree. */}
             {!isSansLines && <HeaderCell width="12%">Child orgs</HeaderCell>}
             {showPeople && <HeaderCell width="10%">People</HeaderCell>}
           </HeaderRow>
@@ -859,7 +864,6 @@ export default function OrganizationHierarchyTab({
                     </NameArea>
                   </RowInner>
                 </NameCell>
-                {showPeople && <Cell>{row.node.type}</Cell>}
                 {!isSansLines && (
                   <Cell>
                     {isPerson ? (

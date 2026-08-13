@@ -145,15 +145,15 @@ second branch to contrast against.
 | Version | People rows | Columns beside Organization | Row dividers |
 | --- | --- | --- | --- |
 | **V1 MVP** | — | Child orgs | yes |
-| **V2 with end-users** | yes | Organization type · Child orgs · People | yes |
+| **V2 with end-users** | yes | Child orgs · People | yes |
 | **V3 Sans lines** | — | none — count moves inline as `(4)` | no |
 | **V4 100 end users** | yes, up to 100 per page | same as V2 | yes |
 
 V4 also swaps the chevrons for dots — see below.
 
 V1 is the MVP scope: organizations only, one supporting column. V2 adds the
-people who sit directly in the selected organization and the columns that
-describe them. V3 asks whether the table furniture is needed at all — the child
+people who sit directly in the selected organization, plus a People count. V3
+asks whether the table furniture is needed at all — the child
 count becomes a parenthetical after the name, the Child orgs column goes away,
 and the only horizontal line left is the one under the header, so the vertical
 guides carry the structure.
@@ -249,6 +249,13 @@ Deliberately out of scope for this pass, worth a PM conversation first:
 
 - Should the view distinguish **direct membership** from **inherited access**?
   Right now only the selected node is marked at all.
+- **Agent vs. End user is no longer shown anywhere.** The Organization type
+  column carried it on people rows (alongside Company / Cost Center /
+  Supervisory on organization rows — two different things sharing one column),
+  and removing the column took the distinction with it. It may not be missed:
+  the cascade is about which organizations a person can see tickets in, not what
+  kind of account they hold. But if review wants it back, it belongs beside the
+  name like the job title already is, not in a column of its own.
 - Does *People* belong as a column, or is a count link into a separate list
   better once a department has 100+ users? V4 takes the other road — it puts all
   100 in the tree and pages them — so the two can be compared rather than argued
