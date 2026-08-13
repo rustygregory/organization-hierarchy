@@ -27,12 +27,15 @@ import {
  * than having every click ambiguous between "use it" and "annotate it".
  *
  * The host supplies two props and gets no other coupling:
- * - `context` — an object describing the current view (here: version + orgId)
- * - `onRestoreContext` — called with a stored context so the host can put the
- *   app back into the state a comment was made in
+ * - `context` — a flat object describing the current view. Whatever state has to
+ *   be restored for a pin to point at the right thing: a version, a selected id,
+ *   a route, a tab.
+ * - `onRestoreContext` — called with a stored context so the host can put the app
+ *   back into the state a comment was made in
  *
- * Neither this file nor anchor.js knows what a "version" or an "organization"
- * is, which is what makes the whole directory droppable into another prototype.
+ * Neither this file nor anchor.js interprets what's in `context` — it is compared
+ * for equality and handed back verbatim. That is what makes the whole directory
+ * droppable into another prototype unedited.
  */
 
 /* Layer sits above the app but below nothing else. z-index chosen to clear
@@ -72,14 +75,14 @@ const ToggleButton = styled.button`
 
    Deliberately covers only the commentable root's box rather than the whole
    viewport. Covering everything was the first attempt and it made comment mode a
-   dead end: the version switcher and the left nav sit outside the design area, so
-   a reviewer who entered comment mode on V1 could not get to V4 to comment on it
-   without leaving comment mode first. Chrome stays live; only the design is
+   dead end: a version switcher or a nav sitting outside the design area became
+   unreachable, so a reviewer could only comment on whichever view they happened
+   to be on when they entered the mode. Chrome stays live; only the design is
    pinnable.
 
    Inside the design area, a plain click drops a pin and a modifier-click
-   (⌘/Ctrl/Alt) passes through to the prototype, so you can still drill into the
-   tree without leaving the mode. */
+   (⌘/Ctrl/Alt) passes through to the prototype, so you can still navigate without
+   leaving the mode. */
 const ClickCatcher = styled.div`
   position: fixed;
   z-index: ${Z};
@@ -259,21 +262,22 @@ const AnchorNote = styled.div`
 /* Squeezes the app while the sidebar is open, rather than letting the sidebar
    cover it.
    The panel is fixed-position, so by default it sits on top of the rightmost 320px
-   of the design — which here is the People and Child orgs columns, exactly the
-   part a comment about scale is likely to be about. Narrowing #root instead means
-   the design reflows into the space it has and stays wholly visible.
+   of the design — typically the right-hand columns of a table, which is often
+   exactly what the comment is about. Narrowing #root instead means the design
+   reflows into the space it has and stays wholly visible.
    Applied to #root and not to the sidebar's own layout because the sidebar has to
-   stay fixed: it must not scroll away with the tree. */
+   stay fixed: it must not scroll away with the content.
+   If the host app doesn't mount into #root, change both selectors here. */
 const SqueezeApp = createGlobalStyle`
   #root {
     width: calc(100% - 320px);
     transition: width 120ms ease-out;
   }
 
-  /* Neutralises viewport-relative widths inside the app. This prototype's page
-     container is width: 100vw, which ignores a narrower #root entirely and would
-     keep sliding under the sidebar — max-width re-anchors it to its parent
-     without the app needing to know the comment layer exists. */
+  /* Neutralises viewport-relative widths inside the app. A page container set to
+     width: 100vw ignores a narrower #root entirely and keeps sliding under the
+     sidebar — max-width re-anchors it to its parent without the app needing to
+     know the comment layer exists. */
   #root > * {
     max-width: 100%;
   }
@@ -440,13 +444,15 @@ export default function CommentLayer({ context, onRestoreContext }) {
   }, [])
 
   /* Pins are positioned from live element geometry, so anything that can move an
-     element has to trigger a recompute: scrolling the tree, resizing the window,
-     and the app re-rendering after a version switch or re-centre.
+     element has to trigger a recompute: scrolling, resizing the window, and the
+     app re-rendering after a state change.
 
-     The comment root is itself the scroll container here (the tree is ~4600px
-     tall inside a ~920px box), so listening on window scroll alone would leave
-     pins stranded — hence the explicit listener on the root, plus a
-     ResizeObserver for the layout changes that don't involve scrolling at all. */
+     Note the capture-phase scroll listener. In an app laid out as
+     `height: 100vh; overflow: hidden` — which most of these prototypes are — the
+     document doesn't scroll at all; some inner container does, often the comment
+     root itself. A plain window scroll listener never fires and pins get
+     stranded. Capture catches scroll from any container, and the ResizeObserver
+     covers layout changes that involve no scrolling at all. */
   useEffect(() => {
     if (!isOn) return undefined
     const bump = () => setTick((value) => value + 1)
@@ -494,8 +500,8 @@ export default function CommentLayer({ context, onRestoreContext }) {
 
   /* Which pins belong on screen right now.
    *
-   * A comment made in another version, or centred on another organization, is
-   * *not* drawn on the page — its anchor would resolve against different content
+   * A comment made in a different context — another version, another selected
+   * record — is *not* drawn: its anchor would resolve against different content
    * and the pin would point at the wrong thing, which is worse than not showing
    * it. Those stay listed in the sidebar, and clicking one restores its context
    * first. This is the whole reason a pin stores context rather than just
@@ -831,9 +837,10 @@ export default function CommentLayer({ context, onRestoreContext }) {
             </Thread>
           )}
 
-          {/* data-comment-sidebar rather than relying on the `aside` tag: the
-              organization profile has its own aside (the properties panel), so a
-              tag selector matches the wrong element. */}
+          {/* data-comment-sidebar rather than relying on the `aside` tag. The host
+              design may well have its own aside — a properties or filter panel —
+              in which case a tag selector matches the wrong element. Cost me a
+              spurious test failure once. */}
           <Sidebar data-comment-sidebar="true" onClick={(event) => event.stopPropagation()}>
             <SidebarHead>
               <span>Comments ({roots.length})</span>

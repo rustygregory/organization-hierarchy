@@ -105,10 +105,11 @@ prototype.
 
 ## 4. Reusing the same project for another prototype
 
-Copy `src/comments/` into the other prototype, change one line in `store.js`:
+Run the `prototype-comments` skill there, or copy `src/comments/` across by hand
+and change one line in `store.js`:
 
 ```js
-export const PROJECT = 'organization-hierarchy'   // → the new prototype's name
+export const PROJECT = 'this-prototype-name'   // → the new prototype's name
 ```
 
 Then mark the commentable area with `data-comment-root="true"` and render

@@ -3,24 +3,24 @@
  *
  * This is the hard part of commenting on a prototype rather than on a static
  * image. A Figma pin can be an x/y coordinate because the canvas never changes
- * underneath it. Here the same screen position shows completely different
- * content depending on which version is selected and which organization the view
- * is centred on — a pin dropped on a user row in V4 would float over blank space
- * in V1. So a pin stores three things:
+ * underneath it. A prototype's does: the same screen position shows completely
+ * different content depending on which version is selected, which tab is open,
+ * which record is loaded. A pin dropped on a row in one state would float over
+ * blank space in another. So a pin stores three things:
  *
  * 1. `context` — the app state the commenter was looking at, supplied by the
- *    host prototype (here: which version, which organization). Opening the
- *    comment restores this first, so the pin can only ever be resolved against
- *    the view it was made in.
+ *    host prototype (whatever state it needs to restore: a version, a selected
+ *    id, a route). Opening the comment restores this first, so the pin can only
+ *    ever be resolved against the view it was made in.
  * 2. `path` — a structural route to the element, from a marked root down.
  * 3. `label` + `fraction` — the element's text at the time, used to sanity-check
  *    that the path still lands on the same thing, and where inside the element
  *    the click fell, as a fraction of its box, so the pin keeps its position
  *    when the element reflows to a different size.
  *
- * Nothing here knows anything about organizations or versions. The host passes
- * its own context object in and gets it back unchanged, which is the seam that
- * lets this drop into a different prototype without edits.
+ * Nothing here knows anything about the host's state. The host passes its own
+ * context object in and gets it back unchanged, which is the seam that lets this
+ * drop into a different prototype without edits.
  */
 
 /* The attribute marking the subtree pins are allowed to anchor inside. Anything

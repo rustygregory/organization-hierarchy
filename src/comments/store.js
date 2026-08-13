@@ -34,7 +34,7 @@ const TABLE = 'prototype_comments'
 
 /* Namespaces the rows so several prototypes can share one Supabase project.
    Without it, dropping this into the next prototype would mix its comments in
-   with this one's. */
+   with this one's. Set this to the prototype's name when installing. */
 export const PROJECT = 'organization-hierarchy'
 
 export const isShared = Boolean(SUPABASE_URL && SUPABASE_KEY)
