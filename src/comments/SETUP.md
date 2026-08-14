@@ -93,7 +93,9 @@ Be clear about what this is and isn't:
   so anyone can sign a comment with your name.
 - **The key is per browser.** Your laptop and your phone are two different owners,
   and clearing browser data gives up the ability to delete what you already wrote.
-  A comment nobody owns can only be removed from the SQL Editor.
+  A comment nobody owns — including anything posted before the ownership rules were
+  added — can only be removed from the SQL Editor, with
+  **[delete-ownerless.sql](./delete-ownerless.sql)**.
 
 So it's the right trade for design review among colleagues, and still the wrong
 place for customer data or anything confidential.

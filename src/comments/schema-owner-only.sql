@@ -138,16 +138,10 @@ grant select (id, project, author, body, parent_id, number, anchor, resolved, cr
 
 -- 5. Ownerless comments, if you have any.
 --
--- Rows written before this upgrade have no `author_key`, so nobody can delete
--- them from the UI. If that's a problem, adopt them or remove them here — this is
--- the SQL Editor, which runs as the owner and is not bound by the policies above.
---
---   -- see what's ownerless
---   select id, project, author, left(body, 40) from public.prototype_comments
---   where author_key is null;
---
---   -- ...then delete them
---   delete from public.prototype_comments where author_key is null;
+-- Rows written before this upgrade have no `author_key`, so nobody can delete them
+-- from the UI. To clear them out, run delete-ownerless.sql — it lists them first,
+-- then deletes only the rows with no owner. The SQL Editor runs as the table owner
+-- and is not bound by the policies above, which is why it can.
 
 -- Proof it worked, rather than a bare "Success. No rows returned." Expect the
 -- author_key column, the four policies named above, and update limited to
