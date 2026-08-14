@@ -166,7 +166,9 @@ than a screen can hold has to do *something*, and V3.75 and V4 are the two
 answers: cap the list and put a door at the bottom, or page through it in
 windows. They deliberately run on different data — 175 departments against 150 —
 so neither can be mistaken for a tweak of the other; see *Two rosters, on
-purpose* below.
+purpose* below. (The answers meet on the other side of V3.75's door: the page it
+opens pages at 100, because a page showing 175 rows unabridged is the thing the cap
+was avoiding.)
 
 ### V3.5: expanding without selecting
 
@@ -284,10 +286,34 @@ copy of the tree: it renders the same `OrganizationHierarchyTab` rooted at the
 department (`rootId`) with the cap lifted (`uncapped`). Same geometry, same
 chevrons, same skeletons, same selection behaviour — so a child that has children
 of its own still opens in place there, and the two views cannot drift apart when
-either is touched. What differs is only what's around it: a header naming the
-department with its counts, a search field scoped to it, and no properties rail or
-Tickets/Users/Related tabs, because this page is about one relationship — what the
-department contains — rather than the organization as a record.
+either is touched. What differs is what's around it: a header naming the
+department with its counts and its path, and a search field scoped to it. It keeps
+the profile's **properties rail** — the page is still about an organization, and
+its Tags, Domains and access setting matter as much here as on the profile — and
+drops only the Tickets/Users/Related tab strip, which is a set of *other* views of
+the record rather than part of this one.
+
+The rail is `src/components/OrganizationProperties.jsx`, extracted from the
+profile so both pages render the same component. It was inlined in
+`OrganizationProfile` first; two copies of a list of fields is exactly the kind of
+thing that drifts one field at a time, and the *Can view tickets in this org and
+below* option is the whole feature, so the two views disagreeing about it would be
+the worst possible place for the drift to land.
+
+**The page pages, at 100.** Lifting the cap made it the one view showing a long
+list unabridged, which is the failure mode the cap exists to avoid — so it takes
+V4's answer instead: Garden's `OffsetPagination` under the table, with `Showing
+organizations 1–100 of 175 in Bramblewick University` above it. The cap and the
+pager are the two answers to the same problem, and this page is where the uncapped
+one has to hold up.
+
+It pages **the root's children only** — not the selected node's, the way V4 does.
+On a rooted page the root is what the page is about, so its children are
+unambiguously the list, and a list is the only thing a pager can honestly walk.
+Windowing a nested node would slice a shape rather than a list: the window could
+open mid-subtree, and the rows either side of it wouldn't be siblings. `page` is
+therefore passed to `buildExpandableRows` only when `uncapped && rootId`, and it's
+mutually exclusive with `rowCap`.
 
 Details worth knowing:
 
@@ -307,6 +333,26 @@ Details worth knowing:
   `Button isLink` still brings a 36px box with it, which breaks the row height.
 - **Collapsing the node takes the View all with it**, since it's a child row like
   any other.
+- **`isLast` is judged against the full child list, not the page.** On page one the
+  hundredth row is not the last child, so the rail has to carry on past it; deciding
+  the elbow from the visible page closes the vertical line at row 100 of 175 and the
+  tree looks like it ends mid-list.
+- **The search field is 440px, with 24px of clear space beneath it.** The toolbar
+  stays put while the tree scrolls, so a row passing under it needs somewhere to go —
+  without the gap the first row to scroll under disappears with its name half
+  covered, which reads as a rendering fault rather than as scrolling. The tab's own
+  `Wrapper` goes flush (`$flush`) on this page so the toolbar's 24px isn't stacked on
+  the tab's, which would put the table 48px down on first paint but 24px down once
+  scrolled.
+- **The label is *Search this organization***, not "Search organizations in
+  Bramblewick University". The department is named twice above it already, and a long
+  name wraps the label onto two lines.
+- **The Comment toggle sits 32px from the left edge**, over the nav rail rather than
+  clear of it — the rail's own icons stop well above the bottom of the window, so the
+  space is free. `CommentLayer` measures the rail by default, which put the button
+  80px in, far enough that it read as belonging to the page content; the position is
+  an optional `toggleLeft` prop so the shared drop-in keeps its measuring default for
+  other prototypes.
 - **The second tab closes when you leave V3.75.** The full-page view only exists
   in this version, so a tab left standing would show a page the current version
   can't produce.
@@ -448,8 +494,13 @@ Two smaller decisions worth knowing:
 - **The toggle sits bottom-left, and its offset is measured rather than
   hard-coded.** The sidebar opens from the right and narrows the app, so a
   bottom-right button ends up sitting on the panel it just opened. The layer finds
-  the nav rail touching the left edge and clears its width — 56px here — instead of
-  assuming that number, so the file drops into another prototype unedited.
+  the nav rail touching the left edge and clears its width instead of assuming a
+  number, so the file drops into another prototype unedited. **This prototype
+  overrides it to 32px** via the optional `toggleLeft` prop: measuring put the
+  button 80px in, clear of the rail, which read as belonging to the page content
+  rather than to the window. The rail's own icons stop well above the bottom, so
+  sitting over it costs nothing. The override is a prop rather than a change to the
+  measuring code, so other prototypes keep the default.
 - **⌘-click (Ctrl-click) navigates** without leaving comment mode. The click
   catcher covers the design area, so plain clicks can't reach the links
   underneath — and an early version covered the whole viewport, which trapped
@@ -532,8 +583,12 @@ Deliberately out of scope for this pass, worth a PM conversation first:
   better once a department has 100+ users? V2 puts the people in the tree; V4
   keeps the column with no people rows at all, so the column can be judged on its
   own.
-- Is 100 the right page size? It's the number under test in V4. Lower means less
-  scroll and more paging; Support's own lists sit nearer 30.
+- Is 100 the right page size? It's the number under test in V4, and V3.75's
+  department page reuses it. Lower means less scroll and more paging; Support's own
+  lists sit nearer 30. Worth noting the two pages aren't equivalent tests: V4's
+  hundred rows sit inside a tree with other branches open, while the department
+  page's hundred are the only thing on it, so the same number may well be right in
+  one place and wrong in the other.
 - **Is 50 the right cap?** V3.75's number is under test the same way. 50 is
   already a long scroll inside a tree that also has other branches open, and the
   argument for a cap gets stronger the lower it goes — but a cap low enough to

@@ -406,7 +406,11 @@ const Banner = styled.div`
  * consulted — the commentable root would be the obvious candidate but it often sits
  * behind a properties or filter panel, which would push the button 300px in.
  *
- * Capped in case a nav turns out to be the full width of the page. */
+ * Capped in case a nav turns out to be the full width of the page.
+ *
+ * A host that wants the button somewhere specific passes `toggleLeft` and none of
+ * this runs. Measuring is the default because it's the safe one for a drop-in; an
+ * explicit number is better when the host knows its own layout. */
 const TOGGLE_GUTTER = 24
 const TOGGLE_MAX_LEFT = 200
 
@@ -434,7 +438,13 @@ const relativeTime = (iso, now) => {
   return `${months}mo ago`
 }
 
-export default function CommentLayer({ context, onRestoreContext }) {
+export default function CommentLayer({
+  context,
+  onRestoreContext,
+  // Pixels from the left edge for the Comment toggle. Omit to measure the host's nav
+  // rail instead — see toggleLeftOffset.
+  toggleLeft: toggleLeftProp,
+}) {
   const [isOn, setIsOn] = useState(false)
   const [comments, setComments] = useState([])
   const [error, setError] = useState(null)
@@ -462,7 +472,8 @@ export default function CommentLayer({ context, onRestoreContext }) {
      inline because the nav rail is 0px wide on the first paint — the host hasn't
      laid out yet — and a button that starts at the far left and jumps right is
      worse than one that arrives correct a frame late. */
-  const [toggleLeft, setToggleLeft] = useState(TOGGLE_GUTTER)
+  const [measuredLeft, setMeasuredLeft] = useState(TOGGLE_GUTTER)
+  const toggleLeft = toggleLeftProp ?? measuredLeft
 
   useEffect(() => {
     let cancelled = false
@@ -509,9 +520,10 @@ export default function CommentLayer({ context, onRestoreContext }) {
   /* Position the toggle clear of the nav rail. Not gated on `isOn` — the button is
      visible whether or not comment mode is running, so this has to track a resize
      either way. Measured after a frame, since on the very first paint the host's
-     nav has no width yet. */
+     nav has no width yet. Skipped entirely when the host gave us a number. */
   useEffect(() => {
-    const measure = () => setToggleLeft(toggleLeftOffset())
+    if (toggleLeftProp !== undefined) return undefined
+    const measure = () => setMeasuredLeft(toggleLeftOffset())
     const frame = requestAnimationFrame(measure)
     const timer = setTimeout(measure, 200)
     window.addEventListener('resize', measure)
@@ -520,7 +532,7 @@ export default function CommentLayer({ context, onRestoreContext }) {
       clearTimeout(timer)
       window.removeEventListener('resize', measure)
     }
-  }, [])
+  }, [toggleLeftProp])
 
   // Keeps "2m ago" honest without re-rendering constantly.
   useEffect(() => {

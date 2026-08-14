@@ -233,6 +233,11 @@ export default function App() {
             content depending on the version and the selected organization, so a
             pin without this context would point at the wrong row. */}
         <CommentLayer
+          // 32px from the left edge, over the nav rail rather than clear of it.
+          // The rail's own icons stop well above the bottom of the window, so the
+          // space is free — and measuring the rail put the button 80px in, far
+          // enough that it read as belonging to the page content.
+          toggleLeft={32}
           context={{ version, orgId, wideTabOrgId, activeTabId }}
           onRestoreContext={(saved) => {
             if (saved.version) setVersion(saved.version)

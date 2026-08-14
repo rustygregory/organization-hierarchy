@@ -4,6 +4,7 @@ import { Avatar } from '@zendeskgarden/react-avatars'
 import { Button } from '@zendeskgarden/react-buttons'
 import { Field, Label, MediaInput } from '@zendeskgarden/react-forms'
 import OrganizationHierarchyTab from './OrganizationHierarchyTab'
+import OrganizationProperties from './OrganizationProperties'
 import { getChildren, getOrganization, getDescendantIds } from '../data/hierarchy'
 
 /* V3.75's *View all* destination: a full page for one department showing that
@@ -23,17 +24,26 @@ import { getChildren, getOrganization, getDescendantIds } from '../data/hierarch
  * the table here would have meant two copies of the rail arithmetic, and they would
  * have drifted the first time either was touched.
  *
- * It is deliberately not a full profile: no properties rail, no Tickets/Users/Related
- * tabs. Those describe an organization as a record, and this page is about one
- * relationship — what the department contains. The profile is a click away in the
- * other tab, which is still open.
+ * It keeps the profile's properties rail — this is still a page about an
+ * organization, and its Tags, Domains and access setting are as relevant here as on
+ * the profile. It's the same OrganizationProperties component, so the two can't
+ * disagree. What it drops is the Tickets/Users/Related tab strip: those are other
+ * views of the record, and this page has one subject, which is what the department
+ * contains.
  */
 
 const Page = styled.div`
   display: flex;
-  flex-direction: column;
   flex: 1;
   min-height: 0;
+  overflow: hidden;
+`
+
+const MainSection = styled.div`
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
   overflow: hidden;
 `
 
@@ -74,16 +84,34 @@ const ChildTotal = styled(SM)`
   white-space: nowrap;
 `
 
+/* The search field sits above the tree and stays put while it scrolls, so it needs
+   24px of clear space beneath it — otherwise the first row to scroll under it
+   disappears with its name half-covered, which reads as a rendering fault rather
+   than as scrolling. `flex-shrink: 0` keeps the toolbar out of the scroll area. */
 const Toolbar = styled.div`
   display: flex;
   align-items: flex-end;
   gap: 12px;
-  padding: 16px 32px 0;
+  padding: 16px 32px 24px;
   flex-shrink: 0;
 `
 
+/* 440px — wide enough for a long department name plus a query, and Rusty's number.
+   The two Garden overrides match the profile tab's search so the pair are the same
+   control: MediaInput sizes to its font, so the height is pinned; and it aligns its
+   icon on `baseline`, which leaves the magnifying glass low in a taller input. */
 const SearchField = styled(Field)`
-  width: 320px;
+  width: 440px;
+
+  [data-garden-id='forms.faux_input'] {
+    align-items: center;
+    box-sizing: border-box;
+    height: 40px;
+  }
+
+  [data-garden-id='forms.input'] {
+    height: 100%;
+  }
 `
 
 const SearchLabel = styled(Label)`
@@ -92,14 +120,6 @@ const SearchLabel = styled(Label)`
   font-size: 14px;
   font-weight: 600;
   color: #2f3130;
-`
-
-const TreeScroll = styled.div`
-  flex: 1;
-  min-height: 0;
-  overflow-y: auto;
-  display: flex;
-  flex-direction: column;
 `
 
 const SearchIcon = () => (
@@ -163,47 +183,52 @@ export default function DepartmentPage({ orgId, onSelectOrganization }) {
 
   return (
     <Page>
-      <Header>
-        <Avatar isSystem size="large" backgroundColor="#646864" foregroundColor="#ffffff">
-          <OrganizationIcon />
-        </Avatar>
-        <TitleBlock>
-          {trail.length > 0 && <Trail>{trail.join(' › ')}</Trail>}
-          <Subject>
-            <XXL tag="h1" style={{ color: '#2f3130' }}>
-              {org.name}
-            </XXL>
-            <ChildTotal>
-              {directChildren.length} child{' '}
-              {directChildren.length === 1 ? 'organization' : 'organizations'}
-              {reach !== directChildren.length && ` · ${reach} below in total`}
-            </ChildTotal>
-          </Subject>
-        </TitleBlock>
-        <Button>
-          Actions
-          <span style={{ marginLeft: 8, display: 'inline-flex', verticalAlign: 'middle' }}>
-            <CaretIcon />
-          </span>
-        </Button>
-      </Header>
+      {/* The same rail as the profile, for the department this page is about. */}
+      <OrganizationProperties org={org} />
 
-      {/* Search belongs here more than anywhere else in the prototype — this is the
-          page with 175 rows on it. Still inert, like the one on the profile. */}
-      <Toolbar>
-        <SearchField>
-          {/* Not "in {org.name}" — the department is named twice already, in the tab
-              and the heading, and a long one wraps the label onto two lines. */}
-          <SearchLabel>Search this organization</SearchLabel>
-          <MediaInput start={<SearchIcon />} />
-        </SearchField>
-      </Toolbar>
+      <MainSection>
+        <Header>
+          <Avatar isSystem size="large" backgroundColor="#646864" foregroundColor="#ffffff">
+            <OrganizationIcon />
+          </Avatar>
+          <TitleBlock>
+            {trail.length > 0 && <Trail>{trail.join(' › ')}</Trail>}
+            <Subject>
+              <XXL tag="h1" style={{ color: '#2f3130' }}>
+                {org.name}
+              </XXL>
+              <ChildTotal>
+                {directChildren.length} child{' '}
+                {directChildren.length === 1 ? 'organization' : 'organizations'}
+                {reach !== directChildren.length && ` · ${reach} below in total`}
+              </ChildTotal>
+            </Subject>
+          </TitleBlock>
+          <Button>
+            Actions
+            <span style={{ marginLeft: 8, display: 'inline-flex', verticalAlign: 'middle' }}>
+              <CaretIcon />
+            </span>
+          </Button>
+        </Header>
 
-      <TreeScroll>
+        {/* Search belongs here more than anywhere else in the prototype — this is the
+            page with 175 rows on it. Still inert, like the one on the profile. */}
+        <Toolbar>
+          <SearchField>
+            {/* Not "in {org.name}" — the department is named twice already, in the tab
+                and the heading, and a long one wraps the label onto two lines. */}
+            <SearchLabel>Search this organization</SearchLabel>
+            <MediaInput start={<SearchIcon />} />
+          </SearchField>
+        </Toolbar>
+
         {/* The same tree as the profile tab, rooted here and uncapped: this is the
-            page the cap sends people to, so a cap on it would be circular. Its own
-            search is hidden because the toolbar above already has one scoped to this
-            department. */}
+            page the cap sends people to, so a cap on it would be circular. It pages
+            at 100 instead — the cap and the pager are the two answers, and this page
+            is where the uncapped one has to hold up. Its own search field is hidden
+            because the toolbar above already has one, and the component scrolls
+            itself, so there is no wrapper around it competing for the scroll. */}
         <OrganizationHierarchyTab
           selectedId={orgId}
           onSelectOrganization={onSelectOrganization}
@@ -212,7 +237,7 @@ export default function DepartmentPage({ orgId, onSelectOrganization }) {
           uncapped
           hideSearch
         />
-      </TreeScroll>
+      </MainSection>
     </Page>
   )
 }

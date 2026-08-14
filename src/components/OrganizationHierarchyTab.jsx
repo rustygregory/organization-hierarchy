@@ -149,8 +149,12 @@ const ruleInsetFor = (depth) =>
    of this layout, and attached is what keeps it continuous. */
 
 
+/* The scroller. `$flush` drops the top padding for the rooted department page, whose
+   own toolbar sits above this and owns the gap below the search field — otherwise the
+   two stack and the table starts 48px down on first paint but 24px down once
+   scrolled. */
 const Wrapper = styled.div`
-  padding: 24px 32px 40px;
+  padding: ${(props) => (props.$flush ? '0' : '24px')} 32px 40px;
   overflow-y: auto;
   flex: 1;
 `
@@ -874,13 +878,19 @@ const buildExpandableRows = (
   showPeople,
   expandedIds,
   loadingIds,
-  /* V3.75: the wider roster, a cap on how many children any one node shows, and an
-     explicit root.
+  /* V3.75: the wider roster, a cap on how many children any one node shows, an
+     explicit root, and a page window.
      - `rowCap: null` means no cap, which is V3.5 and also V3.75's own full-page view.
      - `rootId` starts the tree at a given organization instead of at the top of the
        hierarchy. That is what makes the View all page a page *of that department*
-       rather than the whole tree scrolled to it. */
-  { wide = false, rowCap = null, rootId = null } = {},
+       rather than the whole tree scrolled to it.
+     - `page` windows the **root's** children, CHILDREN_PER_PAGE at a time. Only the
+       root's, because the root is what the page is about: its children are a list,
+       and a list is the only thing a pager can honestly walk. Windowing a nested
+       node would slice a shape rather than a list — the window could open mid-subtree
+       and the rows either side of it wouldn't be siblings. Paging is therefore
+       mutually exclusive with a rowCap, and only the uncapped rooted page uses it. */
+  { wide = false, rowCap = null, rootId = null, page = null } = {},
 ) => {
   const rows = []
   const nothing = { rows, pagedTotal: 0, pagedGroup: 'none', pagedFrom: 0, pagedTo: 0 }
@@ -893,6 +903,15 @@ const buildExpandableRows = (
 
   const hasChildren = (orgId) =>
     getChildren(orgId, orgOptions).length > 0 || (showPeople && getPeopleIn(orgId).length > 0)
+
+  /* The root's child list, and the window onto it. Computed up front rather than
+     inside pushNode because the caption needs the totals whether or not the root
+     happens to be open. */
+  const rootChildren = getChildren(root.id, orgOptions)
+  const isPaged = page !== null && rootChildren.length > CHILDREN_PER_PAGE
+  const pageStart = isPaged ? (page - 1) * CHILDREN_PER_PAGE : 0
+  const pagedTotal = isPaged ? rootChildren.length : 0
+  let pagedShown = 0
 
   const pushNode = (org, depth, chain, idChain) => {
     const isOpen = expandedIds.has(org.id) && hasChildren(org.id)
@@ -921,8 +940,18 @@ const buildExpandableRows = (
        exist in V2 and V4, neither of which uses this builder, so a cap here would be
        untested code standing in for a decision nobody has made. */
     const isCapped = rowCap !== null && allChildren.length > rowCap
-    const children = isCapped ? allChildren.slice(0, rowCap) : allChildren
-    const hiddenCount = allChildren.length - children.length
+    /* The page window, on the root's children only — see the `page` option. A node
+       is never both capped and paged: the cap belongs to the tree in the profile tab
+       and the pager to the full page, which is the version of this list with the cap
+       lifted. */
+    const isPagedHere = isPaged && org.id === root.id
+    const children = isCapped
+      ? allChildren.slice(0, rowCap)
+      : isPagedHere
+        ? allChildren.slice(pageStart, pageStart + CHILDREN_PER_PAGE)
+        : allChildren
+    const hiddenCount = isCapped ? allChildren.length - children.length : 0
+    if (isPagedHere) pagedShown = children.length
 
     // Standing in for the fetch a real hierarchy would need — see
     // SKELETON_THRESHOLD. The subtree below is withheld until the mark clears.
@@ -945,13 +974,18 @@ const buildExpandableRows = (
       return
     }
 
-    children.forEach((child, index) => {
+    const lastChildId = allChildren[allChildren.length - 1]?.id
+
+    children.forEach((child) => {
       /* People are pushed after the child organizations, so a child can only close
          the rail if there are none — and neither can it when a View all row follows
          it, since that row is then the last thing under this node and the guide line
-         has to reach it. */
+         has to reach it.
+         Judged against `allChildren`, not the page: on page one of a paged root the
+         hundredth row is not the last child, so the rail has to carry on past it or
+         the tree looks like it ends mid-list. */
       const isLastHere =
-        index === children.length - 1 && peopleHere.length === 0 && !isCapped
+        child.id === lastChildId && peopleHere.length === 0 && !isCapped
       pushNode(child, depth + 1, [...chain, isLastHere], [...idChain, child.id])
     })
 
@@ -996,7 +1030,15 @@ const buildExpandableRows = (
   // leading `true` is only there to keep `chain` indexed by depth.
   pushNode(root, 0, [true], [root.id])
 
-  return { rows, pagedTotal: 0, pagedGroup: 'none', pagedFrom: 0, pagedTo: 0 }
+  return {
+    rows,
+    pagedTotal,
+    // Always the root here, unlike buildFocusedRows where the paged list can belong
+    // to the selected node's parent.
+    pagedGroup: pagedTotal > 0 ? 'children' : 'none',
+    pagedFrom: pagedTotal > 0 && pagedShown > 0 ? pageStart + 1 : 0,
+    pagedTo: pagedTotal > 0 ? pageStart + pagedShown : 0,
+  }
 }
 
 const TreeGutter = ({ row }) => {
@@ -1225,11 +1267,20 @@ export default function OrganizationHierarchyTab({
   /* Re-page whenever the subject changes. Usually back to page one: landing on
      page 3 of a department you just navigated to — because the last one happened
      to have that many — would look like rows had gone missing. The exception is
-     the case above, where page one would hide the row that was just clicked. */
+     the case above, where page one would hide the row that was just clicked.
+     On the rooted page the paged list is the root's and doesn't change when a row is
+     selected, so it stays where the reader left it — resetting to page one there
+     would throw away their place for clicking a name. */
   useEffect(() => {
+    if (rootId) return
     setPage(pageForSelected(selectedId))
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedId, version])
+  }, [selectedId, version, rootId])
+
+  // A different department opened in the tab starts at its own page one.
+  useEffect(() => {
+    if (rootId) setPage(1)
+  }, [rootId])
 
   /* Two different trees, not one tree with a flag. V1–V4 take their shape from
      `selectedId`; V3.5 takes its shape from `expandedIds` and uses `selectedId` only
@@ -1242,6 +1293,9 @@ export default function OrganizationHierarchyTab({
             wide: isWide,
             rowCap: isWide && !uncapped ? WIDE_ROW_CAP : null,
             rootId,
+            // Paged only on the uncapped rooted page — that's the one showing a whole
+            // long list, and the cap is the other answer to the same problem.
+            page: uncapped && rootId ? page : null,
           })
         : buildFocusedRows(selectedId, showPeopleRows, atScale, page),
     [
@@ -1286,7 +1340,11 @@ export default function OrganizationHierarchyTab({
   // the list belongs to the parent, not to the selected node — captioning it with
   // the selected department would name a node that holds none of these rows.
   const pagedOwnerId =
-    pagedGroup === 'siblings' ? getOrganization(selectedId)?.parentId : selectedId
+    pagedGroup === 'siblings'
+      ? getOrganization(selectedId)?.parentId
+      : // On the rooted page the paged list is the root's, and the root is not
+        // necessarily the selected row — a reader can click a child and stay here.
+        (rootId ?? selectedId)
   const pagedOwnerName = getOrganization(pagedOwnerId)?.name
 
   // data-comment-root marks the subtree comment pins may anchor inside. The
@@ -1294,7 +1352,7 @@ export default function OrganizationHierarchyTab({
   // is chrome rather than design under review, and a pin able to attach to the
   // comment layer could anchor to another pin.
   return (
-    <Wrapper data-comment-root="true">
+    <Wrapper data-comment-root="true" $flush={hideSearch}>
       {/* No Hint — the label carries the explanation, and a hint line here
           pushed the counts and the table down for no added meaning. */}
       {!hideSearch && (
