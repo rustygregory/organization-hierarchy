@@ -5,7 +5,7 @@ import { Button } from '@zendeskgarden/react-buttons'
 import { Field, Label, MediaInput } from '@zendeskgarden/react-forms'
 import OrganizationHierarchyTab from './OrganizationHierarchyTab'
 import OrganizationProperties from './OrganizationProperties'
-import { getChildren, getOrganization, getDescendantIds } from '../data/hierarchy'
+import { getOrganization } from '../data/hierarchy'
 
 /* V3.75's *View all* destination: a full page for one department showing that
    department and all of its children.
@@ -77,11 +77,6 @@ const Subject = styled.div`
   align-items: baseline;
   gap: 10px;
   min-width: 0;
-`
-
-const ChildTotal = styled(SM)`
-  color: #646864;
-  white-space: nowrap;
 `
 
 /* The search field sits above the tree and stays put while it scrolls, so it needs
@@ -158,20 +153,9 @@ const CaretIcon = () => (
   </svg>
 )
 
-// V3.75's data options. This page only ever exists in that version, so they're fixed
-// rather than threaded through as props.
-const WIDE = { atScale: true, wide: true }
-
 export default function DepartmentPage({ orgId, onSelectOrganization }) {
   const org = getOrganization(orgId)
   if (!org) return null
-
-  const directChildren = getChildren(orgId, WIDE)
-  // Everything below, at any depth — the number the cascade actually reaches. Stated
-  // beside the direct count only when they differ, since for a flat department they
-  // are the same number and printing both invites the reader to look for a
-  // distinction that isn't there.
-  const reach = getDescendantIds(orgId, WIDE).length
 
   // Ancestors, top down, excluding the department itself.
   const trail = []
@@ -193,15 +177,17 @@ export default function DepartmentPage({ orgId, onSelectOrganization }) {
           </Avatar>
           <TitleBlock>
             {trail.length > 0 && <Trail>{trail.join(' › ')}</Trail>}
+            {/* Just the name. The counts used to sit beside it — "175 child
+                organizations · 200 below in total" — and they now head the table
+                instead, as `1–100 of 175 organizations`. Two totals a few pixels
+                apart was the problem: the header's counted every descendant while the
+                table's counts the direct children on screen, so the pair invited a
+                reader to work out why 175 and 200 disagreed, which is a question about
+                this page rather than about the hierarchy. */}
             <Subject>
               <XXL tag="h1" style={{ color: '#2f3130' }}>
                 {org.name}
               </XXL>
-              <ChildTotal>
-                {directChildren.length} child{' '}
-                {directChildren.length === 1 ? 'organization' : 'organizations'}
-                {reach !== directChildren.length && ` · ${reach} below in total`}
-              </ChildTotal>
             </Subject>
           </TitleBlock>
           <Button>

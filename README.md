@@ -286,8 +286,8 @@ copy of the tree: it renders the same `OrganizationHierarchyTab` rooted at the
 department (`rootId`) with the cap lifted (`uncapped`). Same geometry, same
 chevrons, same skeletons, same selection behaviour — so a child that has children
 of its own still opens in place there, and the two views cannot drift apart when
-either is touched. What differs is what's around it: a header naming the
-department with its counts and its path, and a search field scoped to it. It keeps
+either is touched. What differs is what's around it: a header naming the department
+and the path down to it, and a search field scoped to it. It keeps
 the profile's **properties rail** — the page is still about an organization, and
 its Tags, Domains and access setting matter as much here as on the profile — and
 drops only the Tickets/Users/Related tab strip, which is a set of *other* views of
@@ -302,10 +302,29 @@ the worst possible place for the drift to land.
 
 **The page pages, at 100.** Lifting the cap made it the one view showing a long
 list unabridged, which is the failure mode the cap exists to avoid — so it takes
-V4's answer instead: Garden's `OffsetPagination` under the table, with `Showing
-organizations 1–100 of 175 in Bramblewick University` above it. The cap and the
+V4's answer instead: Garden's `OffsetPagination` under the table. The cap and the
 pager are the two answers to the same problem, and this page is where the uncapped
 one has to hold up.
+
+**The count heads the table rather than following it.** `1–100 of 175
+organizations` sits in the `Organization` column's place, where the label would
+otherwise be. The top of a list is where someone decides whether to scroll it;
+under the table the same sentence only answers that question after they've scrolled
+to the end to find it. It replaces the label rather than joining it because the
+word *organizations* is in the count already, so the column stays named. It doesn't
+say *in Bramblewick University* the way V4's caption does — the row directly
+beneath is that organization, so naming it would repeat the next line. And it
+appears only on the rooted page: in V4 the paged rows are one group among ancestors
+and siblings, so a count spanning the whole table would look like it counted all of
+them, which is why `isRootedPageStatus` gates it.
+
+**The heading is just the name.** It used to read `Bramblewick University · 175
+child organizations · 200 below in total`. Two totals a few pixels apart is a
+question about the page rather than about the hierarchy — the header's number
+counted every descendant while the table's counts the direct children on screen, so
+the reader's first job was working out why 175 and 200 disagreed. The one count
+that describes what's actually on screen now heads the table, and the reach figure
+is gone rather than restated somewhere quieter.
 
 It pages **the root's children only** — not the selected node's, the way V4 does.
 On a rooted page the root is what the page is about, so its children are
@@ -396,7 +415,9 @@ Garden's `OffsetPagination` centred under the table — it takes Flora's tokens 
 the ThemeProvider, so the current page reads in Flora's blue. Above it, `Showing
 organizations 1–100 of 150 in Bramblewick University`, because otherwise a hundred
 rows sit under a node whose Child orgs column says 150 and the two look like they
-disagree.
+disagree. It stays at the bottom here, unlike V3.75's, which heads its table — the
+difference is that V4's paged rows are one group among ancestors and siblings, so a
+count in the header cell would appear to be counting the whole table.
 
 Three details worth knowing:
 

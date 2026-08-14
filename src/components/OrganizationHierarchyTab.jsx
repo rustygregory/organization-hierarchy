@@ -479,6 +479,15 @@ const PageStatus = styled(SM)`
   margin-top: 16px;
 `
 
+/* The same caption on the rooted page, where it replaces the Organization column
+   label rather than sitting under the pager. Inherits the header cell's weight and
+   colour instead of PageStatus's grey, because in this position it *is* the column
+   heading — greyed out it would read as a stray note that had drifted up into the
+   header. */
+const PageStatusInHeader = styled.span`
+  font-weight: inherit;
+`
+
 /* V3's replacement for the Child orgs column: the bare count in parentheses,
    right after the name. Reads as part of the node rather than as a column of
    repeated "child orgs" copy, which is what let the column go away. */
@@ -1314,6 +1323,14 @@ export default function OrganizationHierarchyTab({
 
   const totalPages = Math.ceil(pagedTotal / CHILDREN_PER_PAGE)
   const isPaginated = totalPages > 1
+  /* Where the "1–100 of 175" caption goes. On the rooted department page it replaces
+     the Organization column label at the top of the table; in V4's focused tree it
+     stays above the pager at the bottom.
+     The difference is what the caption is about. Here the whole page is one list, so
+     the count belongs at its head. In V4 the paged rows are one group among
+     ancestors and siblings, and a header cell spanning the whole table would appear
+     to count all of them. */
+  const isRootedPageStatus = isPaginated && Boolean(rootId)
 
   // The counter still describes reach, not the rows on screen: the point of the
   // feature is how far access cascades below the selected organization, and that
@@ -1385,7 +1402,23 @@ export default function OrganizationHierarchyTab({
         </HiddenCaption>
         <Head>
           <HeaderRow>
-            <HeaderCell>Organization</HeaderCell>
+            {/* On the rooted page the count takes the column label's place. It is a
+                caption about the list, and the top of the list is where someone
+                decides whether to scroll it — under the table it only answers the
+                question after they've already scrolled to find out. The word
+                "organizations" is still in it, so the column stays labelled. The
+                owner isn't named: the row directly beneath is the organization the
+                page is about, so "in Bramblewick University" would repeat what the
+                next line already says. */}
+            <HeaderCell>
+              {isRootedPageStatus ? (
+                <PageStatusInHeader>
+                  {pagedFrom}–{pagedTo} of {pagedTotal} organizations
+                </PageStatusInHeader>
+              ) : (
+                'Organization'
+              )}
+            </HeaderCell>
             {/* No Organization type column. It carried Company / Cost Center /
                 Supervisory for organizations and Agent / End user for people —
                 two different things in one column, and the 22% it took came out
@@ -1570,9 +1603,14 @@ export default function OrganizationHierarchyTab({
           today only V4's does. V1–V3 end at the table, unchanged. */}
       {isPaginated && (
         <>
-          <PageStatus>
-            Showing organizations {pagedFrom}–{pagedTo} of {pagedTotal} in {pagedOwnerName}
-          </PageStatus>
+          {/* Stated once. On the rooted page it's already in the header cell above
+              the list, so repeating it here would put the same numbers at both ends
+              of the same page. */}
+          {!isRootedPageStatus && (
+            <PageStatus>
+              Showing organizations {pagedFrom}–{pagedTo} of {pagedTotal} in {pagedOwnerName}
+            </PageStatus>
+          )}
           <PaginationRow>
             <OffsetPagination
               currentPage={page}
