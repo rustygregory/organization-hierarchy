@@ -606,17 +606,10 @@ const Chevron = ({ direction = 'down' }) => (
  *   hasChildren    it has a subtree this view is holding back — drives the
  *                  right-pointing chevron that drills into it
  *
- *   isStructural   its children are in view because of where the page is centred —
- *                  the ancestor path and the selected node — rather than because
- *                  someone opened it. Those cannot be closed: collapsing an
- *                  ancestor would hide the row the reader is standing on.
- *
- * V3.5 adds `expandedIds`: organizations the reader has opened in place. Any row in
- * that set renders its own children nested below it, recursively, wherever it sits —
- * a sibling of the selected node, or a child of it, at any depth. That is the one
- * thing this view was built not to do (see the note above about no sibling's
- * children), so it is opt-in per version rather than the default: passing an empty
- * set reproduces V1–V4 exactly.
+ * V3.5 does not use this builder. In-place expansion means the tree's shape has to
+ * come from what the reader opened rather than from where the page is centred, and
+ * those are the same thing here — every row this function emits is defined by its
+ * relationship to `selectedId`. See buildExpandableRows below.
  *
  * `page` windows one group of organization rows: whichever of the selected node's
  * children or its own sibling group is longer than a page. Those are the same list
@@ -630,16 +623,7 @@ const Chevron = ({ direction = 'down' }) => (
  * Returns `{ rows, pagedTotal, pagedFrom, pagedTo }` so the caller can caption the
  * slice without recounting it. `pagedTotal` is 0 when nothing needed paging.
  */
-const NO_IDS = new Set()
-
-const buildFocusedRows = (
-  selectedId,
-  showPeople = true,
-  atScale = false,
-  page = 1,
-  expandedIds = NO_IDS,
-  loadingIds = NO_IDS,
-) => {
+const buildFocusedRows = (selectedId, showPeople = true, atScale = false, page = 1) => {
   const rows = []
   const empty = { rows, pagedTotal: 0, pagedFrom: 0, pagedTo: 0 }
   const path = getPath(selectedId)
@@ -671,9 +655,6 @@ const buildFocusedRows = (
       ancestorIsLast: chain,
       ancestorIds: idChain,
       isOpen: true,
-      // An ancestor's children are the path below it. Collapsing one would hide the
-      // row the reader is standing on, so its chevron stays state even in V3.5.
-      isStructural: true,
       hasChildren: true,
       childOrgCount: getChildren(org.id, orgOptions).length,
       peopleCount: countPeopleAtOrBelow(org.id, orgOptions),
@@ -735,84 +716,6 @@ const buildFocusedRows = (
   const lastSiblingId = allSiblings[allSiblings.length - 1]?.id
   const lastChildId = allChildOrgs[allChildOrgs.length - 1]?.id
 
-  /* V3.5's in-place expansion, and the only recursion in this builder.
-     Pushes the children of an organization the reader has opened, then recurses for
-     any of those opened in turn, so a branch can be walked to any depth without the
-     page moving off the row they started from.
-
-     Not paged, unlike the selected node's children: V3.5 runs on the hand-written
-     tree, where the widest node has three children. A version combining in-place
-     expansion with V4's 150 would need the pager threaded through here, and that is
-     two variables in one comparison.
-
-     While a node is in `loadingIds` its children are replaced by skeleton rows — see
-     the note on SKELETON_ROW_LIMIT. */
-  const pushExpansion = (org, parentDepth, parentChain, parentIdChain) => {
-    const depth = parentDepth + 1
-    const children = getChildren(org.id, orgOptions)
-    const peopleHere = showPeople ? getPeopleIn(org.id) : []
-
-    if (loadingIds.has(org.id)) {
-      const placeholders = Math.min(children.length + peopleHere.length, SKELETON_ROW_LIMIT)
-      for (let index = 0; index < placeholders; index += 1) {
-        const isLastPlaceholder = index === placeholders - 1
-        rows.push({
-          key: `skeleton-${org.id}-${index}`,
-          kind: 'skeleton',
-          // Widths cycle rather than randomise, so two screenshots of the same
-          // expansion are comparable — and so nothing re-shuffles mid-animation.
-          width: SKELETON_WIDTHS[index % SKELETON_WIDTHS.length],
-          depth,
-          isLast: isLastPlaceholder,
-          ancestorIsLast: [...parentChain, isLastPlaceholder],
-          ancestorIds: [...parentIdChain, `skeleton-${index}`],
-          isOpen: false,
-          hasChildren: false,
-        })
-      }
-      return
-    }
-
-    children.forEach((child) => {
-      const isLastHere =
-        child.id === children[children.length - 1].id && peopleHere.length === 0
-      const chainHere = [...parentChain, isLastHere]
-      const idChainHere = [...parentIdChain, child.id]
-      const childExpanded = expandedIds.has(child.id) && hasChildren(child.id)
-
-      rows.push({
-        key: `org-${child.id}`,
-        kind: 'org',
-        node: child,
-        depth,
-        isLast: isLastHere,
-        ancestorIsLast: chainHere,
-        ancestorIds: idChainHere,
-        isOpen: childExpanded,
-        hasChildren: hasChildren(child.id),
-        childOrgCount: getChildren(child.id, orgOptions).length,
-        peopleCount: countPeopleAtOrBelow(child.id, orgOptions),
-      })
-
-      if (childExpanded) pushExpansion(child, depth, chainHere, idChainHere)
-    })
-
-    peopleHere.forEach((person, personIndex) => {
-      const isLastPerson = personIndex === peopleHere.length - 1
-      rows.push({
-        key: `person-${person.id}-${org.id}`,
-        kind: 'person',
-        node: person,
-        depth,
-        isLast: isLastPerson,
-        ancestorIsLast: [...parentChain, isLastPerson],
-        ancestorIds: [...parentIdChain, person.id],
-        isOpen: false,
-        hasChildren: false,
-      })
-    })
-  }
-
   siblingGroup.forEach((org) => {
     /* `isLast` decides whether this row closes its parent's vertical guide with an
        elbow, and that has to be judged against the *full* group, not the page. On
@@ -823,10 +726,6 @@ const buildFocusedRows = (
     const isSelected = org.id === selected.id
     const chainHere = [...ancestorChain, isLast]
     const idChainHere = [...ancestorIdChain, org.id]
-    // V3.5 only: opened in place by the reader rather than by where the page is
-    // centred. The guard means an id left over from another view can't make a leaf
-    // draw an open chevron over nothing.
-    const isExpanded = !isSelected && expandedIds.has(org.id) && hasChildren(org.id)
 
     rows.push({
       key: `org-${org.id}`,
@@ -837,30 +736,19 @@ const buildFocusedRows = (
       ancestorIsLast: chainHere,
       ancestorIds: idChainHere,
       // Only the selected organization is opened out; its siblings keep their
-      // subtrees folded away until they're clicked in turn — or, in V3.5, until
-      // their chevron is used.
-      isOpen: (isSelected && isOpen) || isExpanded,
-      // The selected node's children are in view because of where the page is
-      // centred, so its chevron stays state rather than becoming a control.
-      isStructural: isSelected && isOpen,
+      // subtrees folded away until they're clicked in turn.
+      isOpen: isSelected && isOpen,
       hasChildren: hasChildren(org.id),
       childOrgCount: getChildren(org.id, orgOptions).length,
       peopleCount: countPeopleAtOrBelow(org.id, orgOptions),
     })
 
-    if (!isSelected) {
-      if (isExpanded) pushExpansion(org, selectedDepth, chainHere, idChainHere)
-      return
-    }
+    if (!isSelected) return
 
     // Direct children, nested under the selected organization. Each is a leaf
-    // *here* — whatever hangs below it stays out of the view until it is clicked,
-    // or, in V3.5, until its own chevron opens it in place.
+    // *here* — whatever hangs below it stays out of the view until it is clicked.
     childOrgs.forEach((child) => {
       const isLastChild = child.id === lastChildId && people.length === 0
-      const childChain = [...chainHere, isLastChild]
-      const childIdChain = [...idChainHere, child.id]
-      const childExpanded = expandedIds.has(child.id) && hasChildren(child.id)
 
       rows.push({
         key: `org-${child.id}`,
@@ -868,16 +756,13 @@ const buildFocusedRows = (
         node: child,
         depth: selectedDepth + 1,
         isLast: isLastChild,
-        ancestorIsLast: childChain,
-        ancestorIds: childIdChain,
-        isOpen: childExpanded,
-        isStructural: false,
+        ancestorIsLast: [...chainHere, isLastChild],
+        ancestorIds: [...idChainHere, child.id],
+        isOpen: false,
         hasChildren: hasChildren(child.id),
         childOrgCount: getChildren(child.id, orgOptions).length,
         peopleCount: countPeopleAtOrBelow(child.id, orgOptions),
       })
-
-      if (childExpanded) pushExpansion(child, selectedDepth + 1, childChain, childIdChain)
     })
 
     // People sit directly under the organization they belong to, always after
@@ -907,6 +792,122 @@ const buildFocusedRows = (
     pagedFrom: pagedTotal > 0 && pagedShown > 0 ? pageStart + 1 : 0,
     pagedTo: pagedTotal > 0 ? pageStart + pagedShown : 0,
   }
+}
+
+/* V3.5's builder, and the reason it is a separate function rather than a flag on
+   buildFocusedRows.
+ *
+ * buildFocusedRows derives the *shape* of the tree from `selectedId` — the rows it
+ * emits are that node's ancestors, children and siblings. That makes selection and
+ * structure the same thing, so selecting anything necessarily rebuilds the tree
+ * around it and discards whatever was open. That is correct for V1–V4, where a click
+ * is a navigation, and wrong for V3.5, where a click must leave the tree alone.
+ *
+ * So this builder takes its shape from one thing only: `expandedIds`, what the reader
+ * has opened. It renders the whole tree from the root down, following expansion and
+ * stopping wherever a node is closed. `selectedId` is used for exactly two things
+ * here — finding which tree to root at, and being handed back to the component to
+ * highlight one row. Nothing about the row set depends on it.
+ *
+ * The consequences are the point of the version:
+ *
+ *   - Clicking a name changes the page title and the highlight. No row appears or
+ *     disappears, so the chevrons you were working with are still there.
+ *   - Every organization with children gets a working control, including the
+ *     selected one and its ancestors. There is no `isStructural` here: no row's
+ *     children are on screen because of where the page is centred, because the page
+ *     being centred somewhere no longer shapes this tree.
+ *   - The reader can collapse an ancestor of the selected row and hide it. That's
+ *     an explicit act with an obvious undo, which is how a file tree behaves.
+ *
+ * Not paged. V3.5 runs on the hand-written tree, whose widest node has four
+ * children; combining in-place expansion with V4's 150 would put two variables in
+ * one comparison. Row geometry is identical to buildFocusedRows' — same fields, same
+ * meanings — so TreeGutter and the row renderer are shared.
+ */
+const buildExpandableRows = (selectedId, showPeople, expandedIds, loadingIds) => {
+  const rows = []
+  const nothing = { rows, pagedTotal: 0, pagedGroup: 'none', pagedFrom: 0, pagedTo: 0 }
+
+  // Root of the tree the selected organization belongs to, so the view always
+  // contains it even though it no longer revolves around it.
+  const root = getPath(selectedId)[0]
+  if (!root) return nothing
+
+  const hasChildren = (orgId) =>
+    getChildren(orgId).length > 0 || (showPeople && getPeopleIn(orgId).length > 0)
+
+  const pushNode = (org, depth, chain, idChain) => {
+    const isOpen = expandedIds.has(org.id) && hasChildren(org.id)
+
+    rows.push({
+      key: `org-${org.id}`,
+      kind: 'org',
+      node: org,
+      depth,
+      isLast: chain[depth],
+      ancestorIsLast: chain,
+      ancestorIds: idChain,
+      isOpen,
+      hasChildren: hasChildren(org.id),
+      childOrgCount: getChildren(org.id).length,
+      peopleCount: countPeopleAtOrBelow(org.id),
+    })
+
+    if (!isOpen) return
+
+    const children = getChildren(org.id)
+    const peopleHere = showPeople ? getPeopleIn(org.id) : []
+
+    // Standing in for the fetch a real hierarchy would need — see
+    // SKELETON_THRESHOLD. The subtree below is withheld until the mark clears.
+    if (loadingIds.has(org.id)) {
+      const placeholders = Math.min(children.length + peopleHere.length, SKELETON_ROW_LIMIT)
+      for (let index = 0; index < placeholders; index += 1) {
+        const isLastPlaceholder = index === placeholders - 1
+        rows.push({
+          key: `skeleton-${org.id}-${index}`,
+          kind: 'skeleton',
+          width: SKELETON_WIDTHS[index % SKELETON_WIDTHS.length],
+          depth: depth + 1,
+          isLast: isLastPlaceholder,
+          ancestorIsLast: [...chain, isLastPlaceholder],
+          ancestorIds: [...idChain, `skeleton-${index}`],
+          isOpen: false,
+          hasChildren: false,
+        })
+      }
+      return
+    }
+
+    children.forEach((child, index) => {
+      // People are pushed after the child organizations, so a child can only be
+      // the one that closes the rail if there are none.
+      const isLastHere = index === children.length - 1 && peopleHere.length === 0
+      pushNode(child, depth + 1, [...chain, isLastHere], [...idChain, child.id])
+    })
+
+    peopleHere.forEach((person, personIndex) => {
+      const isLastPerson = personIndex === peopleHere.length - 1
+      rows.push({
+        key: `person-${person.id}-${org.id}`,
+        kind: 'person',
+        node: person,
+        depth: depth + 1,
+        isLast: isLastPerson,
+        ancestorIsLast: [...chain, isLastPerson],
+        ancestorIds: [...idChain, person.id],
+        isOpen: false,
+        hasChildren: false,
+      })
+    })
+  }
+
+  // The root has no rail of its own — TreeGutter draws nothing at depth 0 — so the
+  // leading `true` is only there to keep `chain` indexed by depth.
+  pushNode(root, 0, [true], [root.id])
+
+  return { rows, pagedTotal: 0, pagedGroup: 'none', pagedFrom: 0, pagedTo: 0 }
 }
 
 const TreeGutter = ({ row }) => {
@@ -939,6 +940,16 @@ const TreeGutter = ({ row }) => {
     </>
   )
 }
+
+/* Ancestors of `orgId` plus itself, as ids. V3.5 seeds its expansion with this so
+   the tree opens down to the organization the tab is on, and re-opens down to a
+   newly selected one that a collapse had hidden.
+
+   Inclusive of `orgId` deliberately: selecting an organization also opens it, so a
+   click reveals what's inside the thing you just selected — which is what every
+   other version does when it re-centres. Note this only ever *adds* rows, so it
+   can't take the tree away from under the reader. */
+const pathIds = (orgId) => getPath(orgId).map((org) => org.id)
 
 /* Centred on `selectedId` — the organization whose profile this tab is on.
    Clicking another organization re-centres the whole page, so selection lives
@@ -982,15 +993,14 @@ export default function OrganizationHierarchyTab({
   // Which page of the paged organization group is on screen.
   const [page, setPage] = useState(1)
 
-  /* Organizations the reader has opened in place. Only V3.5 fills this; the other
-     versions pass null and behave exactly as before.
+  /* Organizations the reader has opened. V3.5 only — it is what shapes that
+     version's tree, and it is ignored entirely by the others.
 
-     It survives navigation on purpose. Expanding Bramblewick, then clicking one of
-     its departments, re-centres the page — Bramblewick becomes an ancestor and its
-     children are structural from then on, so the stale entry does nothing. But
-     coming back to a view where it is a sibling again finds it still open, the way
-     a file tree remembers. Ids for rows the view isn't showing are simply inert. */
-  const [expandedIds, setExpandedIds] = useState(() => new Set())
+     Seeded with the path down to the organization the tab opens on, so V3.5's first
+     paint shows the same thing the other versions do: the selected row in context,
+     already reachable, rather than a single collapsed root the reader has to dig
+     through to find where they are. */
+  const [expandedIds, setExpandedIds] = useState(() => new Set(pathIds(selectedId)))
 
   /* Nodes whose children are being "fetched" — see SKELETON_THRESHOLD. An id lives
      here for SKELETON_DURATION_MS after the node is opened, and only if its child
@@ -1045,13 +1055,39 @@ export default function OrganizationHierarchyTab({
     return () => timers.forEach(window.clearTimeout)
   }, [loadingIds])
 
-  /* Switching versions starts the tree closed. Expansions carried into V4 would
-     land on rows whose chevrons are dots and whose lists are paged — a different
-     treatment reading as a bug rather than as a comparison. */
+  /* Switching versions resets the tree to the path down to the selected row, which
+     is V3.5's opening state rather than a blank one. Carrying an arbitrary set of
+     expansions into V4 would land them on rows whose chevrons are dots and whose
+     lists are paged — a different treatment reading as a bug rather than as a
+     comparison — and coming back into V3.5 with everything shut would make the
+     switch look like it had lost the reader's place.
+     eslint-disable-next-line react-hooks/exhaustive-deps — deliberately not keyed on
+     selectedId: a selection must not disturb what's open. That case is handled
+     below, additively. */
   useEffect(() => {
-    setExpandedIds(new Set())
+    setExpandedIds(new Set(pathIds(selectedId)))
     setLoadingIds(new Set())
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [version])
+
+  /* Selecting a row must never close anything — that was the bug this version had:
+     clicking a department rebuilt the tree around it and everything else vanished.
+     So this only ever *adds*, and only the path down to the newly selected row, for
+     the one case where it would otherwise be invisible: the reader collapsed an
+     ancestor, then reached that row from somewhere else (a comment pin restoring its
+     view, say). If the row is already on screen this is a no-op — the identity check
+     matters, because returning a new Set every time would rebuild the rows on every
+     render. */
+  useEffect(() => {
+    if (!isExpandable) return
+    setExpandedIds((current) => {
+      const missing = pathIds(selectedId).filter((id) => !current.has(id))
+      if (missing.length === 0) return current
+      const next = new Set(current)
+      missing.forEach((id) => next.add(id))
+      return next
+    })
+  }, [selectedId, isExpandable])
 
   /* Which page the subject sits on when the *sibling group* is what's paged.
      Clicking the 120th of Bramblewick's departments makes it the selected node
@@ -1077,18 +1113,15 @@ export default function OrganizationHierarchyTab({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedId, version])
 
-  // Only V3.5 passes the expansion sets; every other version passes the empty one
-  // and gets exactly the rows it got before this version existed.
+  /* Two different trees, not one tree with a flag. V1–V4 take their shape from
+     `selectedId`; V3.5 takes its shape from `expandedIds` and uses `selectedId` only
+     to highlight a row. That is the whole difference between navigating and
+     expanding, and it is why they are separate builders. */
   const { rows, pagedTotal, pagedGroup, pagedFrom, pagedTo } = useMemo(
     () =>
-      buildFocusedRows(
-        selectedId,
-        showPeopleRows,
-        atScale,
-        page,
-        isExpandable ? expandedIds : NO_IDS,
-        isExpandable ? loadingIds : NO_IDS,
-      ),
+      isExpandable
+        ? buildExpandableRows(selectedId, showPeopleRows, expandedIds, loadingIds)
+        : buildFocusedRows(selectedId, showPeopleRows, atScale, page),
     [selectedId, showPeopleRows, atScale, page, isExpandable, expandedIds, loadingIds],
   )
 
@@ -1194,10 +1227,12 @@ export default function OrganizationHierarchyTab({
 
             const isPerson = row.kind === 'person'
             const isCurrent = !isPerson && row.node.id === selectedId
-            /* V3.5: the chevron expands in place instead of drilling in. Rows whose
-               children are on screen because of where the page is centred keep the
-               inert marker — collapsing an ancestor would hide the selected row. */
-            const isExpandControl = isExpandable && !row.isStructural && row.hasChildren
+            /* V3.5: the chevron expands in place instead of drilling in, on every
+               organization that has children — including the selected one and its
+               ancestors. There is no inert marker in this version: no row's children
+               are on screen because of where the page is centred, so there is none
+               whose control would be a lie. */
+            const isExpandControl = isExpandable && row.hasChildren
 
             return (
               <TreeRow

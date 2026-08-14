@@ -145,13 +145,13 @@ second branch to contrast against.
 - **Version switcher** in the top bar — five treatments of the same data, for
   side-by-side review:
 
-| Version | People rows | Columns beside Organization | Row dividers | Chevron does |
-| --- | --- | --- | --- | --- |
-| **V1 MVP** | — | Child orgs | yes | drills in |
-| **V2 with end-users** | yes | Child orgs · People | yes | drills in |
-| **V3 Sans lines** | — | none — count moves inline as `(4)` | no | drills in |
-| **V3.5 Expandable** | — | same as V3 | no | **expands in place** |
-| **V4 100 departments** | — | same as V2 | yes | drills in (as a dot) |
+| Version | People rows | Columns beside Organization | Row dividers | Shape of the tree | Chevron does |
+| --- | --- | --- | --- | --- | --- |
+| **V1 MVP** | — | Child orgs | yes | focused on the selection | drills in |
+| **V2 with end-users** | yes | Child orgs · People | yes | focused on the selection | drills in |
+| **V3 Sans lines** | — | none — count moves inline as `(4)` | no | focused on the selection | drills in |
+| **V3.5 Expandable** | — | same as V3 | no | **rooted; whatever you opened** | **expands in place** |
+| **V4 100 departments** | — | same as V2 | yes | focused on the selection | drills in (as a dot) |
 
 V4 also pages its child organizations 100 at a time and swaps the chevrons for
 dots — see below.
@@ -169,27 +169,50 @@ V3.5 is V3 with **one interaction split into two**. In every other version the
 chevron and the name do the same thing — both re-centre the page on that
 organization. Here they diverge:
 
-- **Click the name** → unchanged. Selects that organization and re-centres
-  everything: page title, browser tab, tab strip, properties, counts.
-- **Click the chevron** → opens that organization's children *in place*. The
-  selection doesn't move, the page title doesn't change, and you stay on the
-  organization you were on.
+- **Click the name** → selects that organization: page title, browser tab, tab
+  strip, properties and counts all move to it, and the row takes the selection
+  bar, tint and bold. **The tree does not change shape.** Nothing collapses,
+  nothing disappears, and every chevron you were working with is still there.
+- **Click the chevron** → opens or closes that organization's children in place.
+  The selection doesn't move and the page title doesn't change.
 
-So you can look under a sibling without leaving where you are. That's the thing
-the focused view was built not to do, and V3.5 exists to find out whether the
-view needs it. Expansion **nests** — a revealed child has its own chevron — and
-several branches can be open at once, so this is the one version where the tree
-can grow past a single level below the selected node.
+So you can look under a sibling without leaving where you are, and select
+something without losing what you'd opened. Expansion **nests** — a revealed
+child has its own chevron — and several branches can be open at once.
 
-Three details:
+**This is a different tree from the other versions, not the focused view with a
+flag.** V1–V4 derive *which rows exist* from the selected organization: its
+ancestors, its children, its siblings. That makes selection and structure the
+same thing, so in those versions selecting anything necessarily rebuilds the tree
+around it. V3.5 instead renders from the **root** down and takes its shape from
+one thing only — what the reader has opened. Selection is reduced to a highlight.
+Two separate builders, `buildFocusedRows` and `buildExpandableRows`; the
+distinction is the version.
 
-- **The selected node and its ancestors keep an inert marker, not a control.**
-  Their children are on screen because of where the page is centred, not because
-  a reader opened them, so collapsing one would hide the row you're standing on.
-  Only rows the reader could meaningfully open — siblings and revealed
-  descendants — get a real button, labelled *Expand …* / *Collapse …*.
-- **Switching versions clears what you opened.** Expansion state is meaningless
-  in V1–V4, so it resets rather than lurking.
+Getting this wrong once is instructive: the first cut of V3.5 kept
+`buildFocusedRows` and added expansion on top, so clicking a department still
+re-centred the tree — every other branch vanished, and the rows left over were
+ancestors, which carried an inert marker rather than a button, so the chevrons
+appeared to stop working. Both symptoms, one cause. **In-place expansion is
+incompatible with a selection-shaped tree**; you can't have both from one builder.
+
+Details worth knowing:
+
+- **Every organization with children gets a working control**, including the
+  selected one and its ancestors. There is no inert marker in this version,
+  because no row's children are on screen merely because of where the page is
+  centred.
+- **You can collapse an ancestor of the selected row and hide it.** That's
+  allowed — it's an explicit act with an obvious undo, the way a file tree
+  behaves — and re-expanding remembers everything that was open underneath.
+- **Selecting also opens the selected node**, so a click shows you what's inside
+  the thing you clicked, as the other versions do. Note this only ever *adds*
+  rows; it can't take the tree away from under you.
+- **The tree opens on the path down to the current organization**, so the first
+  paint shows the same thing the other versions do rather than a single collapsed
+  root to dig through.
+- **Not paged.** V3.5 runs on the hand-written tree; combining in-place expansion
+  with V4's 150-wide node would put two variables in one comparison.
 - **Skeleton loaders** stand in for the children while a subtree opens — see
   below.
 
@@ -432,10 +455,13 @@ Deliberately out of scope for this pass, worth a PM conversation first:
   like something you click.
 - Is one level down enough? A focused view is scannable but makes reaching a
   deep node an eight-click trip. **V3.5 is one answer** — expand in place, no
-  navigation — and it's worth asking in review whether that reintroduces the
-  problem centring solved: with three branches open, V3.5 starts to look like the
-  recursive tree this design replaced. Two levels of children by default, or a
-  breadcrumb of the path you clicked through, are the other mitigations.
+  navigation — and it is the sharpest question in the set, because V3.5 doesn't
+  moderate the focused view, it abandons it: the tree is rooted and unbounded
+  again. With three branches open it *is* the recursive tree this design replaced,
+  which is either the honest admission that hierarchies want to be browsed or a
+  round trip back to the problem centring solved. Two levels of children by
+  default, or a breadcrumb of the path you clicked through, are the middle
+  positions nobody has prototyped yet.
 - **Does splitting the chevron from the name teach itself?** V3.5 gives one row two
   targets that do different things — 20px of chevron that opens, and the name that
   navigates — with nothing but the cursor to say so. Reviewers who've used a file
