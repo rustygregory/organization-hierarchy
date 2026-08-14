@@ -12,6 +12,7 @@ import {
 } from '@zendeskgarden/react-tables'
 import { OffsetPagination } from '@zendeskgarden/react-pagination'
 import { Field, Label, MediaInput } from '@zendeskgarden/react-forms'
+import { Skeleton } from '@zendeskgarden/react-loaders'
 import { SM } from '@zendeskgarden/react-typography'
 import {
   getChildren,
@@ -34,6 +35,10 @@ const CHEVRON_SLOT = 20
    which is measured from the cell's border box, not its content box. */
 const CELL_PADDING = 12
 const RULE_COLOR = '#eae9e8'
+/* A row's height. Shared by RowInner and V3.5's skeleton rows, which have to match
+   it exactly — a placeholder taller than the row it stands in for makes the list
+   jump as each group of children resolves. */
+const ROW_MIN_HEIGHT = 36
 
 /* The selected row's background: blue.100, the faintest step on Flora's primary
    ramp. It's a tint rather than a fill — enough to read as a band across the row
@@ -70,6 +75,47 @@ const SELECTION_BAR_WIDTH = 2
    whether a hundred sibling departments is a scroll a reader will accept in
    exchange for never paging, or whether the number wants to come down. */
 const CHILDREN_PER_PAGE = 100
+
+/* V3.5's expand loading state.
+ *
+ * Opening a node in place shows skeleton rows for a beat before the real ones
+ * arrive. It is faked — the data is already in memory — but the real feature will
+ * fetch a subtree on demand, so the question worth putting in front of a reader is
+ * whether an expanding node that *pauses* still reads as expansion or as a stall.
+ *
+ * Only for lists longer than SKELETON_THRESHOLD. Below it the pause costs more than
+ * it shows: two rows appearing instantly reads as the tree responding, and flashing
+ * placeholders over them reads as a glitch. The real feature has the same shape — a
+ * couple of children is one cheap request.
+ *
+ * The number wanted to be 10, and on the real data it should be: a request for ten
+ * rows is not worth a loading state. It is 2 here because V3.5 is a copy of V3, and
+ * V3's hand-written tree tops out at four children (Model Training Pod), with most
+ * expandable nodes at three — so a threshold of 10 could never fire and the loading
+ * state would be invisible, which is the one thing it can't be while it's under
+ * review. Raise it to 10 the moment this treatment meets a wide node; it's one
+ * constant and nothing else reads the number.
+ *
+ * A second, and it has to be about that: Garden's Skeleton fades itself in with
+ * `0%,60% { opacity: 0 }` over 750ms — deliberately invisible for the first 450ms so
+ * a fast load never flashes. Anything under ~700ms therefore shows placeholders that
+ * are still transparent when they're removed, which looks like rows appearing late
+ * rather than like loading. 1100ms leaves roughly 650ms of visible skeleton. */
+const SKELETON_THRESHOLD = 2
+const SKELETON_DURATION_MS = 1100
+/* How many placeholder rows to draw at most. A node with 150 children doesn't want
+   150 skeletons — past a handful they stop reading as "content is coming" and start
+   reading as content. Eight fills the space a long list will occupy without
+   pretending to know how long that list is. */
+const SKELETON_ROW_LIMIT = 8
+/* Varied widths so the block reads as rows of names rather than as a bar chart.
+   Fixed and cycled rather than random — see the note where they're used. Percentages
+   of SKELETON_MAX_WIDTH, not of the cell. */
+const SKELETON_WIDTHS = ['62%', '45%', '71%', '38%', '55%', '66%', '42%', '58%']
+/* The widest a placeholder can get: about the length of the longest name in the
+   tree ("Speech Recognition Team", "International Relations") at 14px. Without it a
+   bar stretches across the whole table — see SkeletonName. */
+const SKELETON_MAX_WIDTH = 260
 
 /* Where a row's name text begins, measured from the left edge of the name
    cell — the point its horizontal rule starts from. */
@@ -237,7 +283,7 @@ const RowInner = styled.div`
   position: relative;
   display: flex;
   align-items: stretch;
-  min-height: 36px;
+  min-height: ${ROW_MIN_HEIGHT}px;
 `
 
 /* The attached treatment. Runs from just below the row's own chevron to the
@@ -476,6 +522,40 @@ const Dot = styled.span`
   background-color: ${(props) => (props.$filled ? 'currentColor' : '#ffffff')};
 `
 
+/* Garden's Skeleton, sized to a tree row.
+
+   Its `width` is a percentage of its parent, so the parent has to be the width the
+   name would have had — hence a flex: 1 wrapper rather than dropping the skeleton
+   straight into the row.
+
+   The wrapper is also what holds the row to its normal height. Garden's Skeleton
+   sets its own `line-height` from theme.fontSizes.sm and renders a non-breaking
+   space inside, so left alone it makes a taller box than a 14px name and the whole
+   list jumps as each group resolves. Fixing the wrapper's height to RowInner's
+   min-height and overriding line-height on the bar keeps a loading row and a loaded
+   row exactly the same size.
+
+   And it is capped, not fluid. The name cell runs the full width of the table —
+   over a thousand pixels — so a bar at 60% of it is several times longer than any
+   organization name and reads as a loading *page* rather than as a row of names
+   arriving. SKELETON_MAX_WIDTH is roughly the longest name in the tree, so the
+   placeholders occupy the space the names will actually occupy. */
+const SkeletonName = styled.div`
+  display: flex;
+  align-items: center;
+  flex: 1;
+  min-width: 0;
+  max-width: ${SKELETON_MAX_WIDTH}px;
+  height: ${ROW_MIN_HEIGHT}px;
+  padding-left: ${ARM_GAP}px;
+`
+
+const SkeletonBar = styled(Skeleton)`
+  height: 14px;
+  line-height: 14px;
+  border-radius: 3px;
+`
+
 const CHEVRON_ROTATION = {
   down: 'none',
   right: 'rotate(-90deg)',
@@ -526,6 +606,18 @@ const Chevron = ({ direction = 'down' }) => (
  *   hasChildren    it has a subtree this view is holding back — drives the
  *                  right-pointing chevron that drills into it
  *
+ *   isStructural   its children are in view because of where the page is centred —
+ *                  the ancestor path and the selected node — rather than because
+ *                  someone opened it. Those cannot be closed: collapsing an
+ *                  ancestor would hide the row the reader is standing on.
+ *
+ * V3.5 adds `expandedIds`: organizations the reader has opened in place. Any row in
+ * that set renders its own children nested below it, recursively, wherever it sits —
+ * a sibling of the selected node, or a child of it, at any depth. That is the one
+ * thing this view was built not to do (see the note above about no sibling's
+ * children), so it is opt-in per version rather than the default: passing an empty
+ * set reproduces V1–V4 exactly.
+ *
  * `page` windows one group of organization rows: whichever of the selected node's
  * children or its own sibling group is longer than a page. Those are the same list
  * seen from either side — drilling into one of Bramblewick's 150 departments turns
@@ -538,7 +630,16 @@ const Chevron = ({ direction = 'down' }) => (
  * Returns `{ rows, pagedTotal, pagedFrom, pagedTo }` so the caller can caption the
  * slice without recounting it. `pagedTotal` is 0 when nothing needed paging.
  */
-const buildFocusedRows = (selectedId, showPeople = true, atScale = false, page = 1) => {
+const NO_IDS = new Set()
+
+const buildFocusedRows = (
+  selectedId,
+  showPeople = true,
+  atScale = false,
+  page = 1,
+  expandedIds = NO_IDS,
+  loadingIds = NO_IDS,
+) => {
   const rows = []
   const empty = { rows, pagedTotal: 0, pagedFrom: 0, pagedTo: 0 }
   const path = getPath(selectedId)
@@ -570,6 +671,9 @@ const buildFocusedRows = (selectedId, showPeople = true, atScale = false, page =
       ancestorIsLast: chain,
       ancestorIds: idChain,
       isOpen: true,
+      // An ancestor's children are the path below it. Collapsing one would hide the
+      // row the reader is standing on, so its chevron stays state even in V3.5.
+      isStructural: true,
       hasChildren: true,
       childOrgCount: getChildren(org.id, orgOptions).length,
       peopleCount: countPeopleAtOrBelow(org.id, orgOptions),
@@ -631,6 +735,84 @@ const buildFocusedRows = (selectedId, showPeople = true, atScale = false, page =
   const lastSiblingId = allSiblings[allSiblings.length - 1]?.id
   const lastChildId = allChildOrgs[allChildOrgs.length - 1]?.id
 
+  /* V3.5's in-place expansion, and the only recursion in this builder.
+     Pushes the children of an organization the reader has opened, then recurses for
+     any of those opened in turn, so a branch can be walked to any depth without the
+     page moving off the row they started from.
+
+     Not paged, unlike the selected node's children: V3.5 runs on the hand-written
+     tree, where the widest node has three children. A version combining in-place
+     expansion with V4's 150 would need the pager threaded through here, and that is
+     two variables in one comparison.
+
+     While a node is in `loadingIds` its children are replaced by skeleton rows — see
+     the note on SKELETON_ROW_LIMIT. */
+  const pushExpansion = (org, parentDepth, parentChain, parentIdChain) => {
+    const depth = parentDepth + 1
+    const children = getChildren(org.id, orgOptions)
+    const peopleHere = showPeople ? getPeopleIn(org.id) : []
+
+    if (loadingIds.has(org.id)) {
+      const placeholders = Math.min(children.length + peopleHere.length, SKELETON_ROW_LIMIT)
+      for (let index = 0; index < placeholders; index += 1) {
+        const isLastPlaceholder = index === placeholders - 1
+        rows.push({
+          key: `skeleton-${org.id}-${index}`,
+          kind: 'skeleton',
+          // Widths cycle rather than randomise, so two screenshots of the same
+          // expansion are comparable — and so nothing re-shuffles mid-animation.
+          width: SKELETON_WIDTHS[index % SKELETON_WIDTHS.length],
+          depth,
+          isLast: isLastPlaceholder,
+          ancestorIsLast: [...parentChain, isLastPlaceholder],
+          ancestorIds: [...parentIdChain, `skeleton-${index}`],
+          isOpen: false,
+          hasChildren: false,
+        })
+      }
+      return
+    }
+
+    children.forEach((child) => {
+      const isLastHere =
+        child.id === children[children.length - 1].id && peopleHere.length === 0
+      const chainHere = [...parentChain, isLastHere]
+      const idChainHere = [...parentIdChain, child.id]
+      const childExpanded = expandedIds.has(child.id) && hasChildren(child.id)
+
+      rows.push({
+        key: `org-${child.id}`,
+        kind: 'org',
+        node: child,
+        depth,
+        isLast: isLastHere,
+        ancestorIsLast: chainHere,
+        ancestorIds: idChainHere,
+        isOpen: childExpanded,
+        hasChildren: hasChildren(child.id),
+        childOrgCount: getChildren(child.id, orgOptions).length,
+        peopleCount: countPeopleAtOrBelow(child.id, orgOptions),
+      })
+
+      if (childExpanded) pushExpansion(child, depth, chainHere, idChainHere)
+    })
+
+    peopleHere.forEach((person, personIndex) => {
+      const isLastPerson = personIndex === peopleHere.length - 1
+      rows.push({
+        key: `person-${person.id}-${org.id}`,
+        kind: 'person',
+        node: person,
+        depth,
+        isLast: isLastPerson,
+        ancestorIsLast: [...parentChain, isLastPerson],
+        ancestorIds: [...parentIdChain, person.id],
+        isOpen: false,
+        hasChildren: false,
+      })
+    })
+  }
+
   siblingGroup.forEach((org) => {
     /* `isLast` decides whether this row closes its parent's vertical guide with an
        elbow, and that has to be judged against the *full* group, not the page. On
@@ -641,6 +823,10 @@ const buildFocusedRows = (selectedId, showPeople = true, atScale = false, page =
     const isSelected = org.id === selected.id
     const chainHere = [...ancestorChain, isLast]
     const idChainHere = [...ancestorIdChain, org.id]
+    // V3.5 only: opened in place by the reader rather than by where the page is
+    // centred. The guard means an id left over from another view can't make a leaf
+    // draw an open chevron over nothing.
+    const isExpanded = !isSelected && expandedIds.has(org.id) && hasChildren(org.id)
 
     rows.push({
       key: `org-${org.id}`,
@@ -651,32 +837,47 @@ const buildFocusedRows = (selectedId, showPeople = true, atScale = false, page =
       ancestorIsLast: chainHere,
       ancestorIds: idChainHere,
       // Only the selected organization is opened out; its siblings keep their
-      // subtrees folded away until they're clicked in turn.
-      isOpen: isSelected && isOpen,
+      // subtrees folded away until they're clicked in turn — or, in V3.5, until
+      // their chevron is used.
+      isOpen: (isSelected && isOpen) || isExpanded,
+      // The selected node's children are in view because of where the page is
+      // centred, so its chevron stays state rather than becoming a control.
+      isStructural: isSelected && isOpen,
       hasChildren: hasChildren(org.id),
       childOrgCount: getChildren(org.id, orgOptions).length,
       peopleCount: countPeopleAtOrBelow(org.id, orgOptions),
     })
 
-    if (!isSelected) return
+    if (!isSelected) {
+      if (isExpanded) pushExpansion(org, selectedDepth, chainHere, idChainHere)
+      return
+    }
 
     // Direct children, nested under the selected organization. Each is a leaf
-    // *here* — whatever hangs below it stays out of the view until it is clicked.
+    // *here* — whatever hangs below it stays out of the view until it is clicked,
+    // or, in V3.5, until its own chevron opens it in place.
     childOrgs.forEach((child) => {
       const isLastChild = child.id === lastChildId && people.length === 0
+      const childChain = [...chainHere, isLastChild]
+      const childIdChain = [...idChainHere, child.id]
+      const childExpanded = expandedIds.has(child.id) && hasChildren(child.id)
+
       rows.push({
         key: `org-${child.id}`,
         kind: 'org',
         node: child,
         depth: selectedDepth + 1,
         isLast: isLastChild,
-        ancestorIsLast: [...chainHere, isLastChild],
-        ancestorIds: [...idChainHere, child.id],
-        isOpen: false,
+        ancestorIsLast: childChain,
+        ancestorIds: childIdChain,
+        isOpen: childExpanded,
+        isStructural: false,
         hasChildren: hasChildren(child.id),
         childOrgCount: getChildren(child.id, orgOptions).length,
         peopleCount: countPeopleAtOrBelow(child.id, orgOptions),
       })
+
+      if (childExpanded) pushExpansion(child, selectedDepth + 1, childChain, childIdChain)
     })
 
     // People sit directly under the organization they belong to, always after
@@ -763,14 +964,94 @@ export default function OrganizationHierarchyTab({
      the tree, but it keeps the column, because "150 child orgs" says nothing about
      which of them anyone can actually reach. */
   const showPeopleRows = showPeople && !atScale
+  /* V3.5 Expandable: V3's treatment, with the chevron split off from the name.
+     Clicking a name still re-centres the page on that organization; clicking the
+     chevron opens that organization's children *in place* and leaves the page
+     where it is. The two things a chevron could mean — "go here" and "show me
+     what's in here" — are one action in V1–V4, so the only way to see inside a
+     node is to make it the subject. This version separates them, which is what
+     lets a reader compare two branches without leaving the row they're on. */
+  const isExpandable = version === 'v3-5'
   // V3 Sans lines: no row dividers, and the child count moves out of its own
-  // column into a parenthetical beside each organization's name.
-  const isSansLines = version === 'v3'
+  // column into a parenthetical beside each organization's name. V3.5 inherits
+  // both, so the expansion behaviour is the only thing that differs between them.
+  const isSansLines = version === 'v3' || isExpandable
   // V4 marks nodes with dots instead of chevrons.
   const isDotted = atScale
 
   // Which page of the paged organization group is on screen.
   const [page, setPage] = useState(1)
+
+  /* Organizations the reader has opened in place. Only V3.5 fills this; the other
+     versions pass null and behave exactly as before.
+
+     It survives navigation on purpose. Expanding Bramblewick, then clicking one of
+     its departments, re-centres the page — Bramblewick becomes an ancestor and its
+     children are structural from then on, so the stale entry does nothing. But
+     coming back to a view where it is a sibling again finds it still open, the way
+     a file tree remembers. Ids for rows the view isn't showing are simply inert. */
+  const [expandedIds, setExpandedIds] = useState(() => new Set())
+
+  /* Nodes whose children are being "fetched" — see SKELETON_THRESHOLD. An id lives
+     here for SKELETON_DURATION_MS after the node is opened, and only if its child
+     list is long enough to be worth waiting for. */
+  const [loadingIds, setLoadingIds] = useState(() => new Set())
+
+  const removeLoading = (orgId) =>
+    setLoadingIds((current) => {
+      if (!current.has(orgId)) return current
+      const next = new Set(current)
+      next.delete(orgId)
+      return next
+    })
+
+  const toggleExpanded = (orgId) => {
+    const isOpening = !expandedIds.has(orgId)
+
+    setExpandedIds((current) => {
+      const next = new Set(current)
+      if (next.has(orgId)) next.delete(orgId)
+      else next.add(orgId)
+      return next
+    })
+
+    if (!isOpening) {
+      // Collapsing mid-load: drop the loading mark with it, or reopening the node
+      // would find a timer already spent and show skeletons that never resolve.
+      removeLoading(orgId)
+      return
+    }
+
+    const childCount =
+      getChildren(orgId, { atScale }).length + (showPeopleRows ? getPeopleIn(orgId).length : 0)
+    if (childCount <= SKELETON_THRESHOLD) return
+
+    setLoadingIds((current) => new Set(current).add(orgId))
+  }
+
+  /* Clears the loading marks a beat after they're set. One timer per open rather
+     than one shared timeout, so expanding a second node while the first is still
+     loading doesn't cut the first one short — each row resolves on its own clock,
+     which is also how a real per-subtree fetch would behave.
+
+     Keyed on the id set, so the timers are re-established only when something is
+     actually loading, and cleared on unmount or a version switch. */
+  useEffect(() => {
+    if (loadingIds.size === 0) return undefined
+
+    const timers = [...loadingIds].map((orgId) =>
+      window.setTimeout(() => removeLoading(orgId), SKELETON_DURATION_MS),
+    )
+    return () => timers.forEach(window.clearTimeout)
+  }, [loadingIds])
+
+  /* Switching versions starts the tree closed. Expansions carried into V4 would
+     land on rows whose chevrons are dots and whose lists are paged — a different
+     treatment reading as a bug rather than as a comparison. */
+  useEffect(() => {
+    setExpandedIds(new Set())
+    setLoadingIds(new Set())
+  }, [version])
 
   /* Which page the subject sits on when the *sibling group* is what's paged.
      Clicking the 120th of Bramblewick's departments makes it the selected node
@@ -796,9 +1077,19 @@ export default function OrganizationHierarchyTab({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedId, version])
 
+  // Only V3.5 passes the expansion sets; every other version passes the empty one
+  // and gets exactly the rows it got before this version existed.
   const { rows, pagedTotal, pagedGroup, pagedFrom, pagedTo } = useMemo(
-    () => buildFocusedRows(selectedId, showPeopleRows, atScale, page),
-    [selectedId, showPeopleRows, atScale, page],
+    () =>
+      buildFocusedRows(
+        selectedId,
+        showPeopleRows,
+        atScale,
+        page,
+        isExpandable ? expandedIds : NO_IDS,
+        isExpandable ? loadingIds : NO_IDS,
+      ),
+    [selectedId, showPeopleRows, atScale, page, isExpandable, expandedIds, loadingIds],
   )
 
   const totalPages = Math.ceil(pagedTotal / CHILDREN_PER_PAGE)
@@ -875,8 +1166,38 @@ export default function OrganizationHierarchyTab({
         </Head>
         <Body>
           {rows.map((row) => {
+            /* A placeholder standing in for a row still loading. It takes the same
+               gutter and the same height as a real row, so the tree's guide lines
+               run through the loading block unbroken and nothing shifts when the
+               names arrive. */
+            if (row.kind === 'skeleton') {
+              return (
+                <TreeRow
+                  key={row.key}
+                  $ruleInset={ruleInsetFor(row.depth)}
+                  $noRule={isSansLines}
+                >
+                  <NameCell>
+                    <RowInner>
+                      <TreeGutter row={row} />
+                      <LeafArmContinuation aria-hidden="true" />
+                      <SkeletonName>
+                        <SkeletonBar width={row.width} />
+                      </SkeletonName>
+                    </RowInner>
+                  </NameCell>
+                  {!isSansLines && <Cell />}
+                  {showPeople && <Cell />}
+                </TreeRow>
+              )
+            }
+
             const isPerson = row.kind === 'person'
             const isCurrent = !isPerson && row.node.id === selectedId
+            /* V3.5: the chevron expands in place instead of drilling in. Rows whose
+               children are on screen because of where the page is centred keep the
+               inert marker — collapsing an ancestor would hide the selected row. */
+            const isExpandControl = isExpandable && !row.isStructural && row.hasChildren
 
             return (
               <TreeRow
@@ -900,7 +1221,25 @@ export default function OrganizationHierarchyTab({
                         on screen, a ring where a subtree is still folded away.
                         Everything else about the slot is unchanged, so the two
                         treatments are comparable. */}
-                    {row.isOpen ? (
+                    {isExpandControl ? (
+                      /* V3.5's two-part row: this control opens and closes the
+                         subtree in place and never moves the page. The name beside
+                         it is still the way in. Both remain — the point of the
+                         version is having the choice, not replacing one with the
+                         other. */
+                      <ChevronButton
+                        type="button"
+                        onClick={() => toggleExpanded(row.node.id)}
+                        aria-expanded={row.isOpen}
+                        aria-label={
+                          row.isOpen
+                            ? `Collapse ${row.node.name}`
+                            : `Expand ${row.node.name}`
+                        }
+                      >
+                        <Chevron direction={row.isOpen ? 'down' : 'right'} />
+                      </ChevronButton>
+                    ) : row.isOpen ? (
                       <ChevronSlot aria-hidden="true">
                         {isDotted ? <Dot $filled /> : <Chevron direction="down" />}
                       </ChevronSlot>

@@ -73,7 +73,8 @@ organization whose profile you're on it shows exactly three things:
 2. **Its direct children** (and, in V2, the people who sit directly in it)
 3. **Its direct siblings**
 
-Nothing else expands. A sibling's children, an ancestor's other branches, and
+Nothing else expands — except in V3.5, which is the version that questions this.
+A sibling's children, an ancestor's other branches, and
 anything more than one level below stay out of view until you ask for them, and
 the way you ask is to click — **clicking any organization re-centres the whole
 page on it**: the browser title, tab strip, profile header, properties, and tab
@@ -124,10 +125,12 @@ pod is a series of clicks, each of which lands on a page you can scan.
 
 Two consequences worth naming:
 
-- **No expand/collapse.** A row's chevron points right when it has a subtree the
-  view is holding back — clicking it drills in, same as clicking the name — and
-  down when its children are already listed below. The *Open all / Collapse all*
-  bulk control is gone; there is nothing left to open in bulk.
+- **No expand/collapse** (except in V3.5). A row's chevron points right when it has
+  a subtree the view is holding back — clicking it drills in, same as clicking the
+  name — and down when its children are already listed below. The *Open all /
+  Collapse all* bulk control is gone; there is nothing left to open in bulk. V3.5
+  puts expansion back, deliberately, to test whether the focused view needs it —
+  see below.
 - **The counter still reports reach, not rows.** "29 organizations" is how far
   access cascades below the selected node, which is exactly the number the
   focused view no longer shows you. Worth a look in review: it is the one place
@@ -139,15 +142,16 @@ alternative was the other half of a comparison this layout can't stage any more:
 only the path and the selected node ever have children on screen, so there is no
 second branch to contrast against.
 
-- **Version switcher** in the top bar — four treatments of the same data, for
+- **Version switcher** in the top bar — five treatments of the same data, for
   side-by-side review:
 
-| Version | People rows | Columns beside Organization | Row dividers |
-| --- | --- | --- | --- |
-| **V1 MVP** | — | Child orgs | yes |
-| **V2 with end-users** | yes | Child orgs · People | yes |
-| **V3 Sans lines** | — | none — count moves inline as `(4)` | no |
-| **V4 100 departments** | — | same as V2 | yes |
+| Version | People rows | Columns beside Organization | Row dividers | Chevron does |
+| --- | --- | --- | --- | --- |
+| **V1 MVP** | — | Child orgs | yes | drills in |
+| **V2 with end-users** | yes | Child orgs · People | yes | drills in |
+| **V3 Sans lines** | — | none — count moves inline as `(4)` | no | drills in |
+| **V3.5 Expandable** | — | same as V3 | no | **expands in place** |
+| **V4 100 departments** | — | same as V2 | yes | drills in (as a dot) |
 
 V4 also pages its child organizations 100 at a time and swaps the chevrons for
 dots — see below.
@@ -157,7 +161,68 @@ people who sit directly in the selected organization, plus a People count. V3
 asks whether the table furniture is needed at all — the child
 count becomes a parenthetical after the name, the Child orgs column goes away,
 and the only horizontal line left is the one under the header, so the vertical
-guides carry the structure.
+guides carry the structure. V3.5 is V3 with the chevron split off from the name.
+
+### V3.5: expanding without selecting
+
+V3.5 is V3 with **one interaction split into two**. In every other version the
+chevron and the name do the same thing — both re-centre the page on that
+organization. Here they diverge:
+
+- **Click the name** → unchanged. Selects that organization and re-centres
+  everything: page title, browser tab, tab strip, properties, counts.
+- **Click the chevron** → opens that organization's children *in place*. The
+  selection doesn't move, the page title doesn't change, and you stay on the
+  organization you were on.
+
+So you can look under a sibling without leaving where you are. That's the thing
+the focused view was built not to do, and V3.5 exists to find out whether the
+view needs it. Expansion **nests** — a revealed child has its own chevron — and
+several branches can be open at once, so this is the one version where the tree
+can grow past a single level below the selected node.
+
+Three details:
+
+- **The selected node and its ancestors keep an inert marker, not a control.**
+  Their children are on screen because of where the page is centred, not because
+  a reader opened them, so collapsing one would hide the row you're standing on.
+  Only rows the reader could meaningfully open — siblings and revealed
+  descendants — get a real button, labelled *Expand …* / *Collapse …*.
+- **Switching versions clears what you opened.** Expansion state is meaningless
+  in V1–V4, so it resets rather than lurking.
+- **Skeleton loaders** stand in for the children while a subtree opens — see
+  below.
+
+### Skeleton loaders
+
+Opening a subtree in V3.5 shows Garden's `Skeleton` bars in the rows about to
+arrive, for ~1.1s, then swaps in the real names. It's a fiction here (the whole
+tree is in memory) standing in for the fetch a real hierarchy would need. The
+bars sit on the tree's guide lines at name-like widths, one per incoming row, so
+what you see is *names arriving*, not a page loading.
+
+Four numbers, all constants at the top of `OrganizationHierarchyTab.jsx`:
+
+- `SKELETON_THRESHOLD = 2` — lists this short or shorter open instantly, no
+  flash. **Rusty asked for 10.** It can't be 10 in this tree: the widest node
+  anywhere is Model Training Pod at four children, and most expandable nodes have
+  three, so a threshold of 10 could never fire and the loading state would be
+  permanently invisible. Raise the constant if V3.5 is ever pointed at V4's
+  150-wide data, where 10 makes sense.
+- `SKELETON_DURATION_MS = 1100` — Rusty's "load for a second". It has to be this
+  high for a second reason: Garden's `Skeleton` has its own fade-in keyframes
+  (`0%,60%{opacity:0}` over 750ms) so it is *deliberately invisible for the first
+  ~450ms* to avoid flashing on fast loads. At 600ms the skeletons rendered and
+  could not be seen. 1100ms leaves ~650ms of visible skeleton.
+- `SKELETON_ROW_LIMIT = 8` — caps placeholders so a wide node doesn't fill the
+  screen with grey.
+- `SKELETON_MAX_WIDTH = 260` — without it the bars stretch the full table width
+  and read as a loading page rather than as pending names.
+
+The skeleton rows are pinned to `ROW_MIN_HEIGHT` with an explicit
+`line-height`, because Garden's `Skeleton` sets its own line-height and renders a
+non-breaking space inside — left alone it makes a taller row than the one it
+replaces, and the list jumps when the real names land.
 
 ### V4: the at-scale case
 
@@ -366,8 +431,21 @@ Deliberately out of scope for this pass, worth a PM conversation first:
   dots — filled vs. ring — to find out. The risk is affordance: a dot looks less
   like something you click.
 - Is one level down enough? A focused view is scannable but makes reaching a
-  deep node an eight-click trip. Two levels of children, or a breadcrumb of the
-  path you clicked through, are the obvious mitigations.
+  deep node an eight-click trip. **V3.5 is one answer** — expand in place, no
+  navigation — and it's worth asking in review whether that reintroduces the
+  problem centring solved: with three branches open, V3.5 starts to look like the
+  recursive tree this design replaced. Two levels of children by default, or a
+  breadcrumb of the path you clicked through, are the other mitigations.
+- **Does splitting the chevron from the name teach itself?** V3.5 gives one row two
+  targets that do different things — 20px of chevron that opens, and the name that
+  navigates — with nothing but the cursor to say so. Reviewers who've used a file
+  tree will expect it; reviewers coming from V1–V3, where the chevron and name are
+  interchangeable, may click the chevron expecting to be taken somewhere. Worth
+  watching rather than asking about.
+- Should the loading state be real? The skeletons in V3.5 are on a timer. If
+  review likes them, the question for engineering is which nodes actually need a
+  fetch — and `SKELETON_THRESHOLD` becomes a real answer about list size rather
+  than a number chosen so the effect is visible in a small tree.
 - Three markers on the selected row (bar, tint, bold) may still be one too many —
   the `current` tag was already dropped as a fourth. The bar is the strongest of
   the three and the tint the softest, so if review says the marking is still

@@ -78,6 +78,7 @@ const VERSIONS = [
   { id: 'v1', label: 'V1 MVP' },
   { id: 'v2', label: 'V2 with end-users' },
   { id: 'v3', label: 'V3 Sans lines' },
+  { id: 'v3-5', label: 'V3.5 Expandable' },
   { id: 'v4', label: 'V4 100 departments' },
 ]
 
@@ -88,8 +89,10 @@ export default function App() {
   const [isSubnavExpanded, setIsSubnavExpanded] = useState(false)
 
   // V1 MVP shows organizations only; V2 adds the end users inside them; V3 is
-  // V1 without row dividers, with the child count moved beside each name; V4 is
-  // V2 against Bramblewick's full 150 child departments, paged 100 at a time.
+  // V1 without row dividers, with the child count moved beside each name; V3.5
+  // is V3 with the chevron split off as an expand control, so a subtree can be
+  // opened without selecting its node; V4 is V2 against Bramblewick's full 150
+  // child departments, paged 100 at a time.
   const [version, setVersion] = useState('v1')
   const versionLabel = VERSIONS.find((option) => option.id === version)?.label
 
