@@ -11,6 +11,7 @@ import {
   Caption,
 } from '@zendeskgarden/react-tables'
 import { OffsetPagination } from '@zendeskgarden/react-pagination'
+import { Anchor } from '@zendeskgarden/react-buttons'
 import { Field, Label, MediaInput } from '@zendeskgarden/react-forms'
 import { Skeleton } from '@zendeskgarden/react-loaders'
 import { SM } from '@zendeskgarden/react-typography'
@@ -116,6 +117,22 @@ const SKELETON_WIDTHS = ['62%', '45%', '71%', '38%', '55%', '66%', '42%', '58%']
    tree ("Speech Recognition Team", "International Relations") at 14px. Without it a
    bar stretches across the whole table — see SkeletonName. */
 const SKELETON_MAX_WIDTH = 260
+
+/* V3.75's cap. However many children a node has, expanding it in place shows at most
+   this many, followed by a *View all* that opens the whole department as its own page
+   in a new tab.
+ *
+ * 50 rather than V4's 100 because the two versions are asking opposite questions.
+ * V4 puts the whole list in the tree and pages it, testing how much of a hierarchy
+ * one level can hold. V3.75 assumes it can't hold it, and tests the other answer:
+ * cap the tree at a readable depth and send the long list somewhere built for it. A
+ * cap only means something if it bites well before the list ends — at 100 of 175
+ * you're most of the way down anyway, and the escape hatch reads as a pager.
+ *
+ * Deliberately not the same idea as CHILDREN_PER_PAGE. That is a window onto a list
+ * you walk through in place; this is a hard stop with a door next to it. Sharing one
+ * constant would tie two versions' answers together. */
+const WIDE_ROW_CAP = 50
 
 /* Where a row's name text begins, measured from the left edge of the name
    cell — the point its horizontal rule starts from. */
@@ -556,6 +573,33 @@ const SkeletonBar = styled(Skeleton)`
   border-radius: 3px;
 `
 
+/* V3.75's *View all*, sitting where the 51st child would be. Takes the same gutter
+   and height as a real row so the guide line runs into it and it reads as the end of
+   the list rather than as a control parked underneath. */
+const ViewAllArea = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+  height: ${ROW_MIN_HEIGHT}px;
+  padding-left: ${ARM_GAP}px;
+`
+
+/* A text button: Garden's Anchor as a button, which is what `isLink` on Button gives
+   you but without inheriting the 36px button box that would push this row taller than
+   the ones above it. */
+const ViewAllButton = styled(Anchor)`
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+`
+
+const RemainderNote = styled(SM)`
+  color: #646864;
+  white-space: nowrap;
+`
+
 const CHEVRON_ROTATION = {
   down: 'none',
   right: 'rotate(-90deg)',
@@ -825,17 +869,30 @@ const buildFocusedRows = (selectedId, showPeople = true, atScale = false, page =
  * one comparison. Row geometry is identical to buildFocusedRows' — same fields, same
  * meanings — so TreeGutter and the row renderer are shared.
  */
-const buildExpandableRows = (selectedId, showPeople, expandedIds, loadingIds) => {
+const buildExpandableRows = (
+  selectedId,
+  showPeople,
+  expandedIds,
+  loadingIds,
+  /* V3.75: the wider roster, a cap on how many children any one node shows, and an
+     explicit root.
+     - `rowCap: null` means no cap, which is V3.5 and also V3.75's own full-page view.
+     - `rootId` starts the tree at a given organization instead of at the top of the
+       hierarchy. That is what makes the View all page a page *of that department*
+       rather than the whole tree scrolled to it. */
+  { wide = false, rowCap = null, rootId = null } = {},
+) => {
   const rows = []
   const nothing = { rows, pagedTotal: 0, pagedGroup: 'none', pagedFrom: 0, pagedTo: 0 }
+  const orgOptions = wide ? { atScale: true, wide: true } : undefined
 
   // Root of the tree the selected organization belongs to, so the view always
   // contains it even though it no longer revolves around it.
-  const root = getPath(selectedId)[0]
+  const root = rootId ? getOrganization(rootId) : getPath(selectedId)[0]
   if (!root) return nothing
 
   const hasChildren = (orgId) =>
-    getChildren(orgId).length > 0 || (showPeople && getPeopleIn(orgId).length > 0)
+    getChildren(orgId, orgOptions).length > 0 || (showPeople && getPeopleIn(orgId).length > 0)
 
   const pushNode = (org, depth, chain, idChain) => {
     const isOpen = expandedIds.has(org.id) && hasChildren(org.id)
@@ -850,14 +907,22 @@ const buildExpandableRows = (selectedId, showPeople, expandedIds, loadingIds) =>
       ancestorIds: idChain,
       isOpen,
       hasChildren: hasChildren(org.id),
-      childOrgCount: getChildren(org.id).length,
-      peopleCount: countPeopleAtOrBelow(org.id),
+      childOrgCount: getChildren(org.id, orgOptions).length,
+      peopleCount: countPeopleAtOrBelow(org.id, orgOptions),
     })
 
     if (!isOpen) return
 
-    const children = getChildren(org.id)
+    const allChildren = getChildren(org.id, orgOptions)
     const peopleHere = showPeople ? getPeopleIn(org.id) : []
+
+    /* V3.75's cap. Past WIDE_ROW_CAP children the tree stops and offers a way out
+       instead of continuing — see the constant. People are not capped: they only
+       exist in V2 and V4, neither of which uses this builder, so a cap here would be
+       untested code standing in for a decision nobody has made. */
+    const isCapped = rowCap !== null && allChildren.length > rowCap
+    const children = isCapped ? allChildren.slice(0, rowCap) : allChildren
+    const hiddenCount = allChildren.length - children.length
 
     // Standing in for the fetch a real hierarchy would need — see
     // SKELETON_THRESHOLD. The subtree below is withheld until the mark clears.
@@ -881,14 +946,17 @@ const buildExpandableRows = (selectedId, showPeople, expandedIds, loadingIds) =>
     }
 
     children.forEach((child, index) => {
-      // People are pushed after the child organizations, so a child can only be
-      // the one that closes the rail if there are none.
-      const isLastHere = index === children.length - 1 && peopleHere.length === 0
+      /* People are pushed after the child organizations, so a child can only close
+         the rail if there are none — and neither can it when a View all row follows
+         it, since that row is then the last thing under this node and the guide line
+         has to reach it. */
+      const isLastHere =
+        index === children.length - 1 && peopleHere.length === 0 && !isCapped
       pushNode(child, depth + 1, [...chain, isLastHere], [...idChain, child.id])
     })
 
     peopleHere.forEach((person, personIndex) => {
-      const isLastPerson = personIndex === peopleHere.length - 1
+      const isLastPerson = personIndex === peopleHere.length - 1 && !isCapped
       rows.push({
         key: `person-${person.id}-${org.id}`,
         kind: 'person',
@@ -901,6 +969,27 @@ const buildExpandableRows = (selectedId, showPeople, expandedIds, loadingIds) =>
         hasChildren: false,
       })
     })
+
+    /* The escape hatch, as the last row under a capped node. A row rather than a
+       control bolted to the parent, because it belongs at the bottom of the list it
+       ends — that's where a reader who has scrolled the 50 actually is. It sits at
+       the children's depth and closes the rail, so it reads as part of the list
+       rather than as chrome floating beside it. */
+    if (isCapped) {
+      rows.push({
+        key: `view-all-${org.id}`,
+        kind: 'viewAll',
+        node: org,
+        hiddenCount,
+        totalCount: allChildren.length,
+        depth: depth + 1,
+        isLast: true,
+        ancestorIsLast: [...chain, true],
+        ancestorIds: [...idChain, `view-all-${org.id}`],
+        isOpen: false,
+        hasChildren: false,
+      })
+    }
   }
 
   // The root has no rail of its own — TreeGutter draws nothing at depth 0 — so the
@@ -958,6 +1047,16 @@ export default function OrganizationHierarchyTab({
   selectedId,
   onSelectOrganization,
   version = 'v1',
+  // V3.75 only: opens an organization as its own Support tab. Absent elsewhere, and
+  // the View all row is only rendered when it's present.
+  onOpenInNewTab,
+  /* V3.75's full-page department view (see DepartmentPage). Roots the tree at one
+     organization and lifts the row cap, which is the whole difference between the
+     capped tree and the page a View all opens. Everything else — geometry, chevrons,
+     skeletons, selection — is the same component, so the two can't drift apart. */
+  rootId = null,
+  uncapped = false,
+  hideSearch = false,
 }) {
   // V4 is V2's treatment against an organization with a hundred child
   // departments — same columns, same people rows, one organization's child list
@@ -982,13 +1081,25 @@ export default function OrganizationHierarchyTab({
      what's in here" — are one action in V1–V4, so the only way to see inside a
      node is to make it the subject. This version separates them, which is what
      lets a reader compare two branches without leaving the row they're on. */
-  const isExpandable = version === 'v3-5'
+  /* V3.75: V3.5's expansion against V4's breadth — 175 departments under
+     Bramblewick instead of three. Where V4 puts the whole list in the tree and pages
+     it, V3.75 caps any one list at WIDE_ROW_CAP rows and offers a *View all* that
+     opens that department as its own Support tab. The two are the two available
+     answers to "this node has 175 children", which is why they're separate versions
+     rather than one with a toggle. */
+  const isWide = version === 'v3-75'
+  const isExpandable = version === 'v3-5' || isWide
   // V3 Sans lines: no row dividers, and the child count moves out of its own
   // column into a parenthetical beside each organization's name. V3.5 inherits
   // both, so the expansion behaviour is the only thing that differs between them.
   const isSansLines = version === 'v3' || isExpandable
   // V4 marks nodes with dots instead of chevrons.
   const isDotted = atScale
+
+  /* The data options every selector in this component passes. One object rather than
+     `{ atScale }` repeated at five call sites, because V3.75 added a second flag and
+     the failure mode of missing one is a count that disagrees with the rows. */
+  const dataOptions = useMemo(() => ({ atScale: atScale || isWide, wide: isWide }), [atScale, isWide])
 
   // Which page of the paged organization group is on screen.
   const [page, setPage] = useState(1)
@@ -1000,7 +1111,12 @@ export default function OrganizationHierarchyTab({
      paint shows the same thing the other versions do: the selected row in context,
      already reachable, rather than a single collapsed root the reader has to dig
      through to find where they are. */
-  const [expandedIds, setExpandedIds] = useState(() => new Set(pathIds(selectedId)))
+  const [expandedIds, setExpandedIds] = useState(() =>
+    // On the full-page department view the subject is the root, and its children are
+    // the entire point of the page, so it opens expanded rather than seeded with a
+    // path that would be one collapsed row.
+    new Set(rootId ? [rootId] : pathIds(selectedId)),
+  )
 
   /* Nodes whose children are being "fetched" — see SKELETON_THRESHOLD. An id lives
      here for SKELETON_DURATION_MS after the node is opened, and only if its child
@@ -1033,7 +1149,7 @@ export default function OrganizationHierarchyTab({
     }
 
     const childCount =
-      getChildren(orgId, { atScale }).length + (showPeopleRows ? getPeopleIn(orgId).length : 0)
+      getChildren(orgId, dataOptions).length + (showPeopleRows ? getPeopleIn(orgId).length : 0)
     if (childCount <= SKELETON_THRESHOLD) return
 
     setLoadingIds((current) => new Set(current).add(orgId))
@@ -1065,10 +1181,10 @@ export default function OrganizationHierarchyTab({
      selectedId: a selection must not disturb what's open. That case is handled
      below, additively. */
   useEffect(() => {
-    setExpandedIds(new Set(pathIds(selectedId)))
+    setExpandedIds(new Set(rootId ? [rootId] : pathIds(selectedId)))
     setLoadingIds(new Set())
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [version])
+  }, [version, rootId])
 
   /* Selecting a row must never close anything — that was the bug this version had:
      clicking a department rebuilt the tree around it and everything else vanished.
@@ -1079,7 +1195,9 @@ export default function OrganizationHierarchyTab({
      matters, because returning a new Set every time would rebuild the rows on every
      render. */
   useEffect(() => {
-    if (!isExpandable) return
+    // Not on the rooted page: the path to the selected organization runs *above* that
+    // page's root, so seeding it would pull ancestors the page deliberately excludes.
+    if (!isExpandable || rootId) return
     setExpandedIds((current) => {
       const missing = pathIds(selectedId).filter((id) => !current.has(id))
       if (missing.length === 0) return current
@@ -1087,7 +1205,7 @@ export default function OrganizationHierarchyTab({
       missing.forEach((id) => next.add(id))
       return next
     })
-  }, [selectedId, isExpandable])
+  }, [selectedId, isExpandable, rootId])
 
   /* Which page the subject sits on when the *sibling group* is what's paged.
      Clicking the 120th of Bramblewick's departments makes it the selected node
@@ -1098,7 +1216,7 @@ export default function OrganizationHierarchyTab({
   const pageForSelected = (orgId) => {
     const parentId = getOrganization(orgId)?.parentId
     if (!parentId) return 1
-    const siblings = getChildren(parentId, { atScale })
+    const siblings = getChildren(parentId, dataOptions)
     if (siblings.length <= CHILDREN_PER_PAGE) return 1
     const index = siblings.findIndex((org) => org.id === orgId)
     return index < 0 ? 1 : Math.floor(index / CHILDREN_PER_PAGE) + 1
@@ -1120,9 +1238,24 @@ export default function OrganizationHierarchyTab({
   const { rows, pagedTotal, pagedGroup, pagedFrom, pagedTo } = useMemo(
     () =>
       isExpandable
-        ? buildExpandableRows(selectedId, showPeopleRows, expandedIds, loadingIds)
+        ? buildExpandableRows(selectedId, showPeopleRows, expandedIds, loadingIds, {
+            wide: isWide,
+            rowCap: isWide && !uncapped ? WIDE_ROW_CAP : null,
+            rootId,
+          })
         : buildFocusedRows(selectedId, showPeopleRows, atScale, page),
-    [selectedId, showPeopleRows, atScale, page, isExpandable, expandedIds, loadingIds],
+    [
+      selectedId,
+      showPeopleRows,
+      atScale,
+      page,
+      isExpandable,
+      isWide,
+      expandedIds,
+      loadingIds,
+      rootId,
+      uncapped,
+    ],
   )
 
   const totalPages = Math.ceil(pagedTotal / CHILDREN_PER_PAGE)
@@ -1132,12 +1265,12 @@ export default function OrganizationHierarchyTab({
   // feature is how far access cascades below the selected organization, and that
   // is a number the focused view no longer shows in full.
   const reachOrgCount = useMemo(
-    () => 1 + getDescendantIds(selectedId, { atScale }).length,
-    [selectedId, atScale],
+    () => 1 + getDescendantIds(selectedId, dataOptions).length,
+    [selectedId, dataOptions],
   )
   const peopleReach = useMemo(
-    () => (showPeople ? countPeopleAtOrBelow(selectedId, { atScale }) : 0),
-    [selectedId, showPeople, atScale],
+    () => (showPeople ? countPeopleAtOrBelow(selectedId, dataOptions) : 0),
+    [selectedId, showPeople, dataOptions],
   )
 
   // Drill-in. Every organization in the view is a link to its own context; the
@@ -1164,25 +1297,33 @@ export default function OrganizationHierarchyTab({
     <Wrapper data-comment-root="true">
       {/* No Hint — the label carries the explanation, and a hint line here
           pushed the counts and the table down for no added meaning. */}
-      <SearchField>
-        {/* Follows the rows, not the column: V4 shows a People count but no people,
-            so offering to search users would promise something its tree can't
-            show. */}
-        <SearchLabel>
-          {showPeopleRows ? 'Search organizations and users' : 'Search organizations'}
-        </SearchLabel>
-        <MediaInput start={<SearchIcon />} />
-      </SearchField>
+      {!hideSearch && (
+        <SearchField>
+          {/* Follows the rows, not the column: V4 shows a People count but no people,
+              so offering to search users would promise something its tree can't
+              show. */}
+          <SearchLabel>
+            {showPeopleRows ? 'Search organizations and users' : 'Search organizations'}
+          </SearchLabel>
+          <MediaInput start={<SearchIcon />} />
+        </SearchField>
+      )}
 
-      <Counts>
-        {reachOrgCount} {orgLabel}
-        {showPeople && ` · ${peopleReach} ${peopleLabel}`}
-      </Counts>
+      {/* The rooted page states its own counts in its header, where they describe the
+          one department the page is about. Repeating them here would put two different
+          totals — the page's and the tree's reach — a few pixels apart. */}
+      {!rootId && (
+        <Counts>
+          {reachOrgCount} {orgLabel}
+          {showPeople && ` · ${peopleReach} ${peopleLabel}`}
+        </Counts>
+      )}
 
       <TreeTable isReadOnly>
         <HiddenCaption>
-          Hierarchy around the selected organization: its ancestors, direct children, and
-          direct siblings
+          {rootId
+            ? `${getOrganization(rootId)?.name} and every organization below it`
+            : 'Hierarchy around the selected organization: its ancestors, direct children, and direct siblings'}
         </HiddenCaption>
         <Head>
           <HeaderRow>
@@ -1217,6 +1358,37 @@ export default function OrganizationHierarchyTab({
                       <SkeletonName>
                         <SkeletonBar width={row.width} />
                       </SkeletonName>
+                    </RowInner>
+                  </NameCell>
+                  {!isSansLines && <Cell />}
+                  {showPeople && <Cell />}
+                </TreeRow>
+              )
+            }
+
+            /* V3.75's escape hatch, in the row after the capped list. A text button
+               plus the count it's hiding — the count is what makes the cap legible,
+               since 50 rows of departments give no clue how many more there are. */
+            if (row.kind === 'viewAll') {
+              return (
+                <TreeRow key={row.key} $ruleInset={ruleInsetFor(row.depth)} $noRule={isSansLines}>
+                  <NameCell>
+                    <RowInner>
+                      <TreeGutter row={row} />
+                      <LeafArmContinuation aria-hidden="true" />
+                      <ViewAllArea>
+                        <ViewAllButton
+                          onClick={(event) => {
+                            event.preventDefault()
+                            onOpenInNewTab?.(row.node.id)
+                          }}
+                        >
+                          View all {row.totalCount} in {row.node.name}
+                        </ViewAllButton>
+                        <RemainderNote>
+                          {row.hiddenCount} more not shown
+                        </RemainderNote>
+                      </ViewAllArea>
                     </RowInner>
                   </NameCell>
                   {!isSansLines && <Cell />}

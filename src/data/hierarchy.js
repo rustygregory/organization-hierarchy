@@ -280,21 +280,51 @@ const AT_SCALE_DEPARTMENT_NAMES = [
   'Paediatrics Research', 'Palaeontology',
 ]
 
+/**
+ * 25 more, continuing the alphabet past Palaeontology — V3.75's addition.
+ *
+ * A separate block rather than 25 more entries above, because V4's totals are
+ * load-bearing: 147 generated plus Bramblewick's 3 hand-written children is 150,
+ * which puts V4's second page at exactly 50 rows — a real page rather than a stray
+ * remainder, and deliberately not a round multiple of the page size. V3.75 wants 175
+ * children, and editing the list in place to get there would silently re-cut a
+ * version already under review. So the two take different slices of one roster:
+ * `atScale` is V4's 147, `wide` is all 172.
+ */
+const WIDE_ONLY_DEPARTMENT_NAMES = [
+  'Pathology', 'Performance Studies', 'Petroleum Engineering', 'Pharmacology', 'Philosophy',
+  'Photography', 'Physical Therapy', 'Physics', 'Physiology', 'Planetary Science',
+  'Plant Pathology', 'Political Science', 'Polymer Science', 'Portuguese Studies', 'Psychiatry Research',
+  'Psychology', 'Public Administration', 'Public Health', 'Quantum Computing', 'Radiology Research',
+  'Real Estate', 'Rehabilitation Science', 'Religious Studies', 'Renaissance Studies', 'Robotics Engineering',
+]
+
 /** The organization the at-scale departments hang off. */
 export const AT_SCALE_PARENT_ID = 'bramblewick'
 
-const AT_SCALE_DEPARTMENTS = AT_SCALE_DEPARTMENT_NAMES.map((name) => ({
+const toDepartment = (name) => ({
   // `scale-` prefixed so these can never collide with a hand-written organization.
   id: `scale-${name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`,
   name,
   // Cost Center, the same type the hand-written departments carry.
   type: 'Cost Center',
   parentId: AT_SCALE_PARENT_ID,
-}))
+})
 
-const AT_SCALE_IDS = new Set(AT_SCALE_DEPARTMENTS.map((org) => org.id))
+/** V4's roster: 147, so Bramblewick has 150 children. */
+const AT_SCALE_DEPARTMENTS = AT_SCALE_DEPARTMENT_NAMES.map(toDepartment)
 
-/** Is this one of V4's at-scale departments? True for nothing V1–V3 can show. */
+/** V3.75's roster: 172, so Bramblewick has 175 children. */
+const WIDE_DEPARTMENTS = [
+  ...AT_SCALE_DEPARTMENTS,
+  ...WIDE_ONLY_DEPARTMENT_NAMES.map(toDepartment),
+]
+
+// Every generated id, both rosters. Used to spot a department the small-tree
+// versions can't show, so it has to cover the wider list too.
+const AT_SCALE_IDS = new Set(WIDE_DEPARTMENTS.map((org) => org.id))
+
+/** Is this a generated department? True for nothing V1–V3 or V3.5 can show. */
 export const isAtScaleOrg = (orgId) => AT_SCALE_IDS.has(orgId)
 
 /**
@@ -365,10 +395,18 @@ export const getOrganization = (orgId) =>
  * other versions are built around, and dropping them to reach a round number
  * would cost more than the round number is worth. They come first, so the top of
  * V4's list is the same as V2's.
+ *
+ * `wide` is V3.75's longer roster — the same list plus 25, for 175 children. Both
+ * flags exist rather than one number because V4's 150 is fixed by its paging
+ * arithmetic; see WIDE_ONLY_DEPARTMENT_NAMES.
  */
-export const getChildren = (orgId, { atScale = false } = {}) => {
+export const getChildren = (orgId, { atScale = false, wide = false } = {}) => {
   const own = ORGANIZATIONS.filter((org) => org.parentId === orgId)
-  if (atScale && orgId === AT_SCALE_PARENT_ID) return [...own, ...AT_SCALE_DEPARTMENTS]
+  if (orgId !== AT_SCALE_PARENT_ID) return own
+  // `wide` is V3.75's 175; `atScale` is V4's 150. Checked first because V3.75 passes
+  // both — it is the at-scale case, just a wider one.
+  if (wide) return [...own, ...WIDE_DEPARTMENTS]
+  if (atScale) return [...own, ...AT_SCALE_DEPARTMENTS]
   return own
 }
 

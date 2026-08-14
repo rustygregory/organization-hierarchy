@@ -217,7 +217,13 @@ const CaretIcon = () => (
 const domainFor = (org) =>
   `${org.name.toLowerCase().replace(/\s+university$/, '').replace(/[^a-z0-9]+/g, '')}.edu`
 
-export default function OrganizationProfile({ orgId, onSelectOrganization, version = 'v1' }) {
+export default function OrganizationProfile({
+  orgId,
+  onSelectOrganization,
+  version = 'v1',
+  // V3.75 only — see the View all row in OrganizationHierarchyTab.
+  onOpenInNewTab,
+}) {
   const [activeTab, setActiveTab] = useState('hierarchy')
 
   const org = getOrganization(orgId)
@@ -333,6 +339,7 @@ export default function OrganizationProfile({ orgId, onSelectOrganization, versi
             selectedId={orgId}
             onSelectOrganization={onSelectOrganization}
             version={version}
+            onOpenInNewTab={onOpenInNewTab}
           />
         ) : (
           <Placeholder>

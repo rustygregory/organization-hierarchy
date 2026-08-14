@@ -4,6 +4,7 @@ import { TopBar, MainNav } from 'zendesk-globalnav-template'
 import { Combobox, Field, Option } from '@zendeskgarden/react-dropdowns'
 import styled from 'styled-components'
 import OrganizationProfile from './components/OrganizationProfile'
+import DepartmentPage from './components/DepartmentPage'
 import TabBar from './components/TabBar'
 import CommentLayer from './comments/CommentLayer'
 import { AT_SCALE_PARENT_ID, getOrganization, isAtScaleOrg } from './data/hierarchy'
@@ -79,6 +80,7 @@ const VERSIONS = [
   { id: 'v2', label: 'V2 with end-users' },
   { id: 'v3', label: 'V3 Sans lines' },
   { id: 'v3-5', label: 'V3.5 Expandable' },
+  { id: 'v3-75', label: 'V3.75 175 departments' },
   { id: 'v4', label: 'V4 100 departments' },
 ]
 
@@ -91,8 +93,10 @@ export default function App() {
   // V1 MVP shows organizations only; V2 adds the end users inside them; V3 is
   // V1 without row dividers, with the child count moved beside each name; V3.5
   // is V3 with the chevron split off as an expand control, so a subtree can be
-  // opened without selecting its node; V4 is V2 against Bramblewick's full 150
-  // child departments, paged 100 at a time.
+  // opened without selecting its node; V3.75 is V3.5 against 175 departments,
+  // capping any one list at 50 rows with a View all that opens the department in
+  // its own tab; V4 is V2 against Bramblewick's full 150 child departments, paged
+  // 100 at a time.
   const [version, setVersion] = useState('v1')
   const versionLabel = VERSIONS.find((option) => option.id === version)?.label
 
@@ -101,20 +105,55 @@ export default function App() {
   const [orgId, setOrgId] = useState(INITIAL_ORG_ID)
   const org = getOrganization(orgId)
 
-  /* Leaving V4 while sitting on one of its departments.
-     V4 is the only version with the hundred at-scale departments, so switching
-     away from it while centred on, say, Palaeontology would leave the page on an
-     organization the other versions cannot show: a tree of one row, and no way
-     back except reloading. Falls back to the department's parent, which every
-     version has. */
+  /* V3.75's second tab: an organization opened from a *View all*, shown as its own
+     full page rather than inside the focused tree. Null when only the profile tab is
+     open, which is every other version.
+
+     It lives here rather than in the hierarchy tab because a Support tab is
+     chrome — the tab strip at the top of the window is what makes this read as "a
+     new tab" rather than as a panel — and the strip is a sibling of the profile,
+     not a child of the tree. */
+  const [wideTabOrgId, setWideTabOrgId] = useState(null)
+  // Which of the two tabs is in front. 'profile' is the organization profile;
+  // 'wide' is the full-page department list.
+  const [activeTabId, setActiveTabId] = useState('profile')
+
+  const wideTabOrg = wideTabOrgId ? getOrganization(wideTabOrgId) : null
+  const isWideTabActive = Boolean(wideTabOrg) && activeTabId === 'wide'
+
+  const openWideTab = (targetId) => {
+    setWideTabOrgId(targetId)
+    setActiveTabId('wide')
+  }
+
+  const closeWideTab = () => {
+    setWideTabOrgId(null)
+    setActiveTabId('profile')
+  }
+
+  /* Leaving V3.75 closes its extra tab. The full-page department view only exists
+     in that version, so a tab left standing would either vanish under the reader or
+     show a page the current version can't produce. */
   useEffect(() => {
-    if (version !== 'v4' && isAtScaleOrg(orgId)) setOrgId(AT_SCALE_PARENT_ID)
+    if (version !== 'v3-75' && wideTabOrgId) closeWideTab()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [version, wideTabOrgId])
+
+  /* Leaving the wide versions while sitting on one of their departments.
+     V4 and V3.75 are the only versions carrying the generated departments, so
+     switching away while centred on, say, Palaeontology would leave the page on an
+     organization the others cannot show: a tree of one row, and no way back except
+     reloading. Falls back to the department's parent, which every version has. */
+  useEffect(() => {
+    const hasDepartments = version === 'v4' || version === 'v3-75'
+    if (!hasDepartments && isAtScaleOrg(orgId)) setOrgId(AT_SCALE_PARENT_ID)
   }, [version, orgId])
 
-  // Browser tab follows the organization, the way a real Support tab does.
+  // Browser tab follows whichever Support tab is in front, the way a real one does.
   useEffect(() => {
-    document.title = `${org.name} — Organization hierarchy`
-  }, [org.name])
+    const subject = isWideTabActive ? wideTabOrg.name : org.name
+    document.title = `${subject} — Organization hierarchy`
+  }, [org.name, isWideTabActive, wideTabOrg])
 
   return (
     <ThemeProvider>
@@ -122,7 +161,18 @@ export default function App() {
         <TopBarRow>
           <TopBar currentProduct={currentProduct} onProductChange={setCurrentProduct} />
           <TabBarOverlay>
-            <TabBar title={org.name} />
+            {/* Two tabs at most, and only in V3.75 — a View all opens the second.
+                Clicking between them swaps the page under the strip, which is the
+                whole point of doing this as a tab rather than a drawer. */}
+            <TabBar
+              tabs={[
+                { id: 'profile', title: org.name },
+                ...(wideTabOrg ? [{ id: 'wide', title: wideTabOrg.name, isCloseable: true }] : []),
+              ]}
+              activeTabId={wideTabOrg ? activeTabId : 'profile'}
+              onSelectTab={setActiveTabId}
+              onCloseTab={closeWideTab}
+            />
           </TabBarOverlay>
           <VersionOverlay>
             <VersionFieldWrapper>
@@ -155,11 +205,20 @@ export default function App() {
             setIsSubnavExpanded={setIsSubnavExpanded}
           />
           <MainContent>
-            <OrganizationProfile
-              orgId={orgId}
-              onSelectOrganization={setOrgId}
-              version={version}
-            />
+            {isWideTabActive ? (
+              /* V3.75's full page for one department: that organization and all of
+                 its children, nothing above or beside it. Not a second copy of the
+                 hierarchy tab — the point of View all is that the 50-row cap is
+                 lifted, so this page shows the lot. */
+              <DepartmentPage orgId={wideTabOrgId} onSelectOrganization={setOrgId} />
+            ) : (
+              <OrganizationProfile
+                orgId={orgId}
+                onSelectOrganization={setOrgId}
+                version={version}
+                onOpenInNewTab={version === 'v3-75' ? openWideTab : undefined}
+              />
+            )}
           </MainContent>
         </ContentRow>
 
@@ -174,10 +233,16 @@ export default function App() {
             content depending on the version and the selected organization, so a
             pin without this context would point at the wrong row. */}
         <CommentLayer
-          context={{ version, orgId }}
+          context={{ version, orgId, wideTabOrgId, activeTabId }}
           onRestoreContext={(saved) => {
             if (saved.version) setVersion(saved.version)
             if (saved.orgId) setOrgId(saved.orgId)
+            /* V3.75's second tab is part of the view a pin was made in: the same
+               screen position holds a department list on one tab and the profile on
+               the other. Restored after the version, because switching version
+               closes the extra tab. */
+            setWideTabOrgId(saved.wideTabOrgId ?? null)
+            setActiveTabId(saved.activeTabId ?? 'profile')
           }}
         />
       </PageContainer>

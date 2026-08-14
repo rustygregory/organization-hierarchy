@@ -73,7 +73,7 @@ organization whose profile you're on it shows exactly three things:
 2. **Its direct children** (and, in V2, the people who sit directly in it)
 3. **Its direct siblings**
 
-Nothing else expands — except in V3.5, which is the version that questions this.
+Nothing else expands — except in V3.5 and V3.75, the versions that question this.
 A sibling's children, an ancestor's other branches, and
 anything more than one level below stay out of view until you ask for them, and
 the way you ask is to click — **clicking any organization re-centres the whole
@@ -125,12 +125,12 @@ pod is a series of clicks, each of which lands on a page you can scan.
 
 Two consequences worth naming:
 
-- **No expand/collapse** (except in V3.5). A row's chevron points right when it has
-  a subtree the view is holding back — clicking it drills in, same as clicking the
-  name — and down when its children are already listed below. The *Open all /
-  Collapse all* bulk control is gone; there is nothing left to open in bulk. V3.5
-  puts expansion back, deliberately, to test whether the focused view needs it —
-  see below.
+- **No expand/collapse** (except in V3.5 and V3.75). A row's chevron points right
+  when it has a subtree the view is holding back — clicking it drills in, same as
+  clicking the name — and down when its children are already listed below. The
+  *Open all / Collapse all* bulk control is gone; there is nothing left to open in
+  bulk. V3.5 puts expansion back, deliberately, to test whether the focused view
+  needs it — see below.
 - **The counter still reports reach, not rows.** "29 organizations" is how far
   access cascades below the selected node, which is exactly the number the
   focused view no longer shows you. Worth a look in review: it is the one place
@@ -142,19 +142,17 @@ alternative was the other half of a comparison this layout can't stage any more:
 only the path and the selected node ever have children on screen, so there is no
 second branch to contrast against.
 
-- **Version switcher** in the top bar — five treatments of the same data, for
+- **Version switcher** in the top bar — six treatments of the same data, for
   side-by-side review:
 
-| Version | People rows | Columns beside Organization | Row dividers | Shape of the tree | Chevron does |
-| --- | --- | --- | --- | --- | --- |
-| **V1 MVP** | — | Child orgs | yes | focused on the selection | drills in |
-| **V2 with end-users** | yes | Child orgs · People | yes | focused on the selection | drills in |
-| **V3 Sans lines** | — | none — count moves inline as `(4)` | no | focused on the selection | drills in |
-| **V3.5 Expandable** | — | same as V3 | no | **rooted; whatever you opened** | **expands in place** |
-| **V4 100 departments** | — | same as V2 | yes | focused on the selection | drills in (as a dot) |
-
-V4 also pages its child organizations 100 at a time and swaps the chevrons for
-dots — see below.
+| Version | People rows | Columns beside Organization | Row dividers | Shape of the tree | Chevron does | Wide node |
+| --- | --- | --- | --- | --- | --- | --- |
+| **V1 MVP** | — | Child orgs | yes | focused on the selection | drills in | — |
+| **V2 with end-users** | yes | Child orgs · People | yes | focused on the selection | drills in | — |
+| **V3 Sans lines** | — | none — count moves inline as `(4)` | no | focused on the selection | drills in | — |
+| **V3.5 Expandable** | — | same as V3 | no | **rooted; whatever you opened** | **expands in place** | — |
+| **V3.75 175 departments** | — | same as V3 | no | rooted; whatever you opened | expands in place | **capped at 50 + View all** |
+| **V4 100 departments** | — | same as V2 | yes | focused on the selection | drills in (as a dot) | **paged 100 at a time** |
 
 V1 is the MVP scope: organizations only, one supporting column. V2 adds the
 people who sit directly in the selected organization, plus a People count. V3
@@ -162,6 +160,13 @@ asks whether the table furniture is needed at all — the child
 count becomes a parenthetical after the name, the Child orgs column goes away,
 and the only horizontal line left is the one under the header, so the vertical
 guides carry the structure. V3.5 is V3 with the chevron split off from the name.
+
+**The last two are the same question asked twice.** A node with more children
+than a screen can hold has to do *something*, and V3.75 and V4 are the two
+answers: cap the list and put a door at the bottom, or page through it in
+windows. They deliberately run on different data — 175 departments against 150 —
+so neither can be mistaken for a tweak of the other; see *Two rosters, on
+purpose* below.
 
 ### V3.5: expanding without selecting
 
@@ -211,8 +216,9 @@ Details worth knowing:
 - **The tree opens on the path down to the current organization**, so the first
   paint shows the same thing the other versions do rather than a single collapsed
   root to dig through.
-- **Not paged.** V3.5 runs on the hand-written tree; combining in-place expansion
-  with V4's 150-wide node would put two variables in one comparison.
+- **Not paged, and not capped.** V3.5 runs on the hand-written tree only, so
+  expansion is the single variable under test. **V3.75 is the one that adds the
+  wide node** — see below.
 - **Skeleton loaders** stand in for the children while a subtree opens — see
   below.
 
@@ -227,11 +233,12 @@ what you see is *names arriving*, not a page loading.
 Four numbers, all constants at the top of `OrganizationHierarchyTab.jsx`:
 
 - `SKELETON_THRESHOLD = 2` — lists this short or shorter open instantly, no
-  flash. **Rusty asked for 10.** It can't be 10 in this tree: the widest node
+  flash. **Rusty asked for 10.** It can't be 10 in V3.5's tree: the widest node
   anywhere is Model Training Pod at four children, and most expandable nodes have
   three, so a threshold of 10 could never fire and the loading state would be
-  permanently invisible. Raise the constant if V3.5 is ever pointed at V4's
-  150-wide data, where 10 makes sense.
+  permanently invisible. **V3.75 changes this** — it has a 175-wide node, so 10 is
+  now viable there, and the constant is shared. Still 2, flagged rather than
+  changed quietly, because raising it turns V3.5's loaders off entirely.
 - `SKELETON_DURATION_MS = 1100` — Rusty's "load for a second". It has to be this
   high for a second reason: Garden's `Skeleton` has its own fade-in keyframes
   (`0%,60%{opacity:0}` over 750ms) so it is *deliberately invisible for the first
@@ -246,6 +253,76 @@ The skeleton rows are pinned to `ROW_MIN_HEIGHT` with an explicit
 `line-height`, because Garden's `Skeleton` sets its own line-height and renders a
 non-breaking space inside — left alone it makes a taller row than the one it
 replaces, and the list jumps when the real names land.
+
+### V3.75: a cap with a door in it
+
+V3.75 is V3.5 pointed at **175 departments** under Bramblewick — the case V3.5
+deliberately avoided. Expansion in place is a good answer until the thing you
+expand is longer than the page; then it stops being an answer and becomes the
+problem. So V3.75 keeps everything about V3.5 and adds two things:
+
+- **Any one list stops at 50 rows.** Open Bramblewick and you get Accounting
+  through Development Studies, not all 175.
+- **A text button at the end of the list**: *View all 175 in Bramblewick
+  University*, with `125 more not shown` beside it. Clicking it **opens that
+  department in a second Support tab**, beside the profile tab, showing that
+  department and every one of its children.
+
+The pairing is the point. The cap on its own is a dead end — you can see that
+there is more and not reach it. The full-page view on its own doesn't help,
+because you'd have to know to go there. Together the tree stays a summary and the
+page is where you go when the summary isn't enough.
+
+**Why a whole page rather than more rows.** The obvious alternative is *Show 50
+more* in place, which is really paging in a tree. It fails on a mixed list: the
+window can land in the middle of an expanded subtree, so the rows you're paging
+aren't a list any more, they're a slice of a shape. A page whose subject is one
+department has no such problem — its children are all it contains.
+
+`src/components/DepartmentPage.jsx` renders that page. It is **not** a second
+copy of the tree: it renders the same `OrganizationHierarchyTab` rooted at the
+department (`rootId`) with the cap lifted (`uncapped`). Same geometry, same
+chevrons, same skeletons, same selection behaviour — so a child that has children
+of its own still opens in place there, and the two views cannot drift apart when
+either is touched. What differs is only what's around it: a header naming the
+department with its counts, a search field scoped to it, and no properties rail or
+Tickets/Users/Related tabs, because this page is about one relationship — what the
+department contains — rather than the organization as a record.
+
+Details worth knowing:
+
+- **`WIDE_ROW_CAP = 50` is its own constant**, not shared with V4's
+  `CHILDREN_PER_PAGE = 100`. A window you page through and a hard stop with a door
+  beside it are two different answers to the same problem; one constant would tie
+  the two versions' answers together and make the comparison meaningless.
+- **The cap applies per node, not per page.** Every list in the tree is capped
+  independently, so a wide branch nested inside another wide branch gets its own
+  *View all*.
+- **The View all row is part of the tree, not a footer.** It sits on the guide
+  lines at the depth of the children it stands in for, and it counts as the last
+  child for the purposes of closing the rail — so the vertical line ends at it
+  rather than at the 50th name, which would leave the row hanging outside the
+  branch it belongs to.
+- **It's Garden's `Anchor`, not a `Button`.** Rusty asked for a text button;
+  `Button isLink` still brings a 36px box with it, which breaks the row height.
+- **Collapsing the node takes the View all with it**, since it's a child row like
+  any other.
+- **The second tab closes when you leave V3.75.** The full-page view only exists
+  in this version, so a tab left standing would show a page the current version
+  can't produce.
+- **The tab strip's fills are opaque.** It's overlaid on the global TopBar, which
+  has its own *Add* button behind it — a transparent "outline" tab lets that label
+  read straight through the organization name.
+- **Comment pins remember which tab they were made on.** The same screen position
+  holds a department list on one tab and the profile on the other, so the pin
+  context carries `wideTabOrgId` and `activeTabId` alongside the version and
+  selected organization.
+
+**Still open:** `SKELETON_THRESHOLD` is 2, chosen when V3.5's widest node had four
+children (see above). V3.75 has a 175-wide node, so Rusty's original "bigger than
+10" is now viable and worth revisiting — 2 means a two-child branch flashes a
+loader it doesn't need. Left as-is rather than changed silently, since it affects
+V3.5 too.
 
 ### V4: the at-scale case
 
@@ -291,6 +368,18 @@ Three details worth knowing:
   Science branch hangs off, so they have to stay. It also leaves page two at 50 — a
   real page rather than a stray remainder, and not a round multiple of the page
   size, which would hide the part-full last page.
+
+#### Two rosters, on purpose
+
+V3.75's 175 and V4's 150 come from two separate lists in `hierarchy.js`:
+`AT_SCALE_DEPARTMENTS` (147 generated) and `WIDE_DEPARTMENTS` (those 147 plus 25
+more), selected by the `atScale` and `wide` flags on `getChildren`.
+
+That looks like duplication and isn't. V4's 150 is load-bearing — the arithmetic
+in the bullet above is a deliberate choice about what page two should look like,
+and it's under review. Growing the one list to 175 would silently re-cut V4's
+pages while Rusty was still comparing them. Two rosters means each version's
+number can move without disturbing the other's.
 
 **V4 has no people rows**, though it keeps the People column. Its subject is the
 width of one level of the hierarchy, so putting users in the tree as well would
@@ -420,7 +509,8 @@ Deliberately out of scope for this pass, worth a PM conversation first:
   companion to a focused view: re-centring by click is fine for neighbours,
   but jumping across the tree wants search.
 - Real navigation. Re-centring swaps the page contents in place; there is no
-  back, no history, and no second tab. Support would open a new tab per
+  back and no history. **V3.75 opens a real second tab**, but only from a *View
+  all* — clicking a name still re-centres, where Support would open a tab per
   organization.
 - Lazy loading for the "hundreds wide" case. V4 pages the rows, but every
   department is still in memory and the whole page renders at once; a real
@@ -444,11 +534,27 @@ Deliberately out of scope for this pass, worth a PM conversation first:
   own.
 - Is 100 the right page size? It's the number under test in V4. Lower means less
   scroll and more paging; Support's own lists sit nearer 30.
+- **Is 50 the right cap?** V3.75's number is under test the same way. 50 is
+  already a long scroll inside a tree that also has other branches open, and the
+  argument for a cap gets stronger the lower it goes — but a cap low enough to
+  fire on ordinary nodes sends people to a full page for lists they could have
+  read in place.
+- **Cap-and-page, or page-through?** V3.75 and V4 are the two answers, and the
+  comparison is the reason both exist. The cap tells you the truth immediately
+  (*175, showing 50*) and moves you somewhere better; the pager keeps you in the
+  tree and asks you to walk. A third possibility neither prototypes: cap at 50 and
+  make *View all* filter in place rather than navigate.
+- **Does a second tab read as a second tab?** V3.75 opens one in Support's own
+  strip, which is the affordance Support already has — but the prototype's strip is
+  a drawing overlaid on the global TopBar, so whether it reads as "a new tab
+  opened" or as "the page changed" is worth watching rather than asking about.
 - **Does paging belong in the tree at all?** A hundred child organizations is a
   list, and V4 renders it as tree rows because that's what the tab is — but an
   alphabetical index, a filter, or a count link into a normal paged list are all
   plausible answers to "this node has 150 children" that don't put 150 rows on a
-  hierarchy page.
+  hierarchy page. **V3.75's full-page view is a partial version of that answer** —
+  the rows are still tree rows, but they're on a page whose subject is the one
+  department.
 - Do the row dividers help or hurt? V3 removes them to find out.
 - Is the chevron's direction doing work the guide lines don't already do? V4 uses
   dots — filled vs. ring — to find out. The risk is affordance: a dot looks less
@@ -479,5 +585,7 @@ Deliberately out of scope for this pass, worth a PM conversation first:
   that reaches the full width of the row, and the columns on the right have
   nothing else tying them to the selected name.
 - Does this need a dedicated full-width page, or is the profile tab enough real
-  estate?
+  estate? **V3.75 builds one of each** — the profile tab's tree beside a full-width
+  page for a single department — so the two can be judged against each other rather
+  than argued about.
 - Is "Organization hierarchy" the right tab label, or something like "Access"?
