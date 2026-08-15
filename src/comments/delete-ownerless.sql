@@ -1,9 +1,15 @@
 -- Delete the comments that nobody owns.
 --
--- Rows written before schema-owner-only.sql ran have no `author_key`, so the
--- delete-your-own policy matches nobody and the app's Delete button can't touch
--- them. The SQL Editor runs as the table owner and is not bound by that policy,
--- which is why this has to happen here.
+-- **Probably not the file you want.** With deletes open — schema.sql's default —
+-- every comment can be removed from the app's own UI, ownerless or not, so this is
+-- only needed on a project still running the owner-only rules from
+-- schema-owner-only.sql. If Delete is missing from comments you wrote, the fix is
+-- schema-open-delete.sql, not this.
+--
+-- Under owner-only rules, rows written before those rules existed have no
+-- `author_key`, so the delete-your-own policy matches nobody and the app's Delete
+-- button can't touch them. The SQL Editor runs as the table owner and is not bound
+-- by that policy, which is why this has to happen here.
 --
 -- Paste this whole file into the Supabase SQL Editor and run it. Select-all is
 -- safe: there are no markdown fences to confuse the editor.

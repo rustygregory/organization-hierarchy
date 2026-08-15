@@ -28,10 +28,12 @@ here is markdown formatting, and pasting it along with the query fails with
 `syntax error at or near "```"`. The block is an abridged illustration only — it
 leaves out the ownership pieces, so don't run it.
 
-> **Already have a table from an earlier version of this?** Run
-> **[schema-owner-only.sql](./schema-owner-only.sql)** instead. It adds the
-> delete-your-own-comments rules to an existing table without dropping it. The
-> older schema let anyone with the link delete anyone's comment.
+> **Already have a table from an earlier version of this?** If its deletes are
+> owner-only — Delete missing from comments you know you wrote — run
+> **[schema-open-delete.sql](./schema-open-delete.sql)**, which opens them again
+> without dropping the table. Going the other way is
+> **[schema-owner-only.sql](./schema-owner-only.sql)**. Either is safe to re-run and
+> neither touches existing comments.
 
 ```sql
 create table public.prototype_comments (
@@ -63,42 +65,47 @@ create index prototype_comments_project_created_idx
 
 alter table public.prototype_comments enable row level security;
 
--- Abridged. The real file also adds an `author_key` column, a reading view, and
--- policies that confine deletes to your own comments — see "Who can delete what".
+-- Abridged. The real file also adds an `author_key` column, a reading view, the
+-- delete and resolve policies, and the column grants that stop anyone rewriting
+-- someone else's text — see "Who can delete what".
 create policy "anon can read"   on public.prototype_comments for select using (true);
 create policy "anon can insert" on public.prototype_comments for insert with check (true);
 ```
 
 ## Who can delete what
 
-Everyone with the link reads every comment and can post and reply. **Deleting is
-limited to your own comments**, and Delete simply doesn't appear on anyone else's
-thread. **Resolve is available to everyone** — marking a thread handled is triage
-rather than authorship, it changes nobody's words, and it's reversible.
+Everyone with the link reads every comment, posts, replies, resolves — and **can
+delete any comment**, not just their own. What nobody can do is edit someone else's
+words: updates are confined to the `resolved` column by a column grant, so a thread
+can be marked handled but not rewritten.
 
-Ownership works without anybody logging in. Each browser generates a random key
-the first time it's used, keeps it in localStorage, and sends it as a header. The
-database stamps that key onto each row and requires a match to delete. The key is
-never readable by anyone: the column is revoked from clients outright, and comments
-are read through a view that returns `is_mine` in its place. Both halves are needed
-— the table stays in the API, so a hidden column that was merely *unused* by the app
-could still be asked for directly with `?select=author_key`, which would hand a
-reader every key and with it the ability to delete anything.
+**This was owner-only for a while, and it's worth knowing why it isn't.** Each
+browser still generates a random key, and the database still stamps it onto every
+row it inserts — that part is unchanged. What changed is that the key no longer gates
+deleting, because identifying a *browser* is not identifying a *person*:
 
-Be clear about what this is and isn't:
+- A comment written on `localhost:5173` isn't yours on the deployed link — different
+  origin, different localStorage, different key.
+- Clearing browser data orphans everything you've already written.
+- Your laptop and your phone are two different owners.
+- Anything posted before the rules existed had no owner at all and could only be
+  removed from the SQL Editor.
 
-- **It prevents the accident worth preventing** — one reviewer wiping another's
-  feedback.
-- **It is not authentication.** The name beside a comment is still self-declared,
-  so anyone can sign a comment with your name.
-- **The key is per browser.** Your laptop and your phone are two different owners,
-  and clearing browser data gives up the ability to delete what you already wrote.
-  A comment nobody owns — including anything posted before the ownership rules were
-  added — can only be removed from the SQL Editor, with
-  **[delete-ownerless.sql](./delete-ownerless.sql)**.
+Each of those takes Delete away from the person who wrote the note, which in a
+design-review thread is a worse failure than the one being prevented — a colleague
+deleting feedback they could just as easily have left alone. So the rule is now
+"anyone can tidy up", which is roughly how a whiteboard works.
 
-So it's the right trade for design review among colleagues, and still the wrong
-place for customer data or anything confidential.
+`author_key` stays on the table and stays unreadable by clients, and reads still go
+through the view that computes `is_mine`. It's a record of who wrote a row rather
+than a permission now, kept because it's true and because it makes the trip back a
+single file: run **[schema-owner-only.sql](./schema-owner-only.sql)** to restore
+owner-only deletes, or **[schema-open-delete.sql](./schema-open-delete.sql)** to open
+them again on a project that has the older rules.
+
+Still not authentication — the name beside a comment is self-declared, so anyone can
+sign one with your name. Right for design review among colleagues; the wrong place
+for customer data or anything confidential.
 
 ## 3. Point the prototype at it
 
@@ -162,7 +169,7 @@ showing an empty list, so the message is usually the diagnosis:
 | `Supabase 404` | Table name doesn't match, or the SQL didn't run. Check the table exists under **Table Editor**. |
 | `Supabase 401` | Wrong or truncated anon key. Copy it again — it's long and easy to clip. |
 | `Supabase 403` / empty list with no error | RLS is on but the policies didn't apply. Re-run the `create policy` statements. |
-| Delete missing on comments you *did* write | Different browser, or browser data was cleared, so the owner key no longer matches. Expected — see "Who can delete what". |
-| Delete missing on every comment, including new ones | `schema-owner-only.sql` hasn't run, so there's no view and the app can't tell what's yours. It falls back to hiding Delete rather than offering a button that fails. |
-| `That comment belongs to someone else` | Working as intended: the policy withheld the row. |
+| Delete missing on any comment | The project still has the owner-only rules. Run [schema-open-delete.sql](./schema-open-delete.sql). |
+| Delete appears but fails with a `403` | Same cause from the other side: the app was updated but the SQL wasn't. Run [schema-open-delete.sql](./schema-open-delete.sql). |
+| `That comment is already gone` | Someone deleted it first — the delete matched no rows. Reload to catch up. |
 | Still says "Stored in this browser only" | Vite didn't see the env file. It must be named exactly `.env.local`, sit in the project root, use the `VITE_` prefix, and the server has to be restarted. |

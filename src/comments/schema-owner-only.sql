@@ -1,9 +1,20 @@
 -- Restrict deletes to the person who wrote the comment.
 --
--- Run this in the Supabase SQL Editor if your table was created by an earlier
--- version of schema.sql, which let anyone with the link delete anyone's comment.
--- A fresh schema.sql already includes everything here, so this file is only for
--- upgrading an existing project.
+-- **Not the default, and not what schema.sql ships.** Deletes are open there —
+-- anyone with the link can remove any comment — because ownership without a login
+-- can only identify a browser, and that gap kept taking Delete away from the person
+-- who wrote the note: a comment posted from localhost isn't yours on the deployed
+-- link, a cleared cache orphans everything, and rows predating the rules have no
+-- owner at all. See the comment at the top of schema-open-delete.sql.
+--
+-- Run this only if you want that trade anyway — a link going somewhere less trusted
+-- than a design review among colleagues, where one reviewer wiping another's
+-- feedback is the risk worth taking the friction for. Everything here is also safe
+-- to run on a project that has never had the ownership rules.
+--
+-- Note what it does to existing comments: anything already stored without an
+-- `author_key` becomes undeletable from the UI, and clearing it needs
+-- delete-ownerless.sql. schema-open-delete.sql is the way back.
 --
 -- Safe to run more than once, and it never drops the table, so existing comments
 -- survive. Comments written before this ran have no owner recorded and so can no

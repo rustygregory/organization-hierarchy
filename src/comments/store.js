@@ -18,10 +18,12 @@
  * On the anon key being visible in the built bundle: that is what it is for. It
  * is a public identifier, not a secret, and what actually governs access is the
  * row-level security policy on the table (see the SQL in the setup doc). The
- * policy grants a link holder read, post, resolve, and delete-your-own, and
- * nothing else. Do not put a service-role key here; that one is a real secret,
- * bypasses those policies entirely, and would be readable by anyone who opened
- * devtools.
+ * policy grants a link holder read, post, resolve and delete — anyone with the link
+ * can remove any comment, which is the deliberate trade for a design-review thread
+ * where being unable to tidy up your own note is the failure that actually bites.
+ * What no policy grants is editing someone else's words. Do not put a service-role
+ * key here; that one is a real secret, bypasses those policies entirely, and would
+ * be readable by anyone who opened devtools.
  */
 
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL
@@ -55,23 +57,25 @@ const LOCAL_KEY = `prototype-comments:${PROJECT}`
 /* ---------- Who owns a comment ---------- */
 
 /**
- * A random per-browser key, so a reviewer can delete their own comments and not
- * anyone else's.
+ * A random per-browser key, recording which browser wrote a comment.
  *
- * Not authentication, and not pretending to be: there is no login here, the
- * author *name* beside a comment is still self-declared, and this key lives in one
- * browser — so the same person on a laptop and a phone is two owners, and clearing
- * browser data means giving up the ability to delete what you already wrote. What
- * it does buy is that one reviewer can't delete another's feedback, which is the
- * accident actually worth preventing in a shared review link.
+ * It used to decide who could delete one. That's gone: identifying a browser is not
+ * identifying a person, so the rule kept withdrawing the button from the person who
+ * wrote the note — a comment posted from localhost wasn't theirs on the deployed
+ * link, a cleared cache orphaned everything, and rows written before the rule
+ * existed had no owner at all and needed the SQL Editor to shift.
  *
- * Sent as a header, never in the request body. The database defaults the
- * `author_key` column from that header and its RLS policy requires the two to
- * match, so a caller can't claim a row they don't own — see schema.sql.
+ * Still sent, and still stamped onto each row by the insert policy, for two
+ * reasons: the view's `is_mine` remains a true fact worth having, and it keeps
+ * schema-owner-only.sql a single file away should this ever want reversing.
+ *
+ * Sent as a header, never in the request body — the database defaults the
+ * `author_key` column from the header, so a caller can't put someone else's key in
+ * it. See schema.sql.
  *
  * Deliberately not namespaced by PROJECT: one identity per browser across every
- * prototype sharing the Supabase project, so the same person stays the same owner
- * as they move between them.
+ * prototype sharing the Supabase project, so the same person reads the same across
+ * all of them.
  */
 const OWNER_KEY = 'prototype-comments:owner-key'
 
@@ -260,33 +264,31 @@ export const setResolved = async (id, resolved) => {
 /**
  * Delete a comment, and its replies when it's a thread root.
  *
- * Only your own comments; the RLS policy enforces that. Note what that means for a
- * thread: deleting a root you own also removes replies you *don't* own, via the
- * foreign key's `on delete cascade`, which runs as the table owner rather than as
- * you. That's the right behaviour — a reply can't outlive the comment it answers,
- * and the alternative is an orphan pointing at nothing — but it does mean owning a
- * thread carries more weight than owning a single note.
+ * Any comment, not only your own: this is a review link among colleagues, and the
+ * owner-only rule it replaces could only identify a browser, so it kept taking the
+ * button away from the person who wrote the note. Deleting a root removes its
+ * replies too, via the foreign key's `on delete cascade` — a reply can't outlive
+ * the comment it answers, and the alternative is an orphan pointing at nothing.
  */
 export const deleteComment = async (id) => {
   if (!isShared) {
     localWrite(localRead().filter((row) => row.id !== id && row.parent_id !== id))
     return
   }
-  /* Replies are left to the foreign key's cascade rather than deleted first. The
-     old explicit pass would now silently skip anyone else's replies, since the
-     policy doesn't grant them — and then the root delete would cascade them away
-     anyway. One statement, one rule.
+  /* Replies go by the foreign key's cascade rather than in an explicit first pass:
+     the root delete takes them anyway, so one statement is one rule.
 
-     `return=representation` because a delete that matches no rows is not an error:
-     PostgREST reports 204 whether the policy withheld the row or the row was
-     already gone. Without the returned body, deleting someone else's comment would
-     look like it worked and the pin would come back on the next load. */
+     `return=representation` because a delete matching no rows is not an error —
+     PostgREST answers 204 whether a policy withheld the row or the row was already
+     gone. Reading the body is what tells the difference. With deletes open the
+     usual cause is now a row someone else removed first, rather than a permission,
+     so the message says that. */
   const deleted = await rest(`${TABLE}?id=eq.${encodeURIComponent(id)}&select=id`, {
     method: 'DELETE',
     headers: { Prefer: 'return=representation' },
   })
   if (!deleted || deleted.length === 0) {
-    throw new Error("That comment belongs to someone else, so it can't be deleted here.")
+    throw new Error('That comment is already gone — someone may have deleted it first.')
   }
 }
 
@@ -301,9 +303,9 @@ const fromRow = (row) => ({
   anchor: row.anchor ?? null,
   resolved: Boolean(row.resolved),
   createdAt: row.created_at,
-  /* Computed by the view from the owner key, never the key itself. Defaults false
-     so that a table predating the owner-only upgrade — no view, no `is_mine` —
-     hides Delete rather than offering a button that fails. */
+  /* Computed by the view from the owner key, never the key itself. No longer gates
+     anything now that deletes are open — kept because it's a true fact about a row
+     and turning the owner-only rule back on is one SQL file. */
   isMine: Boolean(row.is_mine),
 })
 

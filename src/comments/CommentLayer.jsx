@@ -855,14 +855,17 @@ export default function CommentLayer({
                   <IconButton type="button" onClick={() => toggleResolved(openComment)}>
                     {openComment.resolved ? 'Unresolve' : 'Resolve'}
                   </IconButton>
-                  {/* Only on your own comments. Resolve stays available to
-                      everyone — marking a thread handled is triage, and it's
-                      reversible; deleting someone else's feedback isn't. */}
-                  {openComment.isMine && (
-                    <IconButton type="button" onClick={() => removeComment(openComment)}>
-                      Delete
-                    </IconButton>
-                  )}
+                  {/* On every comment, not just your own. This was owner-gated for a
+                      while, and the gate mostly caught the wrong person: ownership
+                      without a login identifies a browser, so your own notes stopped
+                      being yours across a deploy or a cleared cache and the button
+                      quietly vanished from them. In a review link among colleagues,
+                      not being able to tidy up your own comment is the worse
+                      failure. `isMine` is still read from the view — it just doesn't
+                      gate anything now. */}
+                  <IconButton type="button" onClick={() => removeComment(openComment)}>
+                    Delete
+                  </IconButton>
                   <IconButton type="button" onClick={() => setOpenId(null)}>
                     Close
                   </IconButton>

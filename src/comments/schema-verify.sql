@@ -66,8 +66,9 @@ other_checks as (
         and indexdef like '%project%created_at%'
     ) then 'PASS' else 'WARN — missing, but it only affects speed' end
   union all
-  -- The app reads through this view, not the table, because the table holds the
-  -- owner key and publishing it would let any reader delete anyone's comment.
+  -- The app reads through this view, not the table: it computes `is_mine` and keeps
+  -- `author_key` out of the response. The key no longer grants anything now that
+  -- deletes are open, but the app still expects the view to exist.
   select 'reading view exists',
     case when to_regclass('public.prototype_comments_view') is null
       then 'FAIL — run schema-owner-only.sql' else 'PASS' end
@@ -113,13 +114,30 @@ other_checks as (
         and privilege_type = 'UPDATE' and grantee = 'anon'
     ), 'PASS — no update granted at all')
   union all
+  -- Whether deletes are open or owner-only. Both are valid configurations, so this
+  -- reports rather than judges: `using (true)` means anyone with the link can remove
+  -- any comment, which is what schema.sql now ships.
+  select 'who can delete',
+    coalesce((
+      select case
+        when qual = 'true' then 'OPEN — anyone with the link can delete any comment'
+        else 'OWNER-ONLY — ' || qual
+      end
+      from pg_policies
+      where schemaname = 'public' and tablename = 'prototype_comments' and cmd = 'DELETE'
+      limit 1
+    ), 'FAIL — no delete policy at all; nobody can delete anything')
+  union all
   -- Reached through to_jsonb rather than naming the column, because a bare
   -- `where author_key is null` fails to *parse* on a table that hasn't been
   -- upgraded yet — and that would take the whole diagnostic down with it, on
   -- exactly the table most in need of diagnosing.
+  --
+  -- Ownerless rows no longer block anything while deletes are open. Still reported,
+  -- because they'd become undeletable again the moment owner-only was restored.
   select 'comments with no owner',
     case when count(*) = 0 then 'PASS — none'
-      else count(*)::text || ' predate the owner rules and nobody can delete them' end
+      else count(*)::text || ' have no owner; harmless now, undeletable if owner-only returns' end
   from public.prototype_comments t
   where to_jsonb(t) ->> 'author_key' is null
   union all

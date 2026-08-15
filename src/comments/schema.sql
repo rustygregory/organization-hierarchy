@@ -62,10 +62,13 @@ alter table public.prototype_comments enable row level security;
 -- Reads go through a view, not the table.
 --
 -- Everyone reads every comment — the point of shared comments is that the team
--- sees one conversation. What must not leak is `author_key` itself: published in a
--- readable column it would tell any reader exactly what to send in order to delete
--- somebody else's note. So the view exposes the *answer* — is this mine? — instead
--- of the key.
+-- sees one conversation. The view exists to keep `author_key` out of the response
+-- and expose the answer — is this mine? — instead of the key.
+--
+-- With deletes open, that column no longer decides anything, so this is a smaller
+-- point than it was: `is_mine` is now just a fact about a row, not a permission.
+-- Kept because it stays true, it's what makes schema-owner-only.sql a one-file trip
+-- back, and there was never a reason to publish the column in the first place.
 --
 -- The view runs as its owner rather than as the caller (`security_invoker = off`,
 -- which is also the default — set explicitly because it's load-bearing here, not
@@ -94,19 +97,23 @@ alter view public.prototype_comments_view set (security_invoker = off);
 grant select on public.prototype_comments_view to anon, authenticated;
 
 -- What anonymous link-holders may do: read everything, post as themselves, mark
--- any thread resolved, and delete only their own comments.
+-- any thread resolved, and delete any comment.
 --
--- Be clear-eyed about what this is. It stops one reviewer deleting another's
--- feedback, which is the accident worth preventing. It is not authentication: the
--- author *name* is still self-declared, so anyone can sign a comment "Rusty", and
--- the owner key lives in one browser, so the same person on a laptop and a phone
--- counts as two people. Still the wrong place for customer data or anything
--- confidential.
+-- Deleting is open on purpose, having been owner-only for a while. Ownership
+-- without a login can only identify a *browser*, and that gap lands on the person
+-- it was meant to protect: a comment written from localhost isn't yours on the
+-- deployed link, clearing browser data orphans everything you wrote, and anything
+-- posted before the rules existed had no owner at all and could only be removed
+-- from the SQL Editor. Being unable to tidy up your own notes is a worse day-to-day
+-- failure than a colleague deleting feedback they could have left alone.
+--
+-- So this assumes the link goes to colleagues reviewing a design and that no
+-- comment here is a record anyone needs to keep. schema-owner-only.sql is the way
+-- back if that changes.
 --
 -- Dropped before being created because Postgres has no `create policy if not
--- exists`. That includes the permissive policies from earlier versions of this
--- file — leaving "anon can delete" in place would keep granting what the
--- delete-own policy is here to withhold.
+-- exists`. That includes "anon can delete own" from the owner-only version, which
+-- would otherwise stay behind and keep withholding what this grants.
 drop policy if exists "anon can read"       on public.prototype_comments;
 drop policy if exists "anon can insert"     on public.prototype_comments;
 drop policy if exists "anon can update"     on public.prototype_comments;
@@ -135,10 +142,9 @@ create policy "anon can insert own" on public.prototype_comments
 create policy "anon can resolve" on public.prototype_comments
   for update using (true) with check (true);
 
-create policy "anon can delete own" on public.prototype_comments
-  for delete using (
-    author_key = current_setting('request.headers', true)::json ->> 'x-comment-key'
-  );
+-- Any comment, not just your own — see the note above the drops.
+create policy "anon can delete" on public.prototype_comments
+  for delete using (true);
 
 -- Column-level grants, which are what actually confine an update to `resolved`.
 -- Row-level security decides which *rows* a statement may touch and has nothing to
