@@ -169,7 +169,11 @@ const Wrapper = styled.div`
    `center` puts it on the vertical centre line. */
 const SearchField = styled(Field)`
   width: 450px;
-  margin-bottom: 20px;
+  /* 24px where the count sits in the header cell, matching the department page's
+     toolbar exactly so V3.75's two views have the same gap between the search field
+     and the head of the list. 20px otherwise, where a stacked Counts line follows and
+     supplies its own 8px below. */
+  margin-bottom: ${(props) => (props.$countInHeader ? '24px' : '20px')};
 
   [data-garden-id='forms.faux_input'] {
     align-items: center;
@@ -189,11 +193,12 @@ const SearchLabel = styled(Label)`
   margin-bottom: 4px;
 `
 
-/* The counts sit directly above the table's bulk-expand control, 8px clear of
-   it — close enough to read as a caption for the table rather than a second
-   line of page copy. */
-/* 20px above comes from SearchField's margin-bottom; no top margin here, so the
-   two don't stack. 8px below keeps it tight to the bulk-expand control. */
+/* The stacked count line, above the table. 20px above comes from SearchField's
+   margin-bottom; no top margin here, so the two don't stack. 8px below keeps it tight
+   to the table, close enough to read as a caption for it rather than as a second line
+   of page copy.
+   V3.75 doesn't use this — its count sits in the header cell instead; see
+   isCountInHeader. */
 const Counts = styled(SM)`
   display: block;
   color: #646864;
@@ -490,13 +495,31 @@ const PageStatusInHeader = styled.span`
   font-weight: 400;
 `
 
-/* The header cell that holds it. Garden pads its header cells 12px on the left, which
-   is right for a column label sitting over indented cell content but wrong here: this
-   text is a caption about the page, and it has to line up with the other things the
-   page starts with — the search field above it and the table's own left edge — rather
-   than with the column it happens to sit in. */
+/* The header cell that holds it. Two overrides of Garden's own header styling:
+
+   `padding-left: 0` — Garden pads header cells 12px on the left, which is right for a
+   column label sitting over indented cell content but wrong for a caption. It has to
+   line up with the other things the page starts with, the search field above it and
+   the table's own left edge, rather than with the column it happens to sit in.
+
+   No rule beneath. Garden draws it as an inset box-shadow rather than a border, so it
+   survives the `border-bottom: none` the table already sets. It's there to separate
+   column labels from data; with a count in the cell there are no labels to separate,
+   and the line then reads as a divider between the page and its own list. The rows
+   below it carry no rules in these versions either, so it was the only horizontal
+   line left on the page.
+
+   `&&&&` because Garden's rule for it is
+   `.table > .headerRow:last-child > .headerCell` — three classes, which outspecifies
+   a plain styled-components override. Repeating the generated class four times beats
+   it on specificity rather than on stylesheet order, which is what `!important` or a
+   three-class tie would be relying on. */
 const CaptionHeaderCell = styled(HeaderCell)`
   padding-left: 0;
+
+  &&&& {
+    box-shadow: none;
+  }
 `
 
 /* V3's replacement for the Child orgs column: the bare count in parentheses,
@@ -1334,14 +1357,27 @@ export default function OrganizationHierarchyTab({
 
   const totalPages = Math.ceil(pagedTotal / CHILDREN_PER_PAGE)
   const isPaginated = totalPages > 1
-  /* Where the "1–100 of 175" caption goes. On the rooted department page it replaces
-     the Organization column label at the top of the table; in V4's focused tree it
-     stays above the pager at the bottom.
-     The difference is what the caption is about. Here the whole page is one list, so
+  /* Where the "100 of 175 departments" caption goes. On the rooted department page it
+     replaces the Organization column label at the top of the table; in V4's focused
+     tree it stays above the pager at the bottom.
+     The difference is what the caption is about. There the whole page is one list, so
      the count belongs at its head. In V4 the paged rows are one group among
      ancestors and siblings, and a header cell spanning the whole table would appear
      to count all of them. */
   const isRootedPageStatus = isPaginated && Boolean(rootId)
+
+  /* V3.75 puts the reach count in the header cell instead, on both of its views: the
+     department page proved the treatment, and having the profile tab do the same thing
+     is the point of a version — one idea, applied consistently, so review sees it
+     twice rather than seeing two treatments and comparing those.
+
+     What it replaces is a stacked `Counts` line *above* a header cell reading
+     "Organization". Two lines of chrome between the search field and the first row,
+     and the label was doing no work: the rows are plainly organizations, and the
+     count already says the word. So the count moves into the cell and the label goes,
+     which closes the gap Rusty flagged without moving anything else. Only V3.75 —
+     V3 and V3.5 keep the stacked version so the two can be compared. */
+  const isCountInHeader = isWide
 
   // The counter still describes reach, not the rows on screen: the point of the
   // feature is how far access cascades below the selected organization, and that
@@ -1384,7 +1420,7 @@ export default function OrganizationHierarchyTab({
       {/* No Hint — the label carries the explanation, and a hint line here
           pushed the counts and the table down for no added meaning. */}
       {!hideSearch && (
-        <SearchField>
+        <SearchField $countInHeader={isCountInHeader}>
           {/* Follows the rows, not the column: V4 shows a People count but no people,
               so offering to search users would promise something its tree can't
               show. */}
@@ -1395,10 +1431,12 @@ export default function OrganizationHierarchyTab({
         </SearchField>
       )}
 
-      {/* The rooted page states its own counts in its header, where they describe the
-          one department the page is about. Repeating them here would put two different
-          totals — the page's and the tree's reach — a few pixels apart. */}
-      {!rootId && (
+      {/* Stacked above the table in V1–V3.5 and V4. Not on the rooted page, which
+          states its own count in the header cell — repeating it here would put two
+          different totals, the page's and the tree's reach, a few pixels apart. And
+          not in V3.75, which moves the count into that header cell on both its views;
+          see isCountInHeader. */}
+      {!rootId && !isCountInHeader && (
         <Counts>
           {reachOrgCount} {orgLabel}
           {showPeople && ` · ${peopleReach} ${peopleLabel}`}
@@ -1428,10 +1466,21 @@ export default function OrganizationHierarchyTab({
                 The owner isn't named: the row directly beneath is the organization the
                 page is about, so "in Bramblewick University" would repeat what the
                 next line already says. */}
-            {isRootedPageStatus ? (
+            {/* Three cases. The paged department page counts the window (`100 of 175
+                departments`); V3.75's profile tab counts the reach the same way the
+                stacked line did (`201 organizations`), so the two views of that
+                version share one treatment; everything else keeps the column label. */}
+            {isRootedPageStatus || isCountInHeader ? (
               <CaptionHeaderCell>
                 <PageStatusInHeader>
-                  {pagedTo - pagedFrom + 1} of {pagedTotal} departments
+                  {isRootedPageStatus ? (
+                    `${pagedTo - pagedFrom + 1} of ${pagedTotal} departments`
+                  ) : (
+                    <>
+                      {reachOrgCount} {orgLabel}
+                      {showPeople && ` · ${peopleReach} ${peopleLabel}`}
+                    </>
+                  )}
                 </PageStatusInHeader>
               </CaptionHeaderCell>
             ) : (

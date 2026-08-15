@@ -331,9 +331,31 @@ Four things it deliberately isn't:
   count 12px right of the search field above it and the table's own left edge. The
   cell it sits in is `CaptionHeaderCell`, `padding-left: 0`, so all three line up.
 
-It appears only on the rooted page: in V4 the paged rows are one group among
-ancestors and siblings, so a count spanning the whole table would look like it
-counted all of them, which is why `isRootedPageStatus` gates it.
+On the department page it counts the window; **V3.75's profile tab now does the same
+thing with the reach count** — `201 organizations` in the header cell, no
+`Organization` label, no rule beneath, 24px below the search field. Same treatment on
+both of the version's views, which is the point of a version: review sees one idea
+twice rather than two treatments to compare.
+
+What that replaced was a stacked `Counts` line *above* a header cell reading
+`Organization` — two lines of chrome between the search field and the first row, with
+the label doing no work. The rows are plainly organizations, and the count says the
+word already. The rule went with it for the same reason: Garden draws it to separate
+column labels from data, and with a count in the cell there are no labels to separate,
+so it read as a divider between the page and its own list — and since these versions
+carry no row rules either, it was the only horizontal line left.
+
+Two things this doesn't touch. **V1–V3.5 and V4 keep the stacked line, the label and
+the rule**, so the two treatments can be compared; `isCountInHeader` is V3.75 only.
+And in V4 the count stays *below* the table, because its paged rows are one group
+among ancestors and siblings — a count spanning the whole table there would look like
+it counted all of them, which is what `isRootedPageStatus` gates.
+
+One Garden detail: the rule is an inset `box-shadow`, not a border, so
+`border-bottom: none` doesn't remove it — and its selector is
+`.table > .headerRow:last-child > .headerCell`, three classes, which outspecifies a
+plain styled-components override. `CaptionHeaderCell` uses `&&&&` to win on
+specificity rather than relying on `!important` or stylesheet order.
 
 **The heading is just the name.** It used to read `Bramblewick University · 175
 child organizations · 200 below in total`. Two totals a few pixels apart is a
