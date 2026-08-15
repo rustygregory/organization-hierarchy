@@ -153,9 +153,11 @@ const ruleInsetFor = (depth) =>
    own toolbar sits above this and owns the gap below the search field — otherwise the
    two stack and the table starts 48px down on first paint but 24px down once
    scrolled. */
+/* No scrolling of its own — the page around it scrolls, so the whole work area moves
+   together rather than the tree sliding under a pinned header. `flex: 1` still, so the
+   wrapper fills the space it's given and its padding sets the page's bottom margin. */
 const Wrapper = styled.div`
   padding: ${(props) => (props.$flush ? '0' : '24px')} 32px 40px;
-  overflow-y: auto;
   flex: 1;
 `
 
@@ -223,8 +225,24 @@ const TreeTable = styled(Table)`
   table-layout: fixed;
   font-size: 14px;
 
+  /* Garden gives the header *row* a fixed 48px height and bottom vertical-align, which
+     is right for a table whose header is the first thing on the page but not for one
+     with a count directly above it: the label sank to the bottom of a 48px box, so the
+     8px gap above the count's line became 29px of air before the words. The height comes
+     off the row — the cell's own padding is what sets the spacing instead, 8px below the
+     label and none above it.
+     Note it's the row, not the cell: height:auto on the th does nothing, because a
+     table cell can't be shorter than its row.
+     (No backticks in comments inside a styled template — they close the literal.) */
   thead th {
     font-size: 14px;
+    padding-top: 0;
+    padding-bottom: 8px;
+  }
+
+  thead tr {
+    height: auto;
+    vertical-align: top;
   }
 
   tbody tr,
@@ -1158,14 +1176,25 @@ export default function OrganizationHierarchyTab({
   /* Paging from the bottom of a hundred rows leaves the reader at the bottom of the
      next hundred, looking at its last rows with no idea they've arrived at the start of
      something. The click is at the foot of the page because that's where the pager is,
-     not because that's where they want to be. So the scroller goes back to the top and
-     the new page starts at its first row.
-     The ref is on Wrapper, which is the element that scrolls — the page around it
-     doesn't, so scrolling the window would do nothing. */
-  const scrollerRef = useRef(null)
+     not because that's where they want to be. So the page goes back to the top and the
+     new list starts at its first row.
+
+     The scroller is found by walking up from this component rather than held as a ref on
+     one of its own elements: the whole work area scrolls now, and that element belongs to
+     the page around this one — the profile's MainSection on one route, the department
+     page's on the other. Walking up finds whichever is there instead of either component
+     having to pass a ref down to the other. */
+  const rootRef = useRef(null)
   const goToPage = (next) => {
     setPage(next)
-    scrollerRef.current?.scrollTo({ top: 0 })
+    let el = rootRef.current?.parentElement
+    while (el) {
+      if (el.scrollHeight > el.clientHeight && /auto|scroll/.test(getComputedStyle(el).overflowY)) {
+        el.scrollTo({ top: 0 })
+        return
+      }
+      el = el.parentElement
+    }
   }
 
   /* Organizations the reader has opened. V3.5 only — it is what shapes that
@@ -1403,7 +1432,7 @@ export default function OrganizationHierarchyTab({
   // is chrome rather than design under review, and a pin able to attach to the
   // comment layer could anchor to another pin.
   return (
-    <Wrapper ref={scrollerRef} data-comment-root="true" $flush={hideSearch}>
+    <Wrapper ref={rootRef} data-comment-root="true" $flush={hideSearch}>
       {/* No Hint — the label carries the explanation, and a hint line here
           pushed the counts and the table down for no added meaning. */}
       {!hideSearch && (

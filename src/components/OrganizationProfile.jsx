@@ -20,12 +20,19 @@ const Container = styled.div`
   overflow: hidden;
 `
 
+/* The scroll container for the whole work area: the organization's name, the tab
+   strip, the search field and the tree all scroll together. It used to be the tree
+   alone, with the header and tabs pinned above it — which reads as a pane inside a
+   page rather than as a page, and puts two scroll regions on screen (this and the
+   properties rail) for a reader to work out which one their wheel is over.
+   The rail keeps its own scroll: it's a separate column of a fixed width, and in
+   Support it stays put while the record's content moves. */
 const MainSection = styled.div`
   display: flex;
   flex-direction: column;
   flex: 1;
   min-width: 0;
-  overflow: hidden;
+  overflow-y: auto;
 `
 
 const ProfileHeader = styled.div`

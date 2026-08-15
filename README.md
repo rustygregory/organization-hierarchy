@@ -349,6 +349,26 @@ otherwise, via a `$countInHeader` prop on `SearchField`) and that is exactly the
 per-version branch that drifts, so it's now a single 20px margin with the count line's own
 8px beneath it.
 
+**8px to the label, not to the cell.** The first attempt measured correct and looked
+wrong: the gap to the header cell's box was 8px while the words underneath sat 29px
+below the count. Garden gives the header *row* a fixed 48px height with
+`vertical-align: bottom`, which is right for a table whose header is the first thing on
+the page and wrong for one with a caption directly above it — the label sank to the
+bottom of a 48px box inside a correctly-placed cell. The fix takes the height off the
+row (`thead tr { height: auto; vertical-align: top }`) and lets the cell's own padding
+set the spacing: none above the label, 8px below it.
+
+Worth knowing which element to aim at, because the obvious try does nothing: the 48px
+is on `StyledHeaderRow`, not the cell, and a table cell can't be shorter than its row —
+so `height: auto` on the `th` alone leaves the header exactly as tall as it was. The
+harness now measures the row's height and the distance between the two *text* lines, not
+just the box, so a header that grows back gets caught.
+
+One more trap in the same edit: **CSS comments inside a styled-components template can't
+contain backticks.** A comment reading `` `height: 48px` `` closed the template literal
+and took the whole app down with a parse error at that line — blank page, no console
+error, only a 500 on the module in the network log.
+
 The one thing still version-specific: **in V4 a second caption stays *below* the table**,
 because its paged rows are one group among ancestors and siblings — a count spanning the
 whole table there would look like it counted all of them. That's what `isRootedPageStatus`
@@ -360,12 +380,28 @@ a border, so `border-bottom: none` doesn't remove it — and its selector is
 styled-components override. It takes `&&&&` to win on specificity rather than on
 `!important` or stylesheet order.
 
+**The whole work area scrolls, on every version.** The tree used to scroll inside its own
+wrapper with the organization's name, the tab strip and the search field pinned above it.
+That reads as a pane inside a page rather than as a page — and it put two scroll regions
+on screen at once, this and the properties rail, leaving a reader to work out which one
+their wheel was over. Now `MainSection` is the single scroller on both routes (the profile
+and the department page) and everything in the column moves together: heading, tabs,
+search, count, table. `Wrapper` has no `overflow-y` of its own.
+
+The rail keeps its own scroll. It's a separate fixed-width column, and in Support it stays
+put while the record's content moves, so it's the one place two scroll regions are the
+expected thing rather than a puzzle.
+
 **Paging returns to the top.** The pager is at the foot of a hundred rows, so that's
 where the reader is standing when they click it — and landing at the foot of the *next*
 hundred shows them its last rows with nothing to say they've arrived at the start of
-something. `goToPage` sets the page and scrolls the container back to 0. The ref is on
-`Wrapper`, the element that actually scrolls; the page around it doesn't, so scrolling the
-window would have done nothing.
+something. `goToPage` sets the page and scrolls the scroller back to 0.
+
+It finds that scroller by walking up the DOM from a ref on its own root rather than
+holding a ref on an element it renders, because the element that scrolls now belongs to
+the page *around* this component — `OrganizationProfile`'s `MainSection` on one route,
+`DepartmentPage`'s on the other. Walking up finds whichever is there, which beats either
+parent having to thread a ref down into the tab. Same walk the harness uses to locate it.
 
 **On the department page the names aren't links.** Every other view makes each
 organization a link that re-centres the tree on it. Here they're plain
@@ -429,13 +465,12 @@ Details worth knowing:
   hundredth row is not the last child, so the rail has to carry on past it; deciding
   the elbow from the visible page closes the vertical line at row 100 of 175 and the
   tree looks like it ends mid-list.
-- **The search field is 440px, with 24px of clear space beneath it.** The toolbar
-  stays put while the tree scrolls, so a row passing under it needs somewhere to go —
-  without the gap the first row to scroll under disappears with its name half
-  covered, which reads as a rendering fault rather than as scrolling. The tab's own
-  `Wrapper` goes flush (`$flush`) on this page so the toolbar's 24px isn't stacked on
-  the tab's, which would put the table 48px down on first paint but 24px down once
-  scrolled.
+- **The search field is 440px, with 24px beneath it.** That 24px started as clearance:
+  the toolbar used to stay put while the tree scrolled under it, and without a gap the
+  first row to pass behind it lost half its name, which reads as a rendering fault
+  rather than as scrolling. The page scrolls as one now, so nothing passes behind it and
+  the 24px is simply the gap to the count line. The tab's own `Wrapper` still goes flush
+  (`$flush`) here so the two paddings don't stack.
 - **The label is *Search this organization***, not "Search organizations in
   Bramblewick University". The department is named twice above it already, and a long
   name wraps the label onto two lines.

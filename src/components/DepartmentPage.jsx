@@ -39,12 +39,16 @@ const Page = styled.div`
   overflow: hidden;
 `
 
+/* Scrolls as one page — heading, trail, search and tree together — matching the
+   profile. The search field used to stay pinned above a scrolling table, which is why
+   the toolbar carries 24px of clearance below it; that padding now just reads as
+   spacing. */
 const MainSection = styled.div`
   display: flex;
   flex-direction: column;
   flex: 1;
   min-width: 0;
-  overflow: hidden;
+  overflow-y: auto;
 `
 
 const Header = styled.div`
@@ -79,10 +83,11 @@ const Subject = styled.div`
   min-width: 0;
 `
 
-/* The search field sits above the tree and stays put while it scrolls, so it needs
-   24px of clear space beneath it — otherwise the first row to scroll under it
-   disappears with its name half-covered, which reads as a rendering fault rather
-   than as scrolling. `flex-shrink: 0` keeps the toolbar out of the scroll area. */
+/* The search field, above the tree and scrolling with it. The 24px beneath it was
+   clearance from a time when it stayed put and rows slid under it — now that the page
+   moves as one, nothing passes behind it and the padding is just the gap between the
+   search and the count line below. `flex-shrink: 0` stops it being squeezed when the
+   tree is long. */
 const Toolbar = styled.div`
   display: flex;
   align-items: flex-end;
@@ -213,8 +218,9 @@ export default function DepartmentPage({ orgId, onSelectOrganization }) {
             page the cap sends people to, so a cap on it would be circular. It pages
             at 100 instead — the cap and the pager are the two answers, and this page
             is where the uncapped one has to hold up. Its own search field is hidden
-            because the toolbar above already has one, and the component scrolls
-            itself, so there is no wrapper around it competing for the scroll. */}
+            because the toolbar above already has one. It doesn't scroll itself either:
+            MainSection is the single scroll region, so the tree moves with the heading
+            above it rather than sliding underneath it. */}
         <OrganizationHierarchyTab
           selectedId={orgId}
           onSelectOrganization={onSelectOrganization}
