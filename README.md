@@ -227,7 +227,7 @@ Details worth knowing:
 ### Skeleton loaders
 
 Opening a subtree in V3.5 shows Garden's `Skeleton` bars in the rows about to
-arrive, for ~1.1s, then swaps in the real names. It's a fiction here (the whole
+arrive, for **2s**, then swaps in the real names. It's a fiction here (the whole
 tree is in memory) standing in for the fetch a real hierarchy would need. The
 bars sit on the tree's guide lines at name-like widths, one per incoming row, so
 what you see is *names arriving*, not a page loading.
@@ -241,11 +241,14 @@ Four numbers, all constants at the top of `OrganizationHierarchyTab.jsx`:
   permanently invisible. **V3.75 changes this** — it has a 175-wide node, so 10 is
   now viable there, and the constant is shared. Still 2, flagged rather than
   changed quietly, because raising it turns V3.5's loaders off entirely.
-- `SKELETON_DURATION_MS = 1100` — Rusty's "load for a second". It has to be this
-  high for a second reason: Garden's `Skeleton` has its own fade-in keyframes
-  (`0%,60%{opacity:0}` over 750ms) so it is *deliberately invisible for the first
-  ~450ms* to avoid flashing on fast loads. At 600ms the skeletons rendered and
-  could not be seen. 1100ms leaves ~650ms of visible skeleton.
+- `SKELETON_DURATION_MS = 2000` — Rusty's number, up from 1100 ("load for a
+  second"). Longer than a real subtree fetch should take, which is the point of a
+  prototype loading state: the state is what's under review, and at a realistic
+  400ms there is nothing to look at. There's a floor as well as a preference —
+  Garden's `Skeleton` has its own fade-in keyframes (`0%,60%{opacity:0}` over 750ms)
+  so it is *deliberately invisible for the first ~450ms* to avoid flashing on fast
+  loads. At 600ms the skeletons rendered and could not be seen. 2000ms leaves
+  ~1550ms visible.
 - `SKELETON_ROW_LIMIT = 8` — caps placeholders so a wide node doesn't fill the
   screen with grey.
 - `SKELETON_MAX_WIDTH = 260` — without it the bars stretch the full table width

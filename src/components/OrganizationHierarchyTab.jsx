@@ -97,13 +97,18 @@ const CHILDREN_PER_PAGE = 100
  * review. Raise it to 10 the moment this treatment meets a wide node; it's one
  * constant and nothing else reads the number.
  *
- * A second, and it has to be about that: Garden's Skeleton fades itself in with
+ * Two seconds, Rusty's number — long enough to read the placeholders as a state and
+ * decide whether it's the right one, which is what this is in front of anyone for. It
+ * is longer than a real subtree fetch should take, and that's the point of a prototype
+ * loading state: at a realistic 400ms there is nothing to review.
+ *
+ * There is a floor as well as a preference. Garden's Skeleton fades itself in with
  * `0%,60% { opacity: 0 }` over 750ms — deliberately invisible for the first 450ms so
  * a fast load never flashes. Anything under ~700ms therefore shows placeholders that
  * are still transparent when they're removed, which looks like rows appearing late
- * rather than like loading. 1100ms leaves roughly 650ms of visible skeleton. */
+ * rather than like loading. 2000ms leaves roughly 1550ms of visible skeleton. */
 const SKELETON_THRESHOLD = 2
-const SKELETON_DURATION_MS = 1100
+const SKELETON_DURATION_MS = 2000
 /* How many placeholder rows to draw at most. A node with 150 children doesn't want
    150 skeletons — past a handful they stop reading as "content is coming" and start
    reading as content. Eight fills the space a long list will occupy without
