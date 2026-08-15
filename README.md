@@ -306,17 +306,34 @@ V4's answer instead: Garden's `OffsetPagination` under the table. The cap and th
 pager are the two answers to the same problem, and this page is where the uncapped
 one has to hold up.
 
-**The count heads the table rather than following it.** `1–100 of 175
-organizations` sits in the `Organization` column's place, where the label would
-otherwise be. The top of a list is where someone decides whether to scroll it;
-under the table the same sentence only answers that question after they've scrolled
-to the end to find it. It replaces the label rather than joining it because the
-word *organizations* is in the count already, so the column stays named. It doesn't
-say *in Bramblewick University* the way V4's caption does — the row directly
-beneath is that organization, so naming it would repeat the next line. And it
-appears only on the rooted page: in V4 the paged rows are one group among ancestors
-and siblings, so a count spanning the whole table would look like it counted all of
-them, which is why `isRootedPageStatus` gates it.
+**The count heads the table rather than following it.** `100 of 175 departments`
+sits in the `Organization` column's place, where the label would otherwise be, in
+foreground.subtle at regular weight. The top of a list is where someone decides
+whether to scroll it; under the table the same sentence only answers that question
+after they've scrolled to the end to find it.
+
+Four things it deliberately isn't:
+
+- **Not `1–100 of 175`.** The range's first number says where the window starts,
+  which the pager already says; the count of what's on screen is the part the reader
+  doesn't otherwise have. On page two it reads `75 of 175` — the rows on that page,
+  not `101–175`.
+- **Not *organizations*.** These rows are departments everywhere else on the page,
+  and the generic word belongs to the tree, which shows resellers and companies too.
+  This page has one subject.
+- **Not bold.** It replaces a column heading but it isn't one — it's a note about
+  the list, and at the header cell's own weight the count claimed more of the eye
+  than a count deserves.
+- **Not *in Bramblewick University***, the way V4's caption is. The row directly
+  beneath is that organization, so naming it repeats the next line.
+- **Not indented.** Garden pads its header cells 12px on the left, which is right for
+  a label sitting over indented cell content and wrong for a caption: it put the
+  count 12px right of the search field above it and the table's own left edge. The
+  cell it sits in is `CaptionHeaderCell`, `padding-left: 0`, so all three line up.
+
+It appears only on the rooted page: in V4 the paged rows are one group among
+ancestors and siblings, so a count spanning the whole table would look like it
+counted all of them, which is why `isRootedPageStatus` gates it.
 
 **The heading is just the name.** It used to read `Bramblewick University · 175
 child organizations · 200 below in total`. Two totals a few pixels apart is a

@@ -480,12 +480,23 @@ const PageStatus = styled(SM)`
 `
 
 /* The same caption on the rooted page, where it replaces the Organization column
-   label rather than sitting under the pager. Inherits the header cell's weight and
-   colour instead of PageStatus's grey, because in this position it *is* the column
-   heading — greyed out it would read as a stray note that had drifted up into the
-   header. */
+   label rather than sitting under the pager.
+   foreground.subtle (grey.700) at regular weight, overriding the header cell's bold:
+   it reads as a note about the list rather than as a column heading, which is what it
+   is — the column it sits over has no label of its own any more, and a bold count
+   claimed more of the eye than a count deserves. */
 const PageStatusInHeader = styled.span`
-  font-weight: inherit;
+  color: #646864;
+  font-weight: 400;
+`
+
+/* The header cell that holds it. Garden pads its header cells 12px on the left, which
+   is right for a column label sitting over indented cell content but wrong here: this
+   text is a caption about the page, and it has to line up with the other things the
+   page starts with — the search field above it and the table's own left edge — rather
+   than with the column it happens to sit in. */
+const CaptionHeaderCell = styled(HeaderCell)`
+  padding-left: 0;
 `
 
 /* V3's replacement for the Child orgs column: the bare count in parentheses,
@@ -1405,20 +1416,27 @@ export default function OrganizationHierarchyTab({
             {/* On the rooted page the count takes the column label's place. It is a
                 caption about the list, and the top of the list is where someone
                 decides whether to scroll it — under the table it only answers the
-                question after they've already scrolled to find out. The word
-                "organizations" is still in it, so the column stays labelled. The
-                owner isn't named: the row directly beneath is the organization the
+                question after they've already scrolled to find out.
+
+                `100 of 175 departments`, not `1–100 of 175`: the range says where the
+                window starts, which the reader already knows from the pager, and the
+                count of what's on screen is the part they don't. "Departments" rather
+                than "organizations" because that is what these rows are called
+                everywhere else on the page — the generic word is the tree's, and this
+                page has one subject.
+
+                The owner isn't named: the row directly beneath is the organization the
                 page is about, so "in Bramblewick University" would repeat what the
                 next line already says. */}
-            <HeaderCell>
-              {isRootedPageStatus ? (
+            {isRootedPageStatus ? (
+              <CaptionHeaderCell>
                 <PageStatusInHeader>
-                  {pagedFrom}–{pagedTo} of {pagedTotal} organizations
+                  {pagedTo - pagedFrom + 1} of {pagedTotal} departments
                 </PageStatusInHeader>
-              ) : (
-                'Organization'
-              )}
-            </HeaderCell>
+              </CaptionHeaderCell>
+            ) : (
+              <HeaderCell>Organization</HeaderCell>
+            )}
             {/* No Organization type column. It carried Company / Cost Center /
                 Supervisory for organizations and Agent / End user for people —
                 two different things in one column, and the 22% it took came out
