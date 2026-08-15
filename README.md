@@ -235,16 +235,16 @@ what you see is *names arriving*, not a page loading.
 Four numbers, all constants at the top of `OrganizationHierarchyTab.jsx`:
 
 - `SKELETON_THRESHOLD = 2` — lists this short or shorter open instantly, no
-  flash. **Rusty asked for 10.** It can't be 10 in V3.5's tree: the widest node
-  anywhere is Model Training Pod at four children, and most expandable nodes have
-  three, so a threshold of 10 could never fire and the loading state would be
-  permanently invisible. **V3.75 changes this** — it has a 175-wide node, so 10 is
-  now viable there, and the constant is shared. Still 2, flagged rather than
-  changed quietly, because raising it turns V3.5's loaders off entirely.
-- `SKELETON_DURATION_MS = 2000` — Rusty's number, up from 1100 ("load for a
-  second"). Longer than a real subtree fetch should take, which is the point of a
-  prototype loading state: the state is what's under review, and at a realistic
-  400ms there is nothing to look at. There's a floor as well as a preference —
+  flash. Two rows appearing at once reads as the tree responding, and flashing
+  placeholders over them reads as a glitch; the real feature has the same shape,
+  since a couple of children is one cheap request. It has to be low in any case:
+  V3.5's widest node is Model Training Pod at four children and most expandable
+  nodes have three, so a higher threshold could never fire there and the loading
+  state would be invisible in the version built to test it.
+- `SKELETON_DURATION_MS = 2000` — Rusty's number, up from 1100. Longer than a real
+  subtree fetch should take, which is the point of a prototype loading state: the
+  state is what's under review, and at a realistic 400ms there is nothing to look
+  at. There's a floor as well as a preference —
   Garden's `Skeleton` has its own fade-in keyframes (`0%,60%{opacity:0}` over 750ms)
   so it is *deliberately invisible for the first ~450ms* to avoid flashing on fast
   loads. At 600ms the skeletons rendered and could not be seen. 2000ms leaves
@@ -493,12 +493,6 @@ Details worth knowing:
   holds a department list on one tab and the profile on the other, so the pin
   context carries `wideTabOrgId` and `activeTabId` alongside the version and
   selected organization.
-
-**Still open:** `SKELETON_THRESHOLD` is 2, chosen when V3.5's widest node had four
-children (see above). V3.75 has a 175-wide node, so Rusty's original "bigger than
-10" is now viable and worth revisiting — 2 means a two-child branch flashes a
-loader it doesn't need. Left as-is rather than changed silently, since it affects
-V3.5 too.
 
 ### V4: the at-scale case
 

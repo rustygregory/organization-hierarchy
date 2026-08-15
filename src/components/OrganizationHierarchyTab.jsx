@@ -89,13 +89,12 @@ const CHILDREN_PER_PAGE = 100
  * placeholders over them reads as a glitch. The real feature has the same shape — a
  * couple of children is one cheap request.
  *
- * The number wanted to be 10, and on the real data it should be: a request for ten
- * rows is not worth a loading state. It is 2 here because V3.5 is a copy of V3, and
- * V3's hand-written tree tops out at four children (Model Training Pod), with most
- * expandable nodes at three — so a threshold of 10 could never fire and the loading
- * state would be invisible, which is the one thing it can't be while it's under
- * review. Raise it to 10 the moment this treatment meets a wide node; it's one
- * constant and nothing else reads the number.
+ * It has to stay low while V3.5 is in the set. V3.5 is a copy of V3, whose hand-written
+ * tree tops out at four children (Model Training Pod) with most expandable nodes at
+ * three — so a higher threshold could never fire there, and the loading state would be
+ * invisible in the version built to test it. The constant is shared with V3.75, which
+ * has a 175-wide node and could carry a higher number on its own; splitting it per
+ * version is a one-line change if the two ever want different answers.
  *
  * Two seconds, Rusty's number — long enough to read the placeholders as a state and
  * decide whether it's the right one, which is what this is in front of anyone for. It
