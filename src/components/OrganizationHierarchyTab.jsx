@@ -495,31 +495,20 @@ const PageStatusInHeader = styled.span`
   font-weight: 400;
 `
 
-/* The header cell that holds it. Two overrides of Garden's own header styling:
-
-   `padding-left: 0` — Garden pads header cells 12px on the left, which is right for a
+/* The header cell that holds it. One override of Garden's own header styling:
+   `padding-left: 0`. Garden pads header cells 12px on the left, which is right for a
    column label sitting over indented cell content but wrong for a caption. It has to
    line up with the other things the page starts with, the search field above it and
    the table's own left edge, rather than with the column it happens to sit in.
 
-   No rule beneath. Garden draws it as an inset box-shadow rather than a border, so it
-   survives the `border-bottom: none` the table already sets. It's there to separate
-   column labels from data; with a count in the cell there are no labels to separate,
-   and the line then reads as a divider between the page and its own list. The rows
-   below it carry no rules in these versions either, so it was the only horizontal
-   line left on the page.
-
-   `&&&&` because Garden's rule for it is
-   `.table > .headerRow:last-child > .headerCell` — three classes, which outspecifies
-   a plain styled-components override. Repeating the generated class four times beats
-   it on specificity rather than on stylesheet order, which is what `!important` or a
-   three-class tie would be relying on. */
+   Garden's rule under the header row stays. It briefly didn't: with no column labels
+   left to separate it looked like a divider between the page and its own list, and it
+   was the only horizontal line on a table whose rows carry none. Seen in place it does
+   the opposite — the rows below have no rules, so the one line across the top is what
+   marks where the tree starts. (Garden draws it as an inset box-shadow, not a border,
+   so `border-bottom: none` never touched it either way.) */
 const CaptionHeaderCell = styled(HeaderCell)`
   padding-left: 0;
-
-  &&&& {
-    box-shadow: none;
-  }
 `
 
 /* V3's replacement for the Child orgs column: the bare count in parentheses,
@@ -1366,6 +1355,17 @@ export default function OrganizationHierarchyTab({
      to count all of them. */
   const isRootedPageStatus = isPaginated && Boolean(rootId)
 
+  /* The rooted page is for reading, not for navigating. Everywhere else a name is a
+     link that re-centres the tree on it; here that would defeat the page, which exists
+     to show one organization's whole list at once. Re-centring on a department would
+     replace the list with that department's own, and — because the page shares its
+     selection with the tab that opened it — quietly move the tab behind it too.
+
+     So names are plain foreground.default text and the chevron is the only control:
+     it opens a subtree in place, which is the one thing that can happen here without
+     the list underneath changing. */
+  const isReadOnlyNames = Boolean(rootId)
+
   /* V3.75 puts the reach count in the header cell instead, on both of its views: the
      department page proved the treatment, and having the profile tab do the same thing
      is the point of a version — one idea, applied consistently, so review sees it
@@ -1621,8 +1621,10 @@ export default function OrganizationHierarchyTab({
                     )}
 
                     <NameArea>
-                      {isPerson || isCurrent ? (
-                        /* The centre of the view is not a link to itself. */
+                      {isPerson || isCurrent || isReadOnlyNames ? (
+                        /* The centre of the view is not a link to itself — and on the
+                           rooted page nothing is, since there is nowhere for a name to
+                           go that wouldn't undo what the page is for. */
                         <NodeName $current={isCurrent} title={row.node.name}>
                           {row.node.name}
                         </NodeName>

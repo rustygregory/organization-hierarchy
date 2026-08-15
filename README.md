@@ -333,29 +333,44 @@ Four things it deliberately isn't:
 
 On the department page it counts the window; **V3.75's profile tab now does the same
 thing with the reach count** — `201 organizations` in the header cell, no
-`Organization` label, no rule beneath, 24px below the search field. Same treatment on
-both of the version's views, which is the point of a version: review sees one idea
-twice rather than two treatments to compare.
+`Organization` label, 24px below the search field. Same treatment on both of the
+version's views, which is the point of a version: review sees one idea twice rather
+than two treatments to compare.
 
 What that replaced was a stacked `Counts` line *above* a header cell reading
 `Organization` — two lines of chrome between the search field and the first row, with
 the label doing no work. The rows are plainly organizations, and the count says the
-word already. The rule went with it for the same reason: Garden draws it to separate
-column labels from data, and with a count in the cell there are no labels to separate,
-so it read as a divider between the page and its own list — and since these versions
-carry no row rules either, it was the only horizontal line left.
+word already.
 
-Two things this doesn't touch. **V1–V3.5 and V4 keep the stacked line, the label and
-the rule**, so the two treatments can be compared; `isCountInHeader` is V3.75 only.
-And in V4 the count stays *below* the table, because its paged rows are one group
-among ancestors and siblings — a count spanning the whole table there would look like
-it counted all of them, which is what `isRootedPageStatus` gates.
+**The rule across the top stays**, though it briefly didn't. The argument for removing
+it was that Garden draws it to separate column labels from data and there are no labels
+left to separate, so it read as a divider between the page and its own list. In place it
+turned out to do the opposite: the rows below carry no rules in these versions, so the
+one line across the top is the only thing marking where the tree starts, and without it
+the count and the first row were two pieces of text with nothing between them.
 
-One Garden detail: the rule is an inset `box-shadow`, not a border, so
-`border-bottom: none` doesn't remove it — and its selector is
+Two things this doesn't touch. **V1–V3.5 and V4 keep the stacked line and the label**,
+so the two treatments can be compared; `isCountInHeader` is V3.75 only. And in V4 the
+count stays *below* the table, because its paged rows are one group among ancestors and
+siblings — a count spanning the whole table there would look like it counted all of
+them, which is what `isRootedPageStatus` gates.
+
+One Garden detail, in case the rule ever does need to go: it's an inset `box-shadow`,
+not a border, so `border-bottom: none` doesn't remove it — and its selector is
 `.table > .headerRow:last-child > .headerCell`, three classes, which outspecifies a
-plain styled-components override. `CaptionHeaderCell` uses `&&&&` to win on
-specificity rather than relying on `!important` or stylesheet order.
+plain styled-components override. It takes `&&&&` on `CaptionHeaderCell` to win on
+specificity rather than on `!important` or stylesheet order.
+
+**On the department page the names aren't links.** Every other view makes each
+organization a link that re-centres the tree on it. Here they're plain
+foreground.default text and the chevron is the only control, because this page's whole
+job is showing one organization's list at once: drilling into a department would replace
+that list with the department's own, and — since the page shares its selection with the
+tab that opened it — quietly re-point that tab too. Clicking a name adjusts nothing.
+Expanding still works, because a subtree opening in place leaves the list underneath it
+where it was. `isReadOnlyNames` is keyed off `rootId`, so it's a property of the rooted
+page rather than of V3.75: the profile tab is still where you navigate from, and its
+names are still links.
 
 **The heading is just the name.** It used to read `Bramblewick University · 175
 child organizations · 200 below in total`. Two totals a few pixels apart is a
