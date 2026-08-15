@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import styled from 'styled-components'
 import {
   Table,
@@ -169,11 +169,8 @@ const Wrapper = styled.div`
    `center` puts it on the vertical centre line. */
 const SearchField = styled(Field)`
   width: 450px;
-  /* 24px where the count sits in the header cell, matching the department page's
-     toolbar exactly so V3.75's two views have the same gap between the search field
-     and the head of the list. 20px otherwise, where a stacked Counts line follows and
-     supplies its own 8px below. */
-  margin-bottom: ${(props) => (props.$countInHeader ? '24px' : '20px')};
+  /* 20px, with the count line below supplying its own 8px before the table. */
+  margin-bottom: 20px;
 
   [data-garden-id='forms.faux_input'] {
     align-items: center;
@@ -193,12 +190,10 @@ const SearchLabel = styled(Label)`
   margin-bottom: 4px;
 `
 
-/* The stacked count line, above the table. 20px above comes from SearchField's
-   margin-bottom; no top margin here, so the two don't stack. 8px below keeps it tight
-   to the table, close enough to read as a caption for it rather than as a second line
-   of page copy.
-   V3.75 doesn't use this — its count sits in the header cell instead; see
-   isCountInHeader. */
+/* The count line, above the table on every version. 20px above comes from
+   SearchField's margin-bottom; no top margin here, so the two don't stack. 8px below
+   keeps it tight to the table, close enough to read as a caption for it rather than as
+   a second line of page copy. */
 const Counts = styled(SM)`
   display: block;
   color: #646864;
@@ -298,6 +293,15 @@ const TreeRow = styled(Row)`
   }
   `}
 
+  /* The whole row expands, on the rooted page where that's the only thing a row does.
+     The cursor is the affordance: with no link text left there, nothing else says the
+     row is a target, and the hover tint alone reads as tracking rather than as
+     something to click. */
+  ${(props) =>
+    props.$clickable &&
+    `
+  cursor: pointer;
+  `}
 `
 
 const NameCell = styled(Cell)`
@@ -482,33 +486,6 @@ const PageStatus = styled(SM)`
   color: #646864;
   font-size: 14px;
   margin-top: 16px;
-`
-
-/* The same caption on the rooted page, where it replaces the Organization column
-   label rather than sitting under the pager.
-   foreground.subtle (grey.700) at regular weight, overriding the header cell's bold:
-   it reads as a note about the list rather than as a column heading, which is what it
-   is — the column it sits over has no label of its own any more, and a bold count
-   claimed more of the eye than a count deserves. */
-const PageStatusInHeader = styled.span`
-  color: #646864;
-  font-weight: 400;
-`
-
-/* The header cell that holds it. One override of Garden's own header styling:
-   `padding-left: 0`. Garden pads header cells 12px on the left, which is right for a
-   column label sitting over indented cell content but wrong for a caption. It has to
-   line up with the other things the page starts with, the search field above it and
-   the table's own left edge, rather than with the column it happens to sit in.
-
-   Garden's rule under the header row stays. It briefly didn't: with no column labels
-   left to separate it looked like a divider between the page and its own list, and it
-   was the only horizontal line on a table whose rows carry none. Seen in place it does
-   the opposite — the rows below have no rules, so the one line across the top is what
-   marks where the tree starts. (Garden draws it as an inset box-shadow, not a border,
-   so `border-bottom: none` never touched it either way.) */
-const CaptionHeaderCell = styled(HeaderCell)`
-  padding-left: 0;
 `
 
 /* V3's replacement for the Child orgs column: the bare count in parentheses,
@@ -1178,6 +1155,19 @@ export default function OrganizationHierarchyTab({
   // Which page of the paged organization group is on screen.
   const [page, setPage] = useState(1)
 
+  /* Paging from the bottom of a hundred rows leaves the reader at the bottom of the
+     next hundred, looking at its last rows with no idea they've arrived at the start of
+     something. The click is at the foot of the page because that's where the pager is,
+     not because that's where they want to be. So the scroller goes back to the top and
+     the new page starts at its first row.
+     The ref is on Wrapper, which is the element that scrolls — the page around it
+     doesn't, so scrolling the window would do nothing. */
+  const scrollerRef = useRef(null)
+  const goToPage = (next) => {
+    setPage(next)
+    scrollerRef.current?.scrollTo({ top: 0 })
+  }
+
   /* Organizations the reader has opened. V3.5 only — it is what shapes that
      version's tree, and it is ignored entirely by the others.
 
@@ -1366,18 +1356,15 @@ export default function OrganizationHierarchyTab({
      the list underneath changing. */
   const isReadOnlyNames = Boolean(rootId)
 
-  /* V3.75 puts the reach count in the header cell instead, on both of its views: the
-     department page proved the treatment, and having the profile tab do the same thing
-     is the point of a version — one idea, applied consistently, so review sees it
-     twice rather than seeing two treatments and comparing those.
+  /* The count sits above the table on every version, and the `Organization` label
+     stays in the header cell under it.
 
-     What it replaces is a stacked `Counts` line *above* a header cell reading
-     "Organization". Two lines of chrome between the search field and the first row,
-     and the label was doing no work: the rows are plainly organizations, and the
-     count already says the word. So the count moves into the cell and the label goes,
-     which closes the gap Rusty flagged without moving anything else. Only V3.75 —
-     V3 and V3.5 keep the stacked version so the two can be compared. */
-  const isCountInHeader = isWide
+     It briefly didn't: for one round V3.75 moved the count *into* the cell and dropped
+     the label, on the argument that the rows are plainly organizations and the count
+     says the word already. What that lost is a table with a labelled column — the count
+     is a caption about the list, and standing in for the label it had to be read as
+     both. The two are now stacked in the order they're read: how much there is, then
+     what the column holds. Closing the gap between them is what the spacing does. */
 
   // The counter still describes reach, not the rows on screen: the point of the
   // feature is how far access cascades below the selected organization, and that
@@ -1416,11 +1403,11 @@ export default function OrganizationHierarchyTab({
   // is chrome rather than design under review, and a pin able to attach to the
   // comment layer could anchor to another pin.
   return (
-    <Wrapper data-comment-root="true" $flush={hideSearch}>
+    <Wrapper ref={scrollerRef} data-comment-root="true" $flush={hideSearch}>
       {/* No Hint — the label carries the explanation, and a hint line here
           pushed the counts and the table down for no added meaning. */}
       {!hideSearch && (
-        <SearchField $countInHeader={isCountInHeader}>
+        <SearchField>
           {/* Follows the rows, not the column: V4 shows a People count but no people,
               so offering to search users would promise something its tree can't
               show. */}
@@ -1431,17 +1418,20 @@ export default function OrganizationHierarchyTab({
         </SearchField>
       )}
 
-      {/* Stacked above the table in V1–V3.5 and V4. Not on the rooted page, which
-          states its own count in the header cell — repeating it here would put two
-          different totals, the page's and the tree's reach, a few pixels apart. And
-          not in V3.75, which moves the count into that header cell on both its views;
-          see isCountInHeader. */}
-      {!rootId && !isCountInHeader && (
-        <Counts>
-          {reachOrgCount} {orgLabel}
-          {showPeople && ` · ${peopleReach} ${peopleLabel}`}
-        </Counts>
-      )}
+      {/* Above the table on every version. On the rooted page it counts the window —
+          `100 of 175 departments` — and everywhere else it counts the reach. Both are
+          captions about the list below, which is why they share the slot; what differs
+          is only which number the view can honestly claim. */}
+      <Counts>
+        {isRootedPageStatus ? (
+          `${pagedTo - pagedFrom + 1} of ${pagedTotal} departments`
+        ) : (
+          <>
+            {reachOrgCount} {orgLabel}
+            {showPeople && ` · ${peopleReach} ${peopleLabel}`}
+          </>
+        )}
+      </Counts>
 
       <TreeTable isReadOnly>
         <HiddenCaption>
@@ -1451,41 +1441,12 @@ export default function OrganizationHierarchyTab({
         </HiddenCaption>
         <Head>
           <HeaderRow>
-            {/* On the rooted page the count takes the column label's place. It is a
-                caption about the list, and the top of the list is where someone
-                decides whether to scroll it — under the table it only answers the
-                question after they've already scrolled to find out.
-
-                `100 of 175 departments`, not `1–100 of 175`: the range says where the
-                window starts, which the reader already knows from the pager, and the
-                count of what's on screen is the part they don't. "Departments" rather
-                than "organizations" because that is what these rows are called
-                everywhere else on the page — the generic word is the tree's, and this
-                page has one subject.
-
-                The owner isn't named: the row directly beneath is the organization the
-                page is about, so "in Bramblewick University" would repeat what the
-                next line already says. */}
-            {/* Three cases. The paged department page counts the window (`100 of 175
-                departments`); V3.75's profile tab counts the reach the same way the
-                stacked line did (`201 organizations`), so the two views of that
-                version share one treatment; everything else keeps the column label. */}
-            {isRootedPageStatus || isCountInHeader ? (
-              <CaptionHeaderCell>
-                <PageStatusInHeader>
-                  {isRootedPageStatus ? (
-                    `${pagedTo - pagedFrom + 1} of ${pagedTotal} departments`
-                  ) : (
-                    <>
-                      {reachOrgCount} {orgLabel}
-                      {showPeople && ` · ${peopleReach} ${peopleLabel}`}
-                    </>
-                  )}
-                </PageStatusInHeader>
-              </CaptionHeaderCell>
-            ) : (
-              <HeaderCell>Organization</HeaderCell>
-            )}
+            {/* The column label, on every version including the rooted page. The count
+                above it is a caption about the list; this names what the column holds.
+                For one round the count stood here in its place and the label went, on
+                the argument that rows this obvious don't need naming — but a caption in
+                a header cell is read as a heading, and the two say different things. */}
+            <HeaderCell>Organization</HeaderCell>
             {/* No Organization type column. It carried Company / Cost Center /
                 Supervisory for organizations and Agent / End user for people —
                 two different things in one column, and the 22% it took came out
@@ -1563,6 +1524,12 @@ export default function OrganizationHierarchyTab({
                are on screen because of where the page is centred, so there is none
                whose control would be a lie. */
             const isExpandControl = isExpandable && row.hasChildren
+            /* On the rooted page the chevron is a small target for the only thing the
+               row does, so the row carries it too — click anywhere on a department to
+               open or close it. Only where names aren't links: elsewhere a row-wide
+               handler would compete with the link inside it, and a click landing on
+               the padding beside a name would do something different from the name. */
+            const isRowToggle = isReadOnlyNames && isExpandControl
 
             return (
               <TreeRow
@@ -1570,6 +1537,8 @@ export default function OrganizationHierarchyTab({
                 $ruleInset={ruleInsetFor(row.depth)}
                 $noRule={isSansLines}
                 $selected={isCurrent}
+                $clickable={isRowToggle}
+                onClick={isRowToggle ? () => toggleExpanded(row.node.id) : undefined}
               >
                 <NameCell>
                   <RowInner>
@@ -1594,7 +1563,12 @@ export default function OrganizationHierarchyTab({
                          other. */
                       <ChevronButton
                         type="button"
-                        onClick={() => toggleExpanded(row.node.id)}
+                        onClick={(event) => {
+                          /* Where the row toggles too, a chevron click would bubble up
+                             to it and toggle a second time, netting no change at all. */
+                          event.stopPropagation()
+                          toggleExpanded(row.node.id)
+                        }}
                         aria-expanded={row.isOpen}
                         aria-label={
                           row.isOpen
@@ -1684,7 +1658,7 @@ export default function OrganizationHierarchyTab({
             <OffsetPagination
               currentPage={page}
               totalPages={totalPages}
-              onChange={setPage}
+              onChange={goToPage}
               aria-label={`Pages of organizations in ${pagedOwnerName}`}
             />
           </PaginationRow>

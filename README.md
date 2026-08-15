@@ -306,11 +306,11 @@ V4's answer instead: Garden's `OffsetPagination` under the table. The cap and th
 pager are the two answers to the same problem, and this page is where the uncapped
 one has to hold up.
 
-**The count heads the table rather than following it.** `100 of 175 departments`
-sits in the `Organization` column's place, where the label would otherwise be, in
-foreground.subtle at regular weight. The top of a list is where someone decides
-whether to scroll it; under the table the same sentence only answers that question
-after they've scrolled to the end to find it.
+**The count heads the table rather than following it.** `100 of 175 departments` sits
+above the table in foreground.subtle, 8px clear of it, with the `Organization` column
+label in the header cell below. The top of a list is where someone decides whether to
+scroll it; under the table the same sentence only answers that question after they've
+scrolled to the end to find it.
 
 Four things it deliberately isn't:
 
@@ -321,56 +321,75 @@ Four things it deliberately isn't:
 - **Not *organizations*.** These rows are departments everywhere else on the page,
   and the generic word belongs to the tree, which shows resellers and companies too.
   This page has one subject.
-- **Not bold.** It replaces a column heading but it isn't one — it's a note about
-  the list, and at the header cell's own weight the count claimed more of the eye
-  than a count deserves.
+- **Not bold.** It's a note about the list, not a heading — at heading weight the
+  count claimed more of the eye than a count deserves.
 - **Not *in Bramblewick University***, the way V4's caption is. The row directly
   beneath is that organization, so naming it repeats the next line.
-- **Not indented.** Garden pads its header cells 12px on the left, which is right for
-  a label sitting over indented cell content and wrong for a caption: it put the
-  count 12px right of the search field above it and the table's own left edge. The
-  cell it sits in is `CaptionHeaderCell`, `padding-left: 0`, so all three line up.
 
-On the department page it counts the window; **V3.75's profile tab now does the same
-thing with the reach count** — `201 organizations` in the header cell, no
-`Organization` label, 24px below the search field. Same treatment on both of the
-version's views, which is the point of a version: review sees one idea twice rather
-than two treatments to compare.
+**One arrangement on every version**, arrived at the long way. For a round or two V3.75
+moved the count *into* the header cell and dropped the `Organization` label with it, on
+the argument that two lines of chrome sat between the search field and the first row and
+the label was doing no work — the rows are plainly organizations and the count says the
+word already. Both halves came back. A caption standing in a header cell gets read as a
+heading, so the count had to carry two jobs at once; and the label, redundant as it looks
+in isolation, is what makes the thing below a table rather than a list that starts
+abruptly. The two are now stacked in the order they're read: how much there is, then what
+the column holds.
 
-What that replaced was a stacked `Counts` line *above* a header cell reading
-`Organization` — two lines of chrome between the search field and the first row, with
-the label doing no work. The rows are plainly organizations, and the count says the
-word already.
+The same round removed the rule under the header row and put it back for a related
+reason. Garden draws it to separate column labels from data, so with no labels left it
+read as a divider between the page and its own list — but the rows below carry no rules
+in these versions, so that one line is the only thing marking where the tree starts.
 
-**The rule across the top stays**, though it briefly didn't. The argument for removing
-it was that Garden draws it to separate column labels from data and there are no labels
-left to separate, so it read as a divider between the page and its own list. In place it
-turned out to do the opposite: the rows below carry no rules in these versions, so the
-one line across the top is the only thing marking where the tree starts, and without it
-the count and the first row were two pieces of text with nothing between them.
+So the geometry is uniform: **the count 8px above the table on all six versions and the
+department page**, left-aligned with the search field, the table and the column label —
+seven views, one measurement, which the harness checks across all of them rather than on
+one. It was briefly conditional (24px where the count sat in the header cell, 20px
+otherwise, via a `$countInHeader` prop on `SearchField`) and that is exactly the kind of
+per-version branch that drifts, so it's now a single 20px margin with the count line's own
+8px beneath it.
 
-Two things this doesn't touch. **V1–V3.5 and V4 keep the stacked line and the label**,
-so the two treatments can be compared; `isCountInHeader` is V3.75 only. And in V4 the
-count stays *below* the table, because its paged rows are one group among ancestors and
-siblings — a count spanning the whole table there would look like it counted all of
-them, which is what `isRootedPageStatus` gates.
+The one thing still version-specific: **in V4 a second caption stays *below* the table**,
+because its paged rows are one group among ancestors and siblings — a count spanning the
+whole table there would look like it counted all of them. That's what `isRootedPageStatus`
+gates.
 
-One Garden detail, in case the rule ever does need to go: it's an inset `box-shadow`,
-not a border, so `border-bottom: none` doesn't remove it — and its selector is
-`.table > .headerRow:last-child > .headerCell`, three classes, which outspecifies a
-plain styled-components override. It takes `&&&&` on `CaptionHeaderCell` to win on
-specificity rather than on `!important` or stylesheet order.
+One Garden detail, in case the rule ever does need to go: it's an inset `box-shadow`, not
+a border, so `border-bottom: none` doesn't remove it — and its selector is
+`.table > .headerRow:last-child > .headerCell`, three classes, which outspecifies a plain
+styled-components override. It takes `&&&&` to win on specificity rather than on
+`!important` or stylesheet order.
+
+**Paging returns to the top.** The pager is at the foot of a hundred rows, so that's
+where the reader is standing when they click it — and landing at the foot of the *next*
+hundred shows them its last rows with nothing to say they've arrived at the start of
+something. `goToPage` sets the page and scrolls the container back to 0. The ref is on
+`Wrapper`, the element that actually scrolls; the page around it doesn't, so scrolling the
+window would have done nothing.
 
 **On the department page the names aren't links.** Every other view makes each
 organization a link that re-centres the tree on it. Here they're plain
-foreground.default text and the chevron is the only control, because this page's whole
-job is showing one organization's list at once: drilling into a department would replace
-that list with the department's own, and — since the page shares its selection with the
-tab that opened it — quietly re-point that tab too. Clicking a name adjusts nothing.
-Expanding still works, because a subtree opening in place leaves the list underneath it
-where it was. `isReadOnlyNames` is keyed off `rootId`, so it's a property of the rooted
-page rather than of V3.75: the profile tab is still where you navigate from, and its
-names are still links.
+foreground.default text, because this page's whole job is showing one organization's list
+at once: drilling into a department would replace that list with the department's own,
+and — since the page shares its selection with the tab that opened it — quietly re-point
+that tab too. Expanding still works, because a subtree opening in place leaves the list
+underneath it where it was. `isReadOnlyNames` is keyed off `rootId`, so it's a property of
+the rooted page rather than of V3.75: the profile tab is still where you navigate from,
+and its names are still links.
+
+**And the whole row expands, not just the chevron.** With no link text in the row there's
+nothing else it could do, and a 16px glyph is a small target for the page's only
+interaction — so the row takes the click too, with `cursor: pointer` as the affordance
+since the hover tint on its own reads as tracking rather than as something to click. Rows
+with no children stay inert and show no pointer: there is nothing to open, and a cursor
+promising otherwise is worse than no cursor.
+
+Two details this needs. The chevron calls `stopPropagation`, or its click would bubble to
+the row, toggle a second time and net no change — the most confusing possible outcome,
+since the control would look broken while the row worked. And `isRowToggle` requires
+`isReadOnlyNames`, so no other version gets a row-wide handler: everywhere else the row
+contains a link, and a click on the padding beside a name doing something different from
+the name is the kind of inconsistency nobody reports but everybody feels.
 
 **The heading is just the name.** It used to read `Bramblewick University · 175
 child organizations · 200 below in total`. Two totals a few pixels apart is a

@@ -178,12 +178,12 @@ export default function DepartmentPage({ orgId, onSelectOrganization }) {
           <TitleBlock>
             {trail.length > 0 && <Trail>{trail.join(' › ')}</Trail>}
             {/* Just the name. The counts used to sit beside it — "175 child
-                organizations · 200 below in total" — and they now head the table
-                instead, as `1–100 of 175 organizations`. Two totals a few pixels
-                apart was the problem: the header's counted every descendant while the
-                table's counts the direct children on screen, so the pair invited a
-                reader to work out why 175 and 200 disagreed, which is a question about
-                this page rather than about the hierarchy. */}
+                organizations · 200 below in total" — and one of them now heads the table
+                instead, as `100 of 175 departments`. Two totals a few pixels apart was
+                the problem: the header's counted every descendant while the table's
+                counts the direct children on screen, so the pair invited a reader to work
+                out why 175 and 200 disagreed, which is a question about this page rather
+                than about the hierarchy. */}
             <Subject>
               <XXL tag="h1" style={{ color: '#2f3130' }}>
                 {org.name}
