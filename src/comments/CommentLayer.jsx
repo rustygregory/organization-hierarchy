@@ -586,7 +586,7 @@ export default function CommentLayer({
   /* Comments belonging to a view other than the current one. Surfaced as a count
       rather than hidden, so it's obvious that the thread list is longer than the
       pins on screen — a reviewer who can't see a colleague's comment because they
-      are on V2 and it was made on V4 would otherwise have no way to know. */
+      are on V1 and it was made on V4 would otherwise have no way to know. */
   const elsewhere = useMemo(
     () => roots.filter((comment) => !sameContext(comment.anchor?.context, context)),
     [roots, context],

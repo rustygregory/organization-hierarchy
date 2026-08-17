@@ -36,7 +36,7 @@ const CHEVRON_SLOT = 20
    which is measured from the cell's border box, not its content box. */
 const CELL_PADDING = 12
 const RULE_COLOR = '#eae9e8'
-/* A row's height. Shared by RowInner and V3.5's skeleton rows, which have to match
+/* A row's height. Shared by RowInner and V2's skeleton rows, which have to match
    it exactly — a placeholder taller than the row it stands in for makes the list
    jump as each group of children resolves. */
 const ROW_MIN_HEIGHT = 36
@@ -77,7 +77,7 @@ const SELECTION_BAR_WIDTH = 2
    exchange for never paging, or whether the number wants to come down. */
 const CHILDREN_PER_PAGE = 100
 
-/* V3.5's expand loading state.
+/* V2's expand loading state.
  *
  * Opening a node in place shows skeleton rows for a beat before the real ones
  * arrive. It is faked — the data is already in memory — but the real feature will
@@ -89,10 +89,10 @@ const CHILDREN_PER_PAGE = 100
  * placeholders over them reads as a glitch. The real feature has the same shape — a
  * couple of children is one cheap request.
  *
- * It has to stay low while V3.5 is in the set. V3.5 is a copy of V3, whose hand-written
- * tree tops out at four children (Model Training Pod) with most expandable nodes at
+ * It has to stay low while V2 is in the set. V2 runs on the hand-written tree, which
+ * tops out at four children (Model Training Pod) with most expandable nodes at
  * three — so a higher threshold could never fire there, and the loading state would be
- * invisible in the version built to test it. The constant is shared with V3.75, which
+ * invisible in the version built to test it. The constant is shared with V3, which
  * has a 175-wide node and could carry a higher number on its own; splitting it per
  * version is a one-line change if the two ever want different answers.
  *
@@ -122,13 +122,13 @@ const SKELETON_WIDTHS = ['62%', '45%', '71%', '38%', '55%', '66%', '42%', '58%']
    bar stretches across the whole table — see SkeletonName. */
 const SKELETON_MAX_WIDTH = 260
 
-/* V3.75's cap. However many children a node has, expanding it in place shows at most
+/* V3's cap. However many children a node has, expanding it in place shows at most
    this many, followed by a *View all* that opens the whole department as its own page
    in a new tab.
  *
  * 50 rather than V4's 100 because the two versions are asking opposite questions.
  * V4 puts the whole list in the tree and pages it, testing how much of a hierarchy
- * one level can hold. V3.75 assumes it can't hold it, and tests the other answer:
+ * one level can hold. V3 assumes it can't hold it, and tests the other answer:
  * cap the tree at a readable depth and send the long list somewhere built for it. A
  * cap only means something if it bites well before the list ends — at 100 of 175
  * you're most of the way down anyway, and the escape hatch reads as a pager.
@@ -266,7 +266,7 @@ const TreeTable = styled(Table)`
 /* The rule is a pseudo-element rather than a border so the name cell's copy can
    be inset by its own indent while every cell to the right stays flush. Drawn
    on all cells from the same `bottom: 0`, so the segments line up exactly.
-   V3 drops it entirely: the only line left running across the page is the one
+   V2 drops it entirely: the only line left running across the page is the one
    under the header, so the tree's own vertical guides carry the structure. */
 const TreeRow = styled(Row)`
   /* Set on the cells rather than the row: Garden gives its own cells a
@@ -510,7 +510,7 @@ const PageStatus = styled(SM)`
   margin-top: 16px;
 `
 
-/* V3's replacement for the Child orgs column: the bare count in parentheses,
+/* V2's replacement for the Child orgs column: the bare count in parentheses,
    right after the name. Reads as part of the node rather than as a column of
    repeated "child orgs" copy, which is what let the column go away. */
 const ChildCount = styled.span`
@@ -608,7 +608,7 @@ const SkeletonBar = styled(Skeleton)`
   border-radius: 3px;
 `
 
-/* V3.75's *View all*, sitting where the 51st child would be. Takes the same gutter
+/* V3's *View all*, sitting where the 51st child would be. Takes the same gutter
    and height as a real row so the guide line runs into it and it reads as the end of
    the list rather than as a control parked underneath. */
 const ViewAllArea = styled.div`
@@ -667,7 +667,7 @@ const Chevron = ({ direction = 'down' }) => (
  *
  *   - every ancestor, as a single path above the selected organization
  *   - the selected organization itself, tagged `current`
- *   - its direct children (and, in V2, its direct people)
+ *   - its direct children (and its direct people, when a version asks for them)
  *   - its direct siblings
  *
  * and nothing else. No sibling's children, no ancestor's other branches. Drilling
@@ -685,7 +685,7 @@ const Chevron = ({ direction = 'down' }) => (
  *   hasChildren    it has a subtree this view is holding back — drives the
  *                  right-pointing chevron that drills into it
  *
- * V3.5 does not use this builder. In-place expansion means the tree's shape has to
+ * V2 does not use this builder. In-place expansion means the tree's shape has to
  * come from what the reader opened rather than from where the page is centred, and
  * those are the same thing here — every row this function emits is defined by its
  * relationship to `selectedId`. See buildExpandableRows below.
@@ -745,7 +745,7 @@ const buildFocusedRows = (selectedId, showPeople = true, atScale = false, page =
   const selectedDepth = ancestors.length
 
   const allChildOrgs = getChildren(selected.id, orgOptions)
-  // V1 MVP and V3 are organizations-only views, so people never enter the tree.
+  // V1 MVP and V2 are organizations-only views, so people never enter the tree.
   const people = showPeople ? getPeopleIn(selected.id) : []
   // `isOpen` is decided by the full list, not the paged slice, so a node with
   // children always reads as open even on a page that shows none of them.
@@ -873,14 +873,14 @@ const buildFocusedRows = (selectedId, showPeople = true, atScale = false, page =
   }
 }
 
-/* V3.5's builder, and the reason it is a separate function rather than a flag on
+/* V2's builder, and the reason it is a separate function rather than a flag on
    buildFocusedRows.
  *
  * buildFocusedRows derives the *shape* of the tree from `selectedId` — the rows it
  * emits are that node's ancestors, children and siblings. That makes selection and
  * structure the same thing, so selecting anything necessarily rebuilds the tree
- * around it and discards whatever was open. That is correct for V1–V4, where a click
- * is a navigation, and wrong for V3.5, where a click must leave the tree alone.
+ * around it and discards whatever was open. That is correct for V1 and V4, where a click
+ * is a navigation, and wrong for V2, where a click must leave the tree alone.
  *
  * So this builder takes its shape from one thing only: `expandedIds`, what the reader
  * has opened. It renders the whole tree from the root down, following expansion and
@@ -899,7 +899,7 @@ const buildFocusedRows = (selectedId, showPeople = true, atScale = false, page =
  *   - The reader can collapse an ancestor of the selected row and hide it. That's
  *     an explicit act with an obvious undo, which is how a file tree behaves.
  *
- * Not paged. V3.5 runs on the hand-written tree, whose widest node has four
+ * Not paged. V2 runs on the hand-written tree, whose widest node has four
  * children; combining in-place expansion with V4's 150 would put two variables in
  * one comparison. Row geometry is identical to buildFocusedRows' — same fields, same
  * meanings — so TreeGutter and the row renderer are shared.
@@ -909,9 +909,9 @@ const buildExpandableRows = (
   showPeople,
   expandedIds,
   loadingIds,
-  /* V3.75: the wider roster, a cap on how many children any one node shows, an
+  /* V3: the wider roster, a cap on how many children any one node shows, an
      explicit root, and a page window.
-     - `rowCap: null` means no cap, which is V3.5 and also V3.75's own full-page view.
+     - `rowCap: null` means no cap, which is V2 and also V3's own full-page view.
      - `rootId` starts the tree at a given organization instead of at the top of the
        hierarchy. That is what makes the View all page a page *of that department*
        rather than the whole tree scrolled to it.
@@ -966,9 +966,9 @@ const buildExpandableRows = (
     const allChildren = getChildren(org.id, orgOptions)
     const peopleHere = showPeople ? getPeopleIn(org.id) : []
 
-    /* V3.75's cap. Past WIDE_ROW_CAP children the tree stops and offers a way out
+    /* V3's cap. Past WIDE_ROW_CAP children the tree stops and offers a way out
        instead of continuing — see the constant. People are not capped: they only
-       exist in V2 and V4, neither of which uses this builder, so a cap here would be
+       ever existed in V2, which is off the table now, so a cap here would be
        untested code standing in for a decision nobody has made. */
     const isCapped = rowCap !== null && allChildren.length > rowCap
     /* The page window, on the root's children only — see the `page` option. A node
@@ -1103,7 +1103,7 @@ const TreeGutter = ({ row }) => {
   )
 }
 
-/* Ancestors of `orgId` plus itself, as ids. V3.5 seeds its expansion with this so
+/* Ancestors of `orgId` plus itself, as ids. V2 seeds its expansion with this so
    the tree opens down to the organization the tab is on, and re-opens down to a
    newly selected one that a collapse had hidden.
 
@@ -1120,10 +1120,10 @@ export default function OrganizationHierarchyTab({
   selectedId,
   onSelectOrganization,
   version = 'v1',
-  // V3.75 only: opens an organization as its own Support tab. Absent elsewhere, and
+  // V3 only: opens an organization as its own Support tab. Absent elsewhere, and
   // the View all row is only rendered when it's present.
   onOpenInNewTab,
-  /* V3.75's full-page department view (see DepartmentPage). Roots the tree at one
+  /* V3's full-page department view (see DepartmentPage). Roots the tree at one
      organization and lifts the row cap, which is the whole difference between the
      capped tree and the page a View all opens. Everything else — geometry, chevrons,
      skeletons, selection — is the same component, so the two can't drift apart. */
@@ -1131,46 +1131,62 @@ export default function OrganizationHierarchyTab({
   uncapped = false,
   hideSearch = false,
 }) {
-  // V4 is V2's treatment against an organization with a hundred child
-  // departments — same columns, same people rows, one organization's child list
-  // swapped for a full-sized one. It hangs off Bramblewick, the node the prototype
-  // opens on, so the at-scale case is what V4 shows first rather than something to
-  // drill for. The long scroll it produces is the point: centring the view bounds
-  // how deep the tree goes, not how wide one level of it is, so this is the case
-  // the focused view does not answer.
+  // V4 No chevrons is V1's treatment against an organization with a hundred child
+  // departments — same columns, one organization's child list swapped for a
+  // full-sized one, and a dot in place of the chevron. It hangs off Bramblewick, the
+  // node the prototype opens on, so the at-scale case is what V4 shows first rather
+  // than something to drill for. The long scroll it produces is the point: centring
+  // the view bounds how deep the tree goes, not how wide one level of it is, so this
+  // is the case the focused view does not answer.
   const atScale = version === 'v4'
-  /* The People column: a count of everyone at or below each row. V1 MVP and V3
-     drop it along with their people rows; V2 and V4 keep it. */
-  const showPeople = version === 'v2' || atScale
-  /* People *rows* are V2's alone. V4 replaced its end users with departments — its
-     subject is how wide one level of the hierarchy can get — so it has no people in
-     the tree, but it keeps the column, because "150 child orgs" says nothing about
-     which of them anyone can actually reach. */
-  const showPeopleRows = showPeople && !atScale
-  /* V3.5 Expandable: V3's treatment, with the chevron split off from the name.
-     Clicking a name still re-centres the page on that organization; clicking the
-     chevron opens that organization's children *in place* and leaves the page
-     where it is. The two things a chevron could mean — "go here" and "show me
-     what's in here" — are one action in V1–V4, so the only way to see inside a
-     node is to make it the subject. This version separates them, which is what
+  /* The People column at the right edge of the table — everyone at or below each row.
+     Off in every version now. V4 was the last to carry it, on the argument that "150
+     child orgs" says nothing about which of them anyone can actually reach; against
+     that, a per-row number sitting beside a hundred rows of zeroes is a column of
+     zeroes, and the reach that *is* worth stating is stated once in the count line
+     above the table instead of 150 times down the side of it.
+     Kept as a named flag rather than cut out, because the five render sites it gates
+     are correct and a version wanting the column back is this line. */
+  const showPeopleColumn = false
+  /* The `· 73 people` half of the count line above the table. Still V4's: it's the
+     version whose subject is scale, and one summary of how many people the selection
+     reaches is the part of the old column that was worth keeping. */
+  const showPeopleReach = atScale
+  /* People *rows* — end users listed in the tree beside the organizations — belonged
+     to V2 only, and no version on the table has them now: V4 replaced its end users
+     with departments, since its subject is how wide one level of the hierarchy can
+     get. Held as a named constant rather than deleted because both builders take it
+     as a parameter and honour it throughout; bringing people rows back to a version
+     is this line plus a condition, whereas tearing the parameter out and rewriting it
+     later would be a day's work to land in the same place. */
+  const showPeopleRows = false
+  /* V2 Expand all rows: no row dividers, the child count moved out of its own column into
+     a parenthetical beside each name, and — the substance of it — the chevron split
+     off from the name. Clicking a name re-centres the page on that organization;
+     clicking the chevron opens that organization's children *in place* and leaves the
+     page where it is. The two things a chevron could mean — "go here" and "show me
+     what's in here" — are one action in V1 and V4, so the only way to see inside a
+     node there is to make it the subject. This version separates them, which is what
      lets a reader compare two branches without leaving the row they're on. */
-  /* V3.75: V3.5's expansion against V4's breadth — 175 departments under
-     Bramblewick instead of three. Where V4 puts the whole list in the tree and pages
-     it, V3.75 caps any one list at WIDE_ROW_CAP rows and offers a *View all* that
-     opens that department as its own Support tab. The two are the two available
-     answers to "this node has 175 children", which is why they're separate versions
-     rather than one with a toggle. */
-  const isWide = version === 'v3-75'
-  const isExpandable = version === 'v3-5' || isWide
-  // V3 Sans lines: no row dividers, and the child count moves out of its own
-  // column into a parenthetical beside each organization's name. V3.5 inherits
-  // both, so the expansion behaviour is the only thing that differs between them.
-  const isSansLines = version === 'v3' || isExpandable
-  // V4 marks nodes with dots instead of chevrons.
+  /* V3: V2's expansion against V4's breadth — 175 departments under Bramblewick
+     instead of three. Where V4 puts the whole list in the tree and pages it, V3
+     caps any one list at WIDE_ROW_CAP rows and offers a *View all* that opens that
+     department as its own Support tab. The two are the two available answers to "this
+     node has 175 children", which is why they're separate versions rather than one
+     with a toggle. */
+  const isWide = version === 'v3'
+  const isExpandable = version === 'v2' || isWide
+  /* No row dividers, and the child count inline beside each name. Both of the
+     expandable versions do this and nothing else does, so it tracks `isExpandable`
+     exactly — kept as its own name because they are two separate decisions that
+     happen to coincide, and a version wanting one without the other would only need
+     to change this line. */
+  const isSansLines = isExpandable
+  // V4 marks expandable rows with dots instead of chevrons — hence its name.
   const isDotted = atScale
 
   /* The data options every selector in this component passes. One object rather than
-     `{ atScale }` repeated at five call sites, because V3.75 added a second flag and
+     `{ atScale }` repeated at five call sites, because V3 added a second flag and
      the failure mode of missing one is a count that disagrees with the rows. */
   const dataOptions = useMemo(() => ({ atScale: atScale || isWide, wide: isWide }), [atScale, isWide])
 
@@ -1201,10 +1217,10 @@ export default function OrganizationHierarchyTab({
     }
   }
 
-  /* Organizations the reader has opened. V3.5 only — it is what shapes that
+  /* Organizations the reader has opened. V2 only — it is what shapes that
      version's tree, and it is ignored entirely by the others.
 
-     Seeded with the path down to the organization the tab opens on, so V3.5's first
+     Seeded with the path down to the organization the tab opens on, so V2's first
      paint shows the same thing the other versions do: the selected row in context,
      already reachable, rather than a single collapsed root the reader has to dig
      through to find where they are. */
@@ -1269,10 +1285,10 @@ export default function OrganizationHierarchyTab({
   }, [loadingIds])
 
   /* Switching versions resets the tree to the path down to the selected row, which
-     is V3.5's opening state rather than a blank one. Carrying an arbitrary set of
+     is V2's opening state rather than a blank one. Carrying an arbitrary set of
      expansions into V4 would land them on rows whose chevrons are dots and whose
      lists are paged — a different treatment reading as a bug rather than as a
-     comparison — and coming back into V3.5 with everything shut would make the
+     comparison — and coming back into V2 with everything shut would make the
      switch look like it had lost the reader's place.
      eslint-disable-next-line react-hooks/exhaustive-deps — deliberately not keyed on
      selectedId: a selection must not disturb what's open. That case is handled
@@ -1337,8 +1353,8 @@ export default function OrganizationHierarchyTab({
     if (rootId) setPage(1)
   }, [rootId])
 
-  /* Two different trees, not one tree with a flag. V1–V4 take their shape from
-     `selectedId`; V3.5 takes its shape from `expandedIds` and uses `selectedId` only
+  /* Two different trees, not one tree with a flag. V1 and V4 take their shape from
+     `selectedId`; V2 takes its shape from `expandedIds` and uses `selectedId` only
      to highlight a row. That is the whole difference between navigating and
      expanding, and it is why they are separate builders. */
   const { rows, pagedTotal, pagedGroup, pagedFrom, pagedTo } = useMemo(
@@ -1392,7 +1408,7 @@ export default function OrganizationHierarchyTab({
   /* The count sits above the table on every version, and the `Organization` label
      stays in the header cell under it.
 
-     It briefly didn't: for one round V3.75 moved the count *into* the cell and dropped
+     It briefly didn't: for one round V3 moved the count *into* the cell and dropped
      the label, on the argument that the rows are plainly organizations and the count
      says the word already. What that lost is a table with a labelled column — the count
      is a caption about the list, and standing in for the label it had to be read as
@@ -1407,8 +1423,8 @@ export default function OrganizationHierarchyTab({
     [selectedId, dataOptions],
   )
   const peopleReach = useMemo(
-    () => (showPeople ? countPeopleAtOrBelow(selectedId, dataOptions) : 0),
-    [selectedId, showPeople, dataOptions],
+    () => (showPeopleReach ? countPeopleAtOrBelow(selectedId, dataOptions) : 0),
+    [selectedId, showPeopleReach, dataOptions],
   )
 
   // Drill-in. Every organization in the view is a link to its own context; the
@@ -1461,7 +1477,7 @@ export default function OrganizationHierarchyTab({
         ) : (
           <>
             {reachOrgCount} {orgLabel}
-            {showPeople && ` · ${peopleReach} ${peopleLabel}`}
+            {showPeopleReach && ` · ${peopleReach} ${peopleLabel}`}
           </>
         )}
       </Counts>
@@ -1487,7 +1503,7 @@ export default function OrganizationHierarchyTab({
                 ten levels of indent. Note what went with it: Agent vs End user
                 is no longer stated anywhere in the tree. */}
             {!isSansLines && <HeaderCell width="12%">Child orgs</HeaderCell>}
-            {showPeople && <HeaderCell width="10%">People</HeaderCell>}
+            {showPeopleColumn && <HeaderCell width="10%">People</HeaderCell>}
           </HeaderRow>
         </Head>
         <Body>
@@ -1513,12 +1529,12 @@ export default function OrganizationHierarchyTab({
                     </RowInner>
                   </NameCell>
                   {!isSansLines && <Cell />}
-                  {showPeople && <Cell />}
+                  {showPeopleColumn && <Cell />}
                 </TreeRow>
               )
             }
 
-            /* V3.75's escape hatch, in the row after the capped list. A text button
+            /* V3's escape hatch, in the row after the capped list. A text button
                plus the count it's hiding — the count is what makes the cap legible,
                since 50 rows of departments give no clue how many more there are. */
             if (row.kind === 'viewAll') {
@@ -1544,14 +1560,14 @@ export default function OrganizationHierarchyTab({
                     </RowInner>
                   </NameCell>
                   {!isSansLines && <Cell />}
-                  {showPeople && <Cell />}
+                  {showPeopleColumn && <Cell />}
                 </TreeRow>
               )
             }
 
             const isPerson = row.kind === 'person'
             const isCurrent = !isPerson && row.node.id === selectedId
-            /* V3.5: the chevron expands in place instead of drilling in, on every
+            /* V2: the chevron expands in place instead of drilling in, on every
                organization that has children — including the selected one and its
                ancestors. There is no inert marker in this version: no row's children
                are on screen because of where the page is centred, so there is none
@@ -1589,7 +1605,7 @@ export default function OrganizationHierarchyTab({
                         Everything else about the slot is unchanged, so the two
                         treatments are comparable. */}
                     {isExpandControl ? (
-                      /* V3.5's two-part row: this control opens and closes the
+                      /* V2's two-part row: this control opens and closes the
                          subtree in place and never moves the page. The name beside
                          it is still the way in. Both remain — the point of the
                          version is having the choice, not replacing one with the
@@ -1668,7 +1684,7 @@ export default function OrganizationHierarchyTab({
                     )}
                   </Cell>
                 )}
-                {showPeople && <Cell>{isPerson ? <Muted>—</Muted> : row.peopleCount}</Cell>}
+                {showPeopleColumn && <Cell>{isPerson ? <Muted>—</Muted> : row.peopleCount}</Cell>}
               </TreeRow>
             )
           })}
@@ -1676,7 +1692,7 @@ export default function OrganizationHierarchyTab({
       </TreeTable>
 
       {/* Only appears once a list of child organizations runs past one page, which
-          today only V4's does. V1–V3 end at the table, unchanged. */}
+          today only V4's does. The others end at the table, unchanged. */}
       {isPaginated && (
         <>
           {/* Stated once. On the rooted page it's already in the header cell above

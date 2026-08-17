@@ -225,15 +225,15 @@ export const PEOPLE = [
  * Departments rather than end users because the question V4 asks is about the
  * *hierarchy* at width: centring the view caps how deep the tree goes but says
  * nothing about how many children one node can have. A hundred sibling
- * organizations is the case the focused view doesn't bound. End users are V2's
- * subject and stay there.
+ * organizations is the case the focused view doesn't bound. End users were V2's
+ * subject, and went with it when that version came off the table.
  *
  * These are leaves — nothing hangs below them. A department with its own
  * sub-structure would be a second variable, and depth is already covered by the
  * hand-written Computer Science chain.
  *
  * Kept out of ORGANIZATIONS and layered in only when the view asks for it, so
- * V1–V3 keep the small hand-written tree that makes their treatments readable.
+ * V1 and V2 keep the small hand-written tree that makes their treatments readable.
  *
  * The roster runs past one page on purpose. V4 shows up to 100 rows at a time and
  * paginates beyond that, so a list that stopped at 100 would sit on the boundary
@@ -281,12 +281,12 @@ const AT_SCALE_DEPARTMENT_NAMES = [
 ]
 
 /**
- * 25 more, continuing the alphabet past Palaeontology — V3.75's addition.
+ * 25 more, continuing the alphabet past Palaeontology — V3's addition.
  *
  * A separate block rather than 25 more entries above, because V4's totals are
  * load-bearing: 147 generated plus Bramblewick's 3 hand-written children is 150,
  * which puts V4's second page at exactly 50 rows — a real page rather than a stray
- * remainder, and deliberately not a round multiple of the page size. V3.75 wants 175
+ * remainder, and deliberately not a round multiple of the page size. V3 wants 175
  * children, and editing the list in place to get there would silently re-cut a
  * version already under review. So the two take different slices of one roster:
  * `atScale` is V4's 147, `wide` is all 172.
@@ -314,7 +314,7 @@ const toDepartment = (name) => ({
 /** V4's roster: 147, so Bramblewick has 150 children. */
 const AT_SCALE_DEPARTMENTS = AT_SCALE_DEPARTMENT_NAMES.map(toDepartment)
 
-/** V3.75's roster: 172, so Bramblewick has 175 children. */
+/** V3's roster: 172, so Bramblewick has 175 children. */
 const WIDE_DEPARTMENTS = [
   ...AT_SCALE_DEPARTMENTS,
   ...WIDE_ONLY_DEPARTMENT_NAMES.map(toDepartment),
@@ -324,7 +324,7 @@ const WIDE_DEPARTMENTS = [
 // versions can't show, so it has to cover the wider list too.
 const AT_SCALE_IDS = new Set(WIDE_DEPARTMENTS.map((org) => org.id))
 
-/** Is this a generated department? True for nothing V1–V3 or V3.5 can show. */
+/** Is this a generated department? True for nothing V1 or V2 can show. */
 export const isAtScaleOrg = (orgId) => AT_SCALE_IDS.has(orgId)
 
 /**
@@ -377,11 +377,11 @@ export const PERSONAS = [
 /* ---------------------------------------------------------------- selectors */
 
 /* The at-scale departments are layered in by option rather than living in
-   ORGANIZATIONS, so V1–V3 never see them. `getOrganization` is the exception: it
+   ORGANIZATIONS, so V1 and V2 never see them. `getOrganization` is the exception: it
    resolves them unconditionally, because once V4 has re-centred the page on
    "Nanotechnology" the header, the breadcrumb path and the tab counts all have to
    name it — and the option isn't threaded through every one of those call sites.
-   Nothing can reach these ids in V1–V3 anyway: no row links to them. */
+   Nothing can reach these ids in V1 or V2 anyway: no row links to them. */
 export const getOrganization = (orgId) =>
   ORGANIZATIONS.find((org) => org.id === orgId) ||
   AT_SCALE_DEPARTMENTS.find((org) => org.id === orgId)
@@ -394,16 +394,16 @@ export const getOrganization = (orgId) =>
  * children (Computer Science, Mathematics, Engineering) carry the deep chain the
  * other versions are built around, and dropping them to reach a round number
  * would cost more than the round number is worth. They come first, so the top of
- * V4's list is the same as V2's.
+ * V4's list is the same as V1's.
  *
- * `wide` is V3.75's longer roster — the same list plus 25, for 175 children. Both
+ * `wide` is V3's longer roster — the same list plus 25, for 175 children. Both
  * flags exist rather than one number because V4's 150 is fixed by its paging
  * arithmetic; see WIDE_ONLY_DEPARTMENT_NAMES.
  */
 export const getChildren = (orgId, { atScale = false, wide = false } = {}) => {
   const own = ORGANIZATIONS.filter((org) => org.parentId === orgId)
   if (orgId !== AT_SCALE_PARENT_ID) return own
-  // `wide` is V3.75's 175; `atScale` is V4's 150. Checked first because V3.75 passes
+  // `wide` is V3's 175; `atScale` is V4's 150. Checked first because V3 passes
   // both — it is the at-scale case, just a wider one.
   if (wide) return [...own, ...WIDE_DEPARTMENTS]
   if (atScale) return [...own, ...AT_SCALE_DEPARTMENTS]

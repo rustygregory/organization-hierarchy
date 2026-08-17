@@ -2,7 +2,7 @@ import styled from 'styled-components'
 
 /* The organization's properties rail — the left column of Support's profile.
  *
- * Shared between the organization profile and V3.75's full-page department view,
+ * Shared between the organization profile and V3's full-page department view,
  * which both show it for whichever organization they're about. It was inlined in
  * OrganizationProfile until the department page needed the same rail; two copies of
  * a list of fields is exactly the kind of thing that drifts a field at a time.

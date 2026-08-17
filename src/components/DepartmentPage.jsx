@@ -7,7 +7,7 @@ import OrganizationHierarchyTab from './OrganizationHierarchyTab'
 import OrganizationProperties from './OrganizationProperties'
 import { getOrganization } from '../data/hierarchy'
 
-/* V3.75's *View all* destination: a full page for one department showing that
+/* V3's *View all* destination: a full page for one department showing that
    department and all of its children.
  *
  * The distinction that makes this worth building rather than reusing the profile:
@@ -224,7 +224,7 @@ export default function DepartmentPage({ orgId, onSelectOrganization }) {
         <OrganizationHierarchyTab
           selectedId={orgId}
           onSelectOrganization={onSelectOrganization}
-          version="v3-75"
+          version="v3"
           rootId={orgId}
           uncapped
           hideSearch

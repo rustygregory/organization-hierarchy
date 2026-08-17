@@ -130,7 +130,7 @@ export default function OrganizationProfile({
   orgId,
   onSelectOrganization,
   version = 'v1',
-  // V3.75 only — see the View all row in OrganizationHierarchyTab.
+  // V3 only — see the View all row in OrganizationHierarchyTab.
   onOpenInNewTab,
 }) {
   const [activeTab, setActiveTab] = useState('hierarchy')

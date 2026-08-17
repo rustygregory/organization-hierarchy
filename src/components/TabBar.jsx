@@ -1,7 +1,7 @@
 import styled from 'styled-components'
 
 /* Support's tab strip, overlaid on the global TopBar. Usually one tab — the
-   organization profile being viewed — but V3.75's *View all* opens a second one for
+   organization profile being viewed — but V3's *View all* opens a second one for
    a single department, so the strip takes a list and marks which is in front. Only
    an opened tab is closeable; the profile tab is the prototype itself. */
 

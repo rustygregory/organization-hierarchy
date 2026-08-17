@@ -71,18 +71,58 @@ const VersionOverlay = styled.div`
   z-index: 10;
 `
 
+/* Wide enough that no version label wraps. Garden pads each option 36px either side,
+   so the menu's minimum is the longest label's text width plus 72 — and the longest,
+   "V3 View all with pagination", measures 174px of 14px system text. 36 + 174 + 36 =
+   246, which is why 240 wasn't enough: that one label broke onto two lines and gave
+   the menu a row 48px tall against its neighbours' 28.
+
+   280px is that floor plus room for a label a few characters longer before anyone has
+   to come back here. It grows leftward from `right: 428px`, so the constraint it has to
+   respect is the tab strip at `left: 140px`, not the TopBar search — and there are
+   several hundred pixels between them at any window worth reviewing in.
+
+   Measured rather than guessed, twice now: the first number in this comment came from
+   an estimate and was 38px short. If a label changes again, measure the text node —
+   the option element's own width is the wrapper's, and tells you nothing. */
 const VersionFieldWrapper = styled.div`
-  min-width: 200px;
+  min-width: 280px;
 `
 
+/* The versions on the table, in the order they're offered.
+   Renumbered on 17 Aug 2026, when two versions came off the table: the one that listed
+   end users as rows in the tree, and the one whose only change was dropping the row
+   dividers. They had been V2 and V3. What had been V3.5 — expansion in place — moved
+   up into V2, and V3.75 into V3.
+
+   The ids moved with the labels rather than being left where they were: an id that
+   reads as one version and renders another is a trap for the next person in here. Note
+   that makes both `v2` and `v3` *reused* ids: `v2` now names the expandable version
+   rather than the end-users one, and `v3` the wide one rather than the sans-lines one.
+   Safe only because the comments table was empty when this changed — no saved pin can
+   mean the old thing by either. If that ever stops being true, mint a fresh id instead
+   of reusing one.
+
+   V4 keeps its number: it's still the widest case, and a decimal belongs on a version
+   that is a variant of another, which it isn't. */
 const VERSIONS = [
   { id: 'v1', label: 'V1 MVP' },
-  { id: 'v2', label: 'V2 with end-users' },
-  { id: 'v3', label: 'V3 Sans lines' },
-  { id: 'v3-5', label: 'V3.5 Expandable' },
-  { id: 'v3-75', label: 'V3.75 175 departments' },
-  { id: 'v4', label: 'V4 100 departments' },
+  { id: 'v2', label: 'V2 Expand all rows' },
+  { id: 'v3', label: 'V3 View all with pagination' },
+  { id: 'v4', label: 'V4 No chevrons' },
 ]
+
+/* Restoring a comment's saved version, guarded against ids that no longer exist.
+   A pin carrying an id no version answers to would leave the switcher with no matching
+   option — a blank field and a tree built by no version's rules. Falls back to leaving
+   the version alone, so the comment opens on whatever is on screen instead of nothing.
+
+   Worth knowing what this does *not* catch: the two retired versions were `v2` and
+   `v3`, and the renumbering handed both ids to versions that still exist. An old pin
+   naming either would restore a version that isn't the one it was made on, silently
+   and without tripping this guard. Harmless only because the table was empty at rename
+   time; it's the second reason not to reuse an id again. */
+const isKnownVersion = (id) => VERSIONS.some((option) => option.id === id)
 
 export default function App() {
   // Product switcher stays pinned to Support for this prototype.
@@ -90,13 +130,15 @@ export default function App() {
   const [activeNavItem, setActiveNavItem] = useState(2)
   const [isSubnavExpanded, setIsSubnavExpanded] = useState(false)
 
-  // V1 MVP shows organizations only; V2 adds the end users inside them; V3 is
-  // V1 without row dividers, with the child count moved beside each name; V3.5
-  // is V3 with the chevron split off as an expand control, so a subtree can be
-  // opened without selecting its node; V3.75 is V3.5 against 175 departments,
-  // capping any one list at 50 rows with a View all that opens the department in
-  // its own tab; V4 is V2 against Bramblewick's full 150 child departments, paged
-  // 100 at a time.
+  // V1 MVP shows organizations only, with row dividers and a Child orgs column.
+  // V2 Expand all rows drops the dividers, moves the child count inline beside each
+  // name, and splits the chevron off as an expand control, so any row's subtree can be
+  // opened without selecting its node. V3 View all with pagination is V2 against 175
+  // departments, capping any one list at 50 rows with a View all that opens the
+  // department in its own tab — and that page is where the pagination is, showing the
+  // full list 100 rows at a time.
+  // V4 No chevrons is V1's columns against Bramblewick's full 150 child departments,
+  // paged 100 at a time and marking rows with a dot rather than a chevron.
   const [version, setVersion] = useState('v1')
   const versionLabel = VERSIONS.find((option) => option.id === version)?.label
 
@@ -105,7 +147,7 @@ export default function App() {
   const [orgId, setOrgId] = useState(INITIAL_ORG_ID)
   const org = getOrganization(orgId)
 
-  /* V3.75's second tab: an organization opened from a *View all*, shown as its own
+  /* V3's second tab: an organization opened from a *View all*, shown as its own
      full page rather than inside the focused tree. Null when only the profile tab is
      open, which is every other version.
 
@@ -131,21 +173,21 @@ export default function App() {
     setActiveTabId('profile')
   }
 
-  /* Leaving V3.75 closes its extra tab. The full-page department view only exists
+  /* Leaving V3 closes its extra tab. The full-page department view only exists
      in that version, so a tab left standing would either vanish under the reader or
      show a page the current version can't produce. */
   useEffect(() => {
-    if (version !== 'v3-75' && wideTabOrgId) closeWideTab()
+    if (version !== 'v3' && wideTabOrgId) closeWideTab()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [version, wideTabOrgId])
 
   /* Leaving the wide versions while sitting on one of their departments.
-     V4 and V3.75 are the only versions carrying the generated departments, so
+     V4 and V3 are the only versions carrying the generated departments, so
      switching away while centred on, say, Palaeontology would leave the page on an
      organization the others cannot show: a tree of one row, and no way back except
      reloading. Falls back to the department's parent, which every version has. */
   useEffect(() => {
-    const hasDepartments = version === 'v4' || version === 'v3-75'
+    const hasDepartments = version === 'v4' || version === 'v3'
     if (!hasDepartments && isAtScaleOrg(orgId)) setOrgId(AT_SCALE_PARENT_ID)
   }, [version, orgId])
 
@@ -161,7 +203,7 @@ export default function App() {
         <TopBarRow>
           <TopBar currentProduct={currentProduct} onProductChange={setCurrentProduct} />
           <TabBarOverlay>
-            {/* Two tabs at most, and only in V3.75 — a View all opens the second.
+            {/* Two tabs at most, and only in V3 — a View all opens the second.
                 Clicking between them swaps the page under the strip, which is the
                 whole point of doing this as a tab rather than a drawer. */}
             <TabBar
@@ -206,7 +248,7 @@ export default function App() {
           />
           <MainContent>
             {isWideTabActive ? (
-              /* V3.75's full page for one department: that organization and all of
+              /* V3's full page for one department: that organization and all of
                  its children, nothing above or beside it. Not a second copy of the
                  hierarchy tab — the point of View all is that the 50-row cap is
                  lifted, so this page shows the lot. */
@@ -216,7 +258,7 @@ export default function App() {
                 orgId={orgId}
                 onSelectOrganization={setOrgId}
                 version={version}
-                onOpenInNewTab={version === 'v3-75' ? openWideTab : undefined}
+                onOpenInNewTab={version === 'v3' ? openWideTab : undefined}
               />
             )}
           </MainContent>
@@ -240,9 +282,9 @@ export default function App() {
           toggleLeft={32}
           context={{ version, orgId, wideTabOrgId, activeTabId }}
           onRestoreContext={(saved) => {
-            if (saved.version) setVersion(saved.version)
+            if (isKnownVersion(saved.version)) setVersion(saved.version)
             if (saved.orgId) setOrgId(saved.orgId)
-            /* V3.75's second tab is part of the view a pin was made in: the same
+            /* V3's second tab is part of the view a pin was made in: the same
                screen position holds a department list on one tab and the profile on
                the other. Restored after the version, because switching version
                closes the extra tab. */
