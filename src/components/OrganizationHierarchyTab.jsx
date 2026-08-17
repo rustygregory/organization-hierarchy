@@ -138,6 +138,19 @@ const SKELETON_MAX_WIDTH = 260
  * constant would tie two versions' answers together. */
 const WIDE_ROW_CAP = 50
 
+/* The cap is also switchable, in the *Show 50 | 75 | 100 records* control beside the
+   Organization header — V3 only, since it is the only version with a cap to move.
+   50 leads because it's the number the version was cut at and the one the README
+   argues for; 100 is the top of the range because it's V4's page size, which makes the
+   two versions directly comparable at that setting: the same 100 rows, one ending in a
+   *View all* and the other in a pager. 75 sits between them for the case where 50 feels
+   short and 100 feels long.
+
+   A control rather than an edit to the constant because "how many rows before the
+   escape hatch" is the open question in this version, and it's a question you answer by
+   looking at the three side by side, not by reading a number. */
+const WIDE_ROW_CAP_OPTIONS = [50, 75, 100]
+
 /* Where a row's name text begins, measured from the left edge of the name
    cell — the point its horizontal rule starts from. */
 const ruleInsetFor = (depth) =>
@@ -207,6 +220,47 @@ const Counts = styled(SM)`
   white-space: nowrap;
   margin-top: 0;
   margin-bottom: 8px;
+`
+
+/* *Show 50 | 75 | 100 records*, at the right-hand end of the Organization header row.
+
+   In the header cell rather than in a toolbar of its own because it's a property of this
+   table's rows: it sets how many of them appear before the *View all*. Put above the
+   table it would have read as a control on the page, which on the profile tab is a
+   whole profile.
+
+   Right-aligned in the cell so it sits at the far edge of the table, opposite the
+   column label. In V3 there is no second column to collide with — the child count is
+   inline beside each name — so the space is free. */
+const ShowRecords = styled.span`
+  float: right;
+  font-weight: normal;
+  color: #646864;
+  white-space: nowrap;
+`
+
+/* The numbers. Anchors rather than buttons because they behave like the version
+   switcher's options — pick one and the view changes — and Garden's Anchor is what the
+   rest of this prototype uses for that.
+
+   The current one is not a link: it's the state you're already in, so clicking it would
+   do nothing, and leaving it blue invites the click. Bold and dark instead, which also
+   makes the current setting readable at a glance from across a meeting room. */
+const ShowOption = styled(Anchor)`
+  font-size: 14px;
+`
+
+const ShowCurrent = styled.span`
+  font-size: 14px;
+  font-weight: 600;
+  color: #2f3130;
+`
+
+/* The separators. Own element rather than characters in the markup so they can be
+   greyed independently — at the same blue as the links they read as part of them. */
+const ShowDivider = styled.span`
+  color: #c2c8cc;
+  padding: 0 6px;
 `
 
 /* Garden's own row rules come off. They're redrawn per row below so each one
@@ -1236,6 +1290,10 @@ export default function OrganizationHierarchyTab({
      list is long enough to be worth waiting for. */
   const [loadingIds, setLoadingIds] = useState(() => new Set())
 
+  /* How many rows a capped list shows before its *View all* — the Show control's
+     setting. See WIDE_ROW_CAP_OPTIONS. */
+  const [rowCapChoice, setRowCapChoice] = useState(WIDE_ROW_CAP)
+
   const removeLoading = (orgId) =>
     setLoadingIds((current) => {
       if (!current.has(orgId)) return current
@@ -1362,7 +1420,7 @@ export default function OrganizationHierarchyTab({
       isExpandable
         ? buildExpandableRows(selectedId, showPeopleRows, expandedIds, loadingIds, {
             wide: isWide,
-            rowCap: isWide && !uncapped ? WIDE_ROW_CAP : null,
+            rowCap: isWide && !uncapped ? rowCapChoice : null,
             rootId,
             // Paged only on the uncapped rooted page — that's the one showing a whole
             // long list, and the cap is the other answer to the same problem.
@@ -1380,6 +1438,7 @@ export default function OrganizationHierarchyTab({
       loadingIds,
       rootId,
       uncapped,
+      rowCapChoice,
     ],
   )
 
@@ -1495,7 +1554,37 @@ export default function OrganizationHierarchyTab({
                 For one round the count stood here in its place and the label went, on
                 the argument that rows this obvious don't need naming — but a caption in
                 a header cell is read as a heading, and the two say different things. */}
-            <HeaderCell>Organization</HeaderCell>
+            <HeaderCell>
+              Organization
+              {/* *Show 50 | 75 | 100 records*, at the right-hand end of this cell —
+                  V3's profile tree only. Not on the rooted page, which is the place the
+                  cap sends people to and has none to set; not on the other versions,
+                  which have no cap at all. */}
+              {isWide && !uncapped && (
+                <ShowRecords>
+                  Show{' '}
+                  {WIDE_ROW_CAP_OPTIONS.map((option, index) => (
+                    <span key={option}>
+                      {index > 0 && <ShowDivider aria-hidden="true">|</ShowDivider>}
+                      {option === rowCapChoice ? (
+                        <ShowCurrent aria-current="true">{option}</ShowCurrent>
+                      ) : (
+                        <ShowOption
+                          href="#"
+                          onClick={(event) => {
+                            event.preventDefault()
+                            setRowCapChoice(option)
+                          }}
+                        >
+                          {option}
+                        </ShowOption>
+                      )}
+                    </span>
+                  ))}{' '}
+                  records
+                </ShowRecords>
+              )}
+            </HeaderCell>
             {/* No Organization type column. It carried Company / Cost Center /
                 Supervisory for organizations and Agent / End user for people —
                 two different things in one column, and the 22% it took came out

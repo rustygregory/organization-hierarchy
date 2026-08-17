@@ -150,7 +150,7 @@ second branch to contrast against.
 | --- | --- | --- | --- | --- | --- |
 | **V1 MVP** | Child orgs | yes | focused on the selection | drills in | — |
 | **V2 Expand all rows** | none — count moves inline as `(4)` | no | **rooted; whatever you opened** | **expands in place** | — |
-| **V3 View all with pagination** | same as V2 | no | rooted; whatever you opened | expands in place | **capped at 50 + View all, paged 100 at a time on the page it opens** |
+| **V3 View all with pagination** | same as V2 | no | rooted; whatever you opened | expands in place | **capped at 50/75/100 + View all, paged 100 at a time on the page it opens** |
 | **V4 No chevrons** | Child orgs | yes | focused on the selection | **a dot, and it drills in** | **paged 100 at a time** |
 
 V1 is the MVP scope: organizations only, one supporting column, one row divider
@@ -295,6 +295,21 @@ The pairing is the point. The cap on its own is a dead end — you can see that
 there is more and not reach it. The full-page view on its own doesn't help,
 because you'd have to know to go there. Together the tree stays a summary and the
 page is where you go when the summary isn't enough.
+
+**Where the cap falls is switchable.** *Show 50 | 75 | 100 records*, at the right-hand
+end of the Organization header, moves it live: pick 75 and every capped list stops at
+75, with its *View all* counting the remainder accordingly (`100 more not shown` under
+Bramblewick, `58` under Mathematics). It's the setting under review in this version, and
+it's a question you answer by looking at the three side by side rather than by reading
+a number — so it's a control rather than a constant to edit. The range is chosen: 50 is
+what V3 was cut at and what the rest of this section argues for; 100 is V4's page size,
+so at that setting the two versions show the same 100 rows and differ only in what
+follows them — a *View all* against a pager; 75 covers the case where 50 reads short
+and 100 reads long.
+
+V3 only, because it's the only version with a cap to move — and not on the *View all*
+page either, which is the place the cap sends you and has none. The setting is
+per-session, not saved: reloading returns to 50.
 
 **Two wide nodes, not one.** Expand **Mathematics** and the same thing happens at
 **133 children** — *View all 133 in Mathematics*, `83 more not shown`, opening
@@ -495,7 +510,12 @@ Details worth knowing:
 - **`WIDE_ROW_CAP = 50` is its own constant**, not shared with V4's
   `CHILDREN_PER_PAGE = 100`. A window you page through and a hard stop with a door
   beside it are two different answers to the same problem; one constant would tie
-  the two versions' answers together and make the comparison meaningless.
+  the two versions' answers together and make the comparison meaningless. It's now
+  the *default* rather than the only value — the Show control puts the whole of
+  `WIDE_ROW_CAP_OPTIONS` in reach, and the builder reads that state (`rowCapChoice`)
+  instead of the constant. Note the state is in the tab component, so the *View all*
+  page's own tree has its own copy at the default — harmless, since that tree is
+  `uncapped` and never reads it.
 - **The cap applies per node, not per page.** Every list in the tree is capped
   independently, so a wide branch nested inside another wide branch gets its own
   *View all*.
