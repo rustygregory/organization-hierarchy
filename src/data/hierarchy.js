@@ -299,30 +299,110 @@ const WIDE_ONLY_DEPARTMENT_NAMES = [
   'Real Estate', 'Rehabilitation Science', 'Religious Studies', 'Renaissance Studies', 'Robotics Engineering',
 ]
 
+/**
+ * A second wide node, under **Mathematics** rather than under Bramblewick.
+ *
+ * V3's cap and its *View all* were only ever demonstrated on one organization, so
+ * every screenshot of the mechanism was also a screenshot of Bramblewick — and a
+ * reviewer can't tell which parts of the treatment follow from the design and which
+ * from that one node being the university itself, sitting at the top of the tree with
+ * the profile centred on it. Mathematics is the control: a node partway *down* the
+ * tree, reached by expanding rather than by being the page's subject, whose own
+ * children are the long list.
+ *
+ * 130 generated plus Mathematics' 3 hand-written children is 133 — the number in the
+ * *View all* row. It clears the 50-row cap by enough that the cap plainly bites (83
+ * hidden), and it pages as 100 + 33 rather than Bramblewick's 100 + 50.
+ *
+ * Names are mathematics sub-disciplines rather than a slice of the general roster,
+ * because a department list under Mathematics reading "Accounting, Aerospace
+ * Engineering, African Studies" would make the tree look wrong in a way that has
+ * nothing to do with what's under review. Fixed and alphabetical for the same reason
+ * the other roster is: a list that reshuffled between renders would make two
+ * screenshots from one review impossible to compare.
+ */
+const MATHEMATICS_DEPARTMENT_NAMES = [
+  'Abstract Algebra', 'Actuarial Science', 'Additive Combinatorics', 'Affine Geometry', 'Algebraic Combinatorics',
+  'Algebraic Geometry', 'Algebraic Number Theory', 'Algebraic Topology', 'Algorithmic Game Theory', 'Analytic Geometry',
+  'Analytic Number Theory', 'Applied Probability', 'Approximation Theory', 'Arithmetic Geometry', 'Asymptotic Analysis',
+  'Banach Space Theory', 'Bayesian Statistics', 'Bifurcation Theory', 'Biostatistics', 'Boolean Algebra',
+  'Braid Theory', 'Calculus of Variations', 'Category Theory', 'Chaos Theory', 'Class Field Theory',
+  'Coding Theory', 'Combinatorial Optimization', 'Combinatorics', 'Commutative Algebra', 'Complex Analysis',
+  'Computability Theory', 'Computational Geometry', 'Computational Topology', 'Convex Geometry', 'Cryptography',
+  'Decision Theory', 'Descriptive Set Theory', 'Differential Equations', 'Differential Geometry', 'Differential Topology',
+  'Discrete Geometry', 'Discrete Mathematics', 'Dynamical Systems', 'Elliptic Curves', 'Enumerative Combinatorics',
+  'Ergodic Theory', 'Experimental Design', 'Extremal Combinatorics', 'Field Theory', 'Financial Mathematics',
+  'Finite Element Analysis', 'Fluid Dynamics', 'Formal Logic', 'Fourier Analysis', 'Fractal Geometry',
+  'Functional Analysis', 'Galois Theory', 'Game Theory', 'Gauge Theory', 'Geometric Analysis',
+  'Geometric Group Theory', 'Geometric Topology', 'Graph Theory', 'Group Theory', 'Harmonic Analysis',
+  'Hodge Theory', 'Homological Algebra', 'Homotopy Theory', 'Hyperbolic Geometry', 'Industrial Mathematics',
+  'Information Theory', 'Integral Equations', 'Inverse Problems', 'K-Theory', 'Knot Theory',
+  'Lattice Theory', 'Lie Algebras', 'Lie Theory', 'Linear Algebra', 'Linear Programming',
+  'Low-Dimensional Topology', 'Mathematical Biology', 'Mathematical Finance', 'Mathematical Logic', 'Mathematical Physics',
+  'Matrix Analysis', 'Measure Theory', 'Model Theory', 'Modular Forms', 'Multivariate Statistics',
+  'Noncommutative Geometry', 'Nonlinear Analysis', 'Nonparametric Statistics', 'Number Theory', 'Numerical Linear Algebra',
+  /* Page two onward — 33 more. With Mathematics' three hand-written children
+     (Applied Mathematics, Pure Mathematics, Statistics) the list totals 133, so the
+     second page holds 33: a short page, on purpose. Bramblewick's second page is 50,
+     and two wide nodes whose remainders both looked substantial would test the same
+     thing twice — this one asks whether a nearly-empty last page still reads as a
+     page rather than as a mistake. */
+  'Numerical Optimization', 'Operator Algebras', 'Operator Theory', 'Optimal Control', 'Order Theory',
+  'Ordinary Differential Equations', 'Partial Differential Equations', 'Percolation Theory', 'Perturbation Theory', 'Point-Set Topology',
+  'Potential Theory', 'Probability Theory', 'Projective Geometry', 'Proof Theory', 'Quantum Algebra',
+  'Quantum Topology', 'Queueing Theory', 'Ramsey Theory', 'Random Graphs', 'Random Matrix Theory',
+  'Real Analysis', 'Recursion Theory', 'Representation Theory', 'Riemannian Geometry', 'Ring Theory',
+  'Sheaf Theory', 'Singularity Theory', 'Spectral Theory', 'Statistical Learning', 'Stochastic Analysis',
+  'Stochastic Processes', 'Symplectic Geometry', 'Time Series Analysis', 'Topological Data Analysis', 'Variational Analysis',
+]
+
 /** The organization the at-scale departments hang off. */
 export const AT_SCALE_PARENT_ID = 'bramblewick'
 
-const toDepartment = (name) => ({
-  // `scale-` prefixed so these can never collide with a hand-written organization.
-  id: `scale-${name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`,
+/* The second one, and the reason `toDepartment` takes a parent. Its own long list is
+   what makes V3's cap visible somewhere other than the top of the tree. */
+export const WIDE_SECOND_PARENT_ID = 'mathematics'
+
+/* `prefix` keeps the two rosters' ids apart. Both would otherwise slugify to
+   `scale-…`, and while today's names don't collide, a name added to one list that
+   already exists in the other would produce two organizations with one id — which
+   surfaces as the wrong row highlighting, not as an error. Distinct prefixes make
+   that impossible rather than merely unlikely. */
+const toDepartment = (parentId, prefix) => (name) => ({
+  id: `${prefix}-${name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`,
   name,
   // Cost Center, the same type the hand-written departments carry.
   type: 'Cost Center',
-  parentId: AT_SCALE_PARENT_ID,
+  parentId,
 })
 
 /** V4's roster: 147, so Bramblewick has 150 children. */
-const AT_SCALE_DEPARTMENTS = AT_SCALE_DEPARTMENT_NAMES.map(toDepartment)
+const AT_SCALE_DEPARTMENTS = AT_SCALE_DEPARTMENT_NAMES.map(
+  toDepartment(AT_SCALE_PARENT_ID, 'scale'),
+)
 
-/** V3's roster: 172, so Bramblewick has 175 children. */
-const WIDE_DEPARTMENTS = [
-  ...AT_SCALE_DEPARTMENTS,
-  ...WIDE_ONLY_DEPARTMENT_NAMES.map(toDepartment),
-]
+/** V3's extra 25 under Bramblewick, taking it from 150 children to 175. */
+const WIDE_ONLY_DEPARTMENTS = WIDE_ONLY_DEPARTMENT_NAMES.map(
+  toDepartment(AT_SCALE_PARENT_ID, 'scale'),
+)
 
-// Every generated id, both rosters. Used to spot a department the small-tree
-// versions can't show, so it has to cover the wider list too.
-const AT_SCALE_IDS = new Set(WIDE_DEPARTMENTS.map((org) => org.id))
+/** Mathematics' roster: 130, so Mathematics has 133 children. V3 only. */
+const MATHEMATICS_DEPARTMENTS = MATHEMATICS_DEPARTMENT_NAMES.map(
+  toDepartment(WIDE_SECOND_PARENT_ID, 'maths'),
+)
+
+/** V3's Bramblewick roster: 172, so Bramblewick has 175 children. */
+const WIDE_DEPARTMENTS = [...AT_SCALE_DEPARTMENTS, ...WIDE_ONLY_DEPARTMENTS]
+
+/* Every generated department, all three rosters — what `getOrganization` searches so
+   any of them can be resolved by id once a view has re-centred on one. */
+const ALL_GENERATED_DEPARTMENTS = [...WIDE_DEPARTMENTS, ...MATHEMATICS_DEPARTMENTS]
+
+/* Every generated id. Used to spot a department the small-tree versions can't show, so
+   it has to cover every list that exists — including Mathematics', or switching from
+   V3 to V1 while centred on Knot Theory would leave V1 pointed at an organization it
+   cannot render. */
+const AT_SCALE_IDS = new Set(ALL_GENERATED_DEPARTMENTS.map((org) => org.id))
 
 /** Is this a generated department? True for nothing V1 or V2 can show. */
 export const isAtScaleOrg = (orgId) => AT_SCALE_IDS.has(orgId)
@@ -384,7 +464,14 @@ export const PERSONAS = [
    Nothing can reach these ids in V1 or V2 anyway: no row links to them. */
 export const getOrganization = (orgId) =>
   ORGANIZATIONS.find((org) => org.id === orgId) ||
-  AT_SCALE_DEPARTMENTS.find((org) => org.id === orgId)
+  /* Every generated roster, not just V4's. This searched only AT_SCALE_DEPARTMENTS
+     until Mathematics arrived, which left V3's extra 25 under Bramblewick
+     unresolvable — `getOrganization('scale-robotics-engineering')` returned undefined
+     and `getPath` on it returned an empty array. Unreachable at the time, since the
+     cap hid those rows and the rooted page's names aren't links, but it would have
+     become reachable the moment either changed. Mathematics' rows *are* reachable:
+     the pager walks them on the View all page. */
+  ALL_GENERATED_DEPARTMENTS.find((org) => org.id === orgId)
 
 /**
  * Organizations sitting directly under `orgId`.
@@ -399,9 +486,22 @@ export const getOrganization = (orgId) =>
  * `wide` is V3's longer roster — the same list plus 25, for 175 children. Both
  * flags exist rather than one number because V4's 150 is fixed by its paging
  * arithmetic; see WIDE_ONLY_DEPARTMENT_NAMES.
+ *
+ * `wide` also widens a **second** node: Mathematics, to 133 children. Only V3 gets it,
+ * so V4's tree is untouched and its arithmetic can't drift. Two wide nodes rather than
+ * one is the point — see MATHEMATICS_DEPARTMENT_NAMES.
  */
 export const getChildren = (orgId, { atScale = false, wide = false } = {}) => {
   const own = ORGANIZATIONS.filter((org) => org.parentId === orgId)
+
+  /* Mathematics' list, before the Bramblewick check below — it hangs off a different
+     parent, so an early return keyed to Bramblewick would never reach it.
+     `wide` only: V4 doesn't have this node, and giving it one would change the totals
+     its paging is built on. */
+  if (orgId === WIDE_SECOND_PARENT_ID) {
+    return wide ? [...own, ...MATHEMATICS_DEPARTMENTS] : own
+  }
+
   if (orgId !== AT_SCALE_PARENT_ID) return own
   // `wide` is V3's 175; `atScale` is V4's 150. Checked first because V3 passes
   // both — it is the at-scale case, just a wider one.

@@ -15,8 +15,13 @@ import { getOrganization } from '../data/hierarchy'
  * a view of the whole hierarchy — ancestors above, siblings beside — and its job is
  * to place one organization in context. This page has one subject and shows what is
  * *inside* it. Nothing above the department appears, and neither do its siblings, so
- * a reader who arrived here looking for a department among 175 isn't reading past
- * the rest of the university to find it.
+ * a reader who arrived here looking for one department among a hundred-odd isn't
+ * reading past the rest of the university to find it.
+ *
+ * Nothing here is specific to which organization opened it: the subject, the trail
+ * above the heading and the list below are all derived from `orgId`. That is what lets
+ * V3 point the same page at Bramblewick's 175 and at Mathematics' 133 — the second is
+ * not a copy of the first, it's this component with a different root.
  *
  * What it does share is the tree itself: the same OrganizationHierarchyTab, rooted at
  * this department and with the 50-row cap lifted. Same geometry, same chevrons, same
@@ -204,7 +209,8 @@ export default function DepartmentPage({ orgId, onSelectOrganization }) {
         </Header>
 
         {/* Search belongs here more than anywhere else in the prototype — this is the
-            page with 175 rows on it. Still inert, like the one on the profile. */}
+            page with a hundred-odd rows on it. Still inert, like the one on the
+            profile. */}
         <Toolbar>
           <SearchField>
             {/* Not "in {org.name}" — the department is named twice already, in the tab

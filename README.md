@@ -45,7 +45,8 @@ TD Synnex                                       (Reseller Network)
    │  │  │  └─ Numerical Analysis Group
    │  │  │     └─ Simulation Team
    │  │  ├─ Pure Mathematics
-   │  │  └─ Statistics
+   │  │  ├─ Statistics
+   │  │  └─ + 130 more in V3 only               (Abstract Algebra … Variational Analysis)
    │  └─ Engineering                            (Cost Center Hierarchy)
    │     ├─ Mobile App Team                     (Supervisory)
    │     │  └─ iOS Squad
@@ -294,6 +295,32 @@ The pairing is the point. The cap on its own is a dead end — you can see that
 there is more and not reach it. The full-page view on its own doesn't help,
 because you'd have to know to go there. Together the tree stays a summary and the
 page is where you go when the summary isn't enough.
+
+**Two wide nodes, not one.** Expand **Mathematics** and the same thing happens at
+**133 children** — *View all 133 in Mathematics*, `83 more not shown`, opening
+Mathematics as its own tab and paging 100 + 33.
+
+It's there because one example couldn't separate the treatment from the node it was
+demonstrated on. Bramblewick is the university: it sits near the top of the tree, it's
+what the profile is centred on, and its *View all* row is the last thing on the page.
+Reviewing that alone, you can't tell which parts of the behaviour follow from the design
+and which from those circumstances. Mathematics is the control — a node partway *down*
+the tree, reached by expanding rather than by being the page's subject, with rows
+continuing below its *View all* (Engineering, then Bramblewick's own 175). Three things
+worth watching there specifically:
+
+- The *View all* row sits **mid-list rather than at the bottom of the page**, with a
+  sibling after it. Does it still read as ending Mathematics' list rather than
+  belonging to whatever follows?
+- The page it opens is **not** the tab you were on, and its subject is a department
+  rather than the university.
+- Its second page holds **33 rows against Bramblewick's 50** — deliberately a short
+  last page, to ask whether a nearly-empty one still reads as a page.
+
+The 133 are mathematics sub-disciplines rather than a slice of the general department
+roster: *Accounting, Aerospace Engineering, African Studies* under Mathematics would
+make the tree look broken for reasons that have nothing to do with what's under review.
+V4 doesn't get this node — its totals are fixed by its own paging arithmetic.
 
 **Why a whole page rather than more rows.** The obvious alternative is *Show 50
 more* in place, which is really paging in a tree. It fails on a mixed list: the
@@ -558,17 +585,28 @@ Three details worth knowing:
   real page rather than a stray remainder, and not a round multiple of the page
   size, which would hide the part-full last page.
 
-#### Two rosters, on purpose
+#### Three rosters, on purpose
 
-V3's 175 and V4's 150 come from two separate lists in `hierarchy.js`:
-`AT_SCALE_DEPARTMENTS` (147 generated) and `WIDE_DEPARTMENTS` (those 147 plus 25
-more), selected by the `atScale` and `wide` flags on `getChildren`.
+The wide nodes come from three separate lists in `hierarchy.js`, selected by the
+`atScale` and `wide` flags on `getChildren`:
+
+| Roster | Size | Hangs off | Versions |
+| --- | --- | --- | --- |
+| `AT_SCALE_DEPARTMENTS` | 147 | Bramblewick | V4 (150 children) and V3 |
+| `WIDE_ONLY_DEPARTMENTS` | 25 more | Bramblewick | V3 only (175 children) |
+| `MATHEMATICS_DEPARTMENTS` | 130 | **Mathematics** | V3 only (133 children) |
 
 That looks like duplication and isn't. V4's 150 is load-bearing — the arithmetic
 in the bullet above is a deliberate choice about what page two should look like,
 and it's under review. Growing the one list to 175 would silently re-cut V4's
-pages while Rusty was still comparing them. Two rosters means each version's
-number can move without disturbing the other's.
+pages while Rusty was still comparing them. Separate rosters means each version's
+number can move without disturbing the other's, which is also why Mathematics is
+`wide`-only: V4 never sees that node widen.
+
+Ids are prefixed per roster (`scale-`, `maths-`) rather than sharing one prefix.
+Today's names don't collide, but a name added to one list that already exists in
+another would mint two organizations with the same id — and that surfaces as the
+wrong row highlighting, not as an error.
 
 **V4 has no people in it at all** — no people rows, and since 17 Aug 2026 no People
 column either. Its subject is the width of one level of the hierarchy, so putting

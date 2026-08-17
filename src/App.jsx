@@ -185,10 +185,20 @@ export default function App() {
      V4 and V3 are the only versions carrying the generated departments, so
      switching away while centred on, say, Palaeontology would leave the page on an
      organization the others cannot show: a tree of one row, and no way back except
-     reloading. Falls back to the department's parent, which every version has. */
+     reloading.
+
+     Falls back to the department's own parent, read off the record rather than assumed
+     to be Bramblewick. This used to set AT_SCALE_PARENT_ID outright, which was right
+     while every generated department hung off Bramblewick and became wrong the moment
+     Mathematics got a roster of its own — leaving V3 on Knot Theory would have landed
+     the reader on the university instead of on Mathematics, several levels from where
+     they were. The `??` still covers the old case, since a department whose parent
+     can't be resolved is exactly the situation the fallback exists for. */
   useEffect(() => {
     const hasDepartments = version === 'v4' || version === 'v3'
-    if (!hasDepartments && isAtScaleOrg(orgId)) setOrgId(AT_SCALE_PARENT_ID)
+    if (!hasDepartments && isAtScaleOrg(orgId)) {
+      setOrgId(getOrganization(orgId)?.parentId ?? AT_SCALE_PARENT_ID)
+    }
   }, [version, orgId])
 
   // Browser tab follows whichever Support tab is in front, the way a real one does.
