@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react'
 import { ThemeProvider } from './flora-theme/elements/ThemeProvider'
 import { TopBar, MainNav } from 'zendesk-globalnav-template'
-import { Combobox, Field, Option } from '@zendeskgarden/react-dropdowns'
 import styled from 'styled-components'
 import OrganizationProfile from './components/OrganizationProfile'
 import DepartmentPage from './components/DepartmentPage'
 import TabBar from './components/TabBar'
 import CommentLayer from './comments/CommentLayer'
+import PrototypeBar from './prototype-bar/PrototypeBar'
 import { AT_SCALE_PARENT_ID, getOrganization, isAtScaleOrg } from './data/hierarchy'
 import './App.css'
 
@@ -14,11 +14,21 @@ import './App.css'
 // hierarchy moves off it.
 const INITIAL_ORG_ID = 'bramblewick'
 
-const PageContainer = styled.div`
+/* The bar sits above this; OuterShell is the 100vh wrapper. */
+const OuterShell = styled.div`
   display: flex;
   flex-direction: column;
   height: 100vh;
   width: 100vw;
+  overflow: hidden;
+`
+
+const PageContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  width: 100%;
   background-color: #f8f9f9;
   overflow: hidden;
 `
@@ -58,36 +68,6 @@ const TabBarOverlay = styled.div`
   z-index: 10;
 `
 
-// Version switcher overlaid on the top bar, positioned the way the version menus
-// in our other prototypes are: the TopBar search box (320px) starts 404px from
-// the right edge, so 428px leaves a 24px gap beside it.
-const VersionOverlay = styled.div`
-  position: absolute;
-  top: 0;
-  right: 428px;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  z-index: 10;
-`
-
-/* Wide enough that no version label wraps. Garden pads each option 36px either side,
-   so the menu's minimum is the longest label's text width plus 72 — and the longest,
-   "V3 View all with pagination", measures 174px of 14px system text. 36 + 174 + 36 =
-   246, which is why 240 wasn't enough: that one label broke onto two lines and gave
-   the menu a row 48px tall against its neighbours' 28.
-
-   280px is that floor plus room for a label a few characters longer before anyone has
-   to come back here. It grows leftward from `right: 428px`, so the constraint it has to
-   respect is the tab strip at `left: 140px`, not the TopBar search — and there are
-   several hundred pixels between them at any window worth reviewing in.
-
-   Measured rather than guessed, twice now: the first number in this comment came from
-   an estimate and was 38px short. If a label changes again, measure the text node —
-   the option element's own width is the wrapper's, and tells you nothing. */
-const VersionFieldWrapper = styled.div`
-  min-width: 280px;
-`
 
 /* The versions on the table, in the order they're offered.
    Renumbered on 17 Aug 2026, when two versions came off the table: the one that listed
@@ -140,7 +120,7 @@ export default function App() {
   // V4 No chevrons is V1's columns against Bramblewick's full 150 child departments,
   // paged 100 at a time and marking rows with a dot rather than a chevron.
   const [version, setVersion] = useState('v1')
-  const versionLabel = VERSIONS.find((option) => option.id === version)?.label
+  const [commentIsOn, setCommentIsOn] = useState(false)
 
   // Which organization's profile is open. Lives here because the tab strip and
   // the profile header both name it, and the hierarchy tab re-points it.
@@ -209,6 +189,18 @@ export default function App() {
 
   return (
     <ThemeProvider>
+      <OuterShell>
+      <PrototypeBar
+        title="Organization hierarchy"
+        meta="Started July 2026"
+        versions={VERSIONS}
+        versionId={version}
+        onVersionChange={setVersion}
+        commentIsOn={commentIsOn}
+        onCommentToggle={() => {
+          setCommentIsOn((v) => !v)
+        }}
+      />
       <PageContainer>
         <TopBarRow>
           <TopBar currentProduct={currentProduct} onProductChange={setCurrentProduct} />
@@ -226,27 +218,6 @@ export default function App() {
               onCloseTab={closeWideTab}
             />
           </TabBarOverlay>
-          <VersionOverlay>
-            <VersionFieldWrapper>
-              <Field>
-                <Combobox
-                  isCompact
-                  isEditable={false}
-                  inputValue={versionLabel}
-                  selectionValue={version}
-                  onChange={({ selectionValue }) => {
-                    if (selectionValue) setVersion(selectionValue)
-                  }}
-                >
-                  {VERSIONS.map((option) => (
-                    <Option key={option.id} value={option.id} label={option.label}>
-                      {option.label}
-                    </Option>
-                  ))}
-                </Combobox>
-              </Field>
-            </VersionFieldWrapper>
-          </VersionOverlay>
         </TopBarRow>
         <ContentRow>
           <MainNav
@@ -285,11 +256,6 @@ export default function App() {
             content depending on the version and the selected organization, so a
             pin without this context would point at the wrong row. */}
         <CommentLayer
-          // 32px from the left edge, over the nav rail rather than clear of it.
-          // The rail's own icons stop well above the bottom of the window, so the
-          // space is free — and measuring the rail put the button 80px in, far
-          // enough that it read as belonging to the page content.
-          toggleLeft={32}
           context={{ version, orgId, wideTabOrgId, activeTabId }}
           onRestoreContext={(saved) => {
             if (isKnownVersion(saved.version)) setVersion(saved.version)
@@ -301,8 +267,11 @@ export default function App() {
             setWideTabOrgId(saved.wideTabOrgId ?? null)
             setActiveTabId(saved.activeTabId ?? 'profile')
           }}
+          isOn={commentIsOn}
+          onIsOnChange={setCommentIsOn}
         />
       </PageContainer>
+      </OuterShell>
     </ThemeProvider>
   )
 }

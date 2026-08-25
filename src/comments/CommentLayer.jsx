@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import styled, { createGlobalStyle } from 'styled-components'
 import {
   describeAnchor,
@@ -442,10 +442,25 @@ export default function CommentLayer({
   context,
   onRestoreContext,
   // Pixels from the left edge for the Comment toggle. Omit to measure the host's nav
-  // rail instead — see toggleLeftOffset.
+  // rail instead — see toggleLeftOffset. Unused when the host controls the toggle.
   toggleLeft: toggleLeftProp,
+  // When both are provided the host controls the active state — the prototype bar
+  // owns the toggle button and this component doesn't render one. When omitted the
+  // component is self-contained and the fixed bottom-left button stays.
+  isOn: isOnProp,
+  onIsOnChange,
 }) {
-  const [isOn, setIsOn] = useState(false)
+  /* Controlled when the host supplies both sides; self-contained otherwise. */
+  const controlled = isOnProp !== undefined && onIsOnChange !== undefined
+  const [isOnInternal, setIsOnInternal] = useState(false)
+  const isOn = controlled ? isOnProp : isOnInternal
+  /* Stable ref so effects can close comments mode without the Escape handler
+     re-registering on every render in controlled mode. */
+  const setIsOnRef = useRef(null)
+  setIsOnRef.current = controlled
+    ? (arg) => onIsOnChange(typeof arg === 'function' ? arg(isOnProp) : arg)
+    : setIsOnInternal
+  const setIsOn = (arg) => setIsOnRef.current(arg)
   const [comments, setComments] = useState([])
   const [error, setError] = useState(null)
   const [author, setAuthorState] = useState(getAuthor)
@@ -549,7 +564,7 @@ export default function CommentLayer({
       if (event.key !== 'Escape') return
       if (draft) setDraft(null)
       else if (openId) setOpenId(null)
-      else setIsOn(false)
+      else setIsOnRef.current(false)
     }
     window.addEventListener('keydown', onKeyDown)
     return () => window.removeEventListener('keydown', onKeyDown)
@@ -746,20 +761,25 @@ export default function CommentLayer({
 
   return (
     <>
-      <ToggleButton
-        type="button"
-        style={{ left: toggleLeft }}
-        $active={isOn}
-        onClick={() => {
-          setIsOn((value) => !value)
-          setDraft(null)
-          setOpenId(null)
-        }}
-        aria-pressed={isOn}
-      >
-        {isOn ? 'Exit comment mode' : 'Comment'}
-        {!isOn && unresolvedCount > 0 ? ` (${unresolvedCount})` : ''}
-      </ToggleButton>
+      {/* The fixed toggle is only rendered in self-contained mode. When the
+          prototype bar owns the button it passes isOn/onIsOnChange and this
+          goes away — the bar's Comment button drives the same isOn state. */}
+      {!controlled && (
+        <ToggleButton
+          type="button"
+          style={{ left: toggleLeft }}
+          $active={isOn}
+          onClick={() => {
+            setIsOn((value) => !value)
+            setDraft(null)
+            setOpenId(null)
+          }}
+          aria-pressed={isOn}
+        >
+          {isOn ? 'Exit comment mode' : 'Comment'}
+          {!isOn && unresolvedCount > 0 ? ` (${unresolvedCount})` : ''}
+        </ToggleButton>
+      )}
 
       {isOn && (
         <>
