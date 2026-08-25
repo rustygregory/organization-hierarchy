@@ -1290,6 +1290,9 @@ Error generating stack: `+e.message+`
   left: 50%;
   z-index: 20;
   transform: translateX(-50%);
+  padding: 4px 12px;
+  border-radius: 4px;
+  background-color: rgba(255, 255, 255, 0.5);
   color: #2f3130;
   font-size: 14pt;
   font-weight: 400;
