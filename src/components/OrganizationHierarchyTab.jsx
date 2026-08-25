@@ -738,21 +738,23 @@ const SentinelMarker = styled.div`
    than "this column is". `top` is set inline per instance — SCROLL_INDICATOR_OFFSET
    above wherever the sentinel row was found, not a fixed distance from the viewport
    edge, so it tracks the actual point the reader scrolled to.
-   Plain text, no chip — this fires on its own, nothing to click, and a pill or a
-   background reads as a button whether or not it does anything when pressed.
-   `#2f3130` is this theme's foreground.default (fg/default), the same colour
-   everything else in this tree that isn't muted or a link is set in — this is a
-   loading state, not a call to action, so it reads as body text rather than as
-   something to click.
+   `#2f3130` at 50% white behind it — button/fg/default over a translucent white,
+   not a solid chip: solid would read as an actual button sitting on the tree, and
+   this fires on its own with nothing to click. The translucency is there so the
+   text stays legible over whichever row happens to be under it without hiding that
+   row's own content entirely.
    Blinks three times rather than spinning or filling a bar: the same on/off the
    Skeleton rows use elsewhere in this tree, kept to a family of one loading idiom
-   instead of two — just slower, since a background-less flash at Skeleton's own
-   speed read as flickering rather than as loading. */
+   instead of two — just slower, since a flash at Skeleton's own speed read as
+   flickering rather than as loading. */
 const ScrollLoadIndicator = styled.div`
   position: fixed;
   left: 50%;
   z-index: 20;
   transform: translateX(-50%);
+  padding: 4px 12px;
+  border-radius: 4px;
+  background-color: rgba(255, 255, 255, 0.5);
   color: #2f3130;
   font-size: 14pt;
   font-weight: 400;
