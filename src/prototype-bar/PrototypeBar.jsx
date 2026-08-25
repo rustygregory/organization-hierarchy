@@ -116,6 +116,21 @@ const DropItem = styled.button`
   }
 `
 
+const ArchiveDivider = styled.div`
+  margin: 4px 0;
+  border-top: 1px solid #363d44;
+`
+
+const ArchiveLabel = styled.div`
+  padding: 4px 14px 2px;
+  color: #555e66;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+`
+
 /* Matches the TriggerButton geometry so the two controls read as a set. Active
    state matches CommentLayer's existing blue to keep the visual language
    consistent across bar and toggle. */
@@ -197,7 +212,7 @@ export default function PrototypeBar({
             </TriggerButton>
             {menuOpen && (
               <DropMenu role="listbox">
-                {versions.map((version) => (
+                {versions.filter((v) => !v.archived).map((version) => (
                   <DropItem
                     key={version.id}
                     type="button"
@@ -212,6 +227,27 @@ export default function PrototypeBar({
                     {version.label}
                   </DropItem>
                 ))}
+                {versions.some((v) => v.archived) && (
+                  <>
+                    <ArchiveDivider />
+                    <ArchiveLabel>Archive</ArchiveLabel>
+                    {versions.filter((v) => v.archived).map((version) => (
+                      <DropItem
+                        key={version.id}
+                        type="button"
+                        role="option"
+                        aria-selected={version.id === versionId}
+                        $selected={version.id === versionId}
+                        onClick={() => {
+                          onVersionChange(version.id)
+                          setMenuOpen(false)
+                        }}
+                      >
+                        {version.label}
+                      </DropItem>
+                    ))}
+                  </>
+                )}
               </DropMenu>
             )}
           </DropdownWrapper>

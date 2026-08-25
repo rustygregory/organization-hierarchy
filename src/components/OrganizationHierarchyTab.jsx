@@ -151,6 +151,10 @@ const WIDE_ROW_CAP = 50
    looking at the three side by side, not by reading a number. */
 const WIDE_ROW_CAP_OPTIONS = [50, 75, 100]
 
+/* How many rows V3.5's View more button adds each click. Fixed step regardless of
+   the current Show setting, so "the next 50" is always 50. */
+const VIEW_MORE_STEP = 50
+
 /* Where a row's name text begins, measured from the left edge of the name
    cell — the point its horizontal rule starts from. */
 const ruleInsetFor = (depth) =>
@@ -689,6 +693,20 @@ const RemainderNote = styled(SM)`
   white-space: nowrap;
 `
 
+/* V3.5's secondary action — "View all 175". Same text-button style as ViewAllButton
+   but slightly lighter weight so "View more" reads as the primary action. */
+const ViewAllInlineButton = styled(Anchor)`
+  font-size: 14px;
+  cursor: pointer;
+`
+
+/* The dot that sits between View more and View all in V3.5's cap row. */
+const ViewMoreSep = styled.span`
+  color: #c2c8cc;
+  font-size: 14px;
+  flex-shrink: 0;
+`
+
 const CHEVRON_ROTATION = {
   down: 'none',
   right: 'rotate(-90deg)',
@@ -963,19 +981,19 @@ const buildExpandableRows = (
   showPeople,
   expandedIds,
   loadingIds,
-  /* V3: the wider roster, a cap on how many children any one node shows, an
-     explicit root, and a page window.
-     - `rowCap: null` means no cap, which is V2 and also V3's own full-page view.
-     - `rootId` starts the tree at a given organization instead of at the top of the
-       hierarchy. That is what makes the View all page a page *of that department*
-       rather than the whole tree scrolled to it.
-     - `page` windows the **root's** children, CHILDREN_PER_PAGE at a time. Only the
-       root's, because the root is what the page is about: its children are a list,
-       and a list is the only thing a pager can honestly walk. Windowing a nested
-       node would slice a shape rather than a list — the window could open mid-subtree
-       and the rows either side of it wouldn't be siblings. Paging is therefore
-       mutually exclusive with a rowCap, and only the uncapped rooted page uses it. */
-  { wide = false, rowCap = null, rootId = null, page = null } = {},
+  /* V3 / V3.5: the wider roster, a cap, an explicit root, and a page window.
+     - `rowCap: null` means no cap (V2 and the uncapped rooted page).
+     - `rootId` starts the tree at one organization — makes the View all page a page
+       *of that department* rather than the whole tree scrolled to it.
+     - `page` windows the root's children CHILDREN_PER_PAGE at a time. Root's only;
+       mutually exclusive with rowCap (the cap is the profile-tab answer, the pager
+       is the full-page answer).
+     - `capOverrides` — Map<orgId, number | null>: per-org cap for V3.5. A number
+       overrides rowCap for that org; null means show all. Orgs absent from the map
+       use rowCap. Only consulted when `inlineExpand` is true.
+     - `inlineExpand` — when true, capped nodes produce a `viewMore` row (View more +
+       View all buttons, inline expansion) instead of a `viewAll` row (opens new tab). */
+  { wide = false, rowCap = null, rootId = null, page = null, capOverrides = null, inlineExpand = false } = {},
 ) => {
   const rows = []
   const nothing = { rows, pagedTotal: 0, pagedGroup: 'none', pagedFrom: 0, pagedTo: 0 }
@@ -1020,18 +1038,20 @@ const buildExpandableRows = (
     const allChildren = getChildren(org.id, orgOptions)
     const peopleHere = showPeople ? getPeopleIn(org.id) : []
 
-    /* V3's cap. Past WIDE_ROW_CAP children the tree stops and offers a way out
-       instead of continuing — see the constant. People are not capped: they only
-       ever existed in V2, which is off the table now, so a cap here would be
-       untested code standing in for a decision nobody has made. */
-    const isCapped = rowCap !== null && allChildren.length > rowCap
+    /* V3's cap. Past the effective cap the tree stops and offers a way out.
+       V3.5 can override the cap per org via `capOverrides`: a number extends the
+       default, null removes the cap entirely for that org. People are not capped. */
+    const effectiveCap = capOverrides?.has(org.id)
+      ? capOverrides.get(org.id)   // null = uncapped for this org
+      : rowCap
+    const isCapped = effectiveCap !== null && allChildren.length > effectiveCap
     /* The page window, on the root's children only — see the `page` option. A node
        is never both capped and paged: the cap belongs to the tree in the profile tab
        and the pager to the full page, which is the version of this list with the cap
        lifted. */
     const isPagedHere = isPaged && org.id === root.id
     const children = isCapped
-      ? allChildren.slice(0, rowCap)
+      ? allChildren.slice(0, effectiveCap)
       : isPagedHere
         ? allChildren.slice(pageStart, pageStart + CHILDREN_PER_PAGE)
         : allChildren
@@ -1093,18 +1113,24 @@ const buildExpandableRows = (
        control bolted to the parent, because it belongs at the bottom of the list it
        ends — that's where a reader who has scrolled the 50 actually is. It sits at
        the children's depth and closes the rail, so it reads as part of the list
-       rather than as chrome floating beside it. */
+       rather than as chrome floating beside it.
+
+       `inlineExpand` switches the kind to `viewMore`: two buttons (View more, View
+       all) that expand in place rather than opening a new tab. `shownCount` is the
+       current visible count so the handler can increment from the right number. */
     if (isCapped) {
+      const kind = inlineExpand ? 'viewMore' : 'viewAll'
       rows.push({
-        key: `view-all-${org.id}`,
-        kind: 'viewAll',
+        key: `${kind}-${org.id}`,
+        kind,
         node: org,
         hiddenCount,
         totalCount: allChildren.length,
+        shownCount: children.length,
         depth: depth + 1,
         isLast: true,
         ancestorIsLast: [...chain, true],
-        ancestorIds: [...idChain, `view-all-${org.id}`],
+        ancestorIds: [...idChain, `${kind}-${org.id}`],
         isOpen: false,
         hasChildren: false,
       })
@@ -1229,7 +1255,12 @@ export default function OrganizationHierarchyTab({
      node has 175 children", which is why they're separate versions rather than one
      with a toggle. */
   const isWide = version === 'v3'
-  const isExpandable = version === 'v2' || isWide
+  /* V3.5: same wide roster and same Show cap as V3, but the cap row is replaced by
+     View more (adds VIEW_MORE_STEP rows in place) and View all (drops the cap). */
+  const isViewMore = version === 'v3b'
+  /* Both V3 and V3.5 use the wide department roster and the full 175 / 133 counts. */
+  const isWideRoster = isWide || isViewMore
+  const isExpandable = version === 'v2' || isWide || isViewMore
   /* No row dividers, and the child count inline beside each name. Both of the
      expandable versions do this and nothing else does, so it tracks `isExpandable`
      exactly — kept as its own name because they are two separate decisions that
@@ -1242,7 +1273,10 @@ export default function OrganizationHierarchyTab({
   /* The data options every selector in this component passes. One object rather than
      `{ atScale }` repeated at five call sites, because V3 added a second flag and
      the failure mode of missing one is a count that disagrees with the rows. */
-  const dataOptions = useMemo(() => ({ atScale: atScale || isWide, wide: isWide }), [atScale, isWide])
+  const dataOptions = useMemo(
+    () => ({ atScale: atScale || isWideRoster, wide: isWideRoster }),
+    [atScale, isWideRoster],
+  )
 
   // Which page of the paged organization group is on screen.
   const [page, setPage] = useState(1)
@@ -1293,6 +1327,15 @@ export default function OrganizationHierarchyTab({
   /* How many rows a capped list shows before its *View all* — the Show control's
      setting. See WIDE_ROW_CAP_OPTIONS. */
   const [rowCapChoice, setRowCapChoice] = useState(WIDE_ROW_CAP)
+
+  /* V3.5's per-org cap overrides. orgId → number (current visible count after View
+     more clicks) | null (View all clicked — no cap). Orgs absent from the map use
+     rowCapChoice as the cap. Reset when leaving v3b so entering it again starts fresh. */
+  const [expandedCapMap, setExpandedCapMap] = useState(() => new Map())
+  useEffect(() => {
+    if (!isViewMore) setExpandedCapMap(new Map())
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [version])
 
   const removeLoading = (orgId) =>
     setLoadingIds((current) => {
@@ -1419,12 +1462,14 @@ export default function OrganizationHierarchyTab({
     () =>
       isExpandable
         ? buildExpandableRows(selectedId, showPeopleRows, expandedIds, loadingIds, {
-            wide: isWide,
-            rowCap: isWide && !uncapped ? rowCapChoice : null,
+            wide: isWideRoster,
+            rowCap: isWideRoster && !uncapped ? rowCapChoice : null,
             rootId,
             // Paged only on the uncapped rooted page — that's the one showing a whole
             // long list, and the cap is the other answer to the same problem.
             page: uncapped && rootId ? page : null,
+            capOverrides: isViewMore && !uncapped ? expandedCapMap : null,
+            inlineExpand: isViewMore && !uncapped,
           })
         : buildFocusedRows(selectedId, showPeopleRows, atScale, page),
     [
@@ -1433,12 +1478,14 @@ export default function OrganizationHierarchyTab({
       atScale,
       page,
       isExpandable,
-      isWide,
+      isViewMore,
+      isWideRoster,
       expandedIds,
       loadingIds,
       rootId,
       uncapped,
       rowCapChoice,
+      expandedCapMap,
     ],
   )
 
@@ -1557,10 +1604,8 @@ export default function OrganizationHierarchyTab({
             <HeaderCell>
               Organization
               {/* *Show 50 | 75 | 100 records*, at the right-hand end of this cell —
-                  V3's profile tree only. Not on the rooted page, which is the place the
-                  cap sends people to and has none to set; not on the other versions,
-                  which have no cap at all. */}
-              {isWide && !uncapped && (
+                  V3 and V3.5 only. Not on the rooted page; not on other versions. */}
+              {(isWide || isViewMore) && !uncapped && (
                 <ShowRecords>
                   Show{' '}
                   {WIDE_ROW_CAP_OPTIONS.map((option, index) => (
@@ -1615,6 +1660,56 @@ export default function OrganizationHierarchyTab({
                       <SkeletonName>
                         <SkeletonBar width={row.width} />
                       </SkeletonName>
+                    </RowInner>
+                  </NameCell>
+                  {!isSansLines && <Cell />}
+                  {showPeopleColumn && <Cell />}
+                </TreeRow>
+              )
+            }
+
+            /* V3.5's escape hatch: View more adds VIEW_MORE_STEP rows in place,
+               View all drops the cap entirely. The counter stays accurate until
+               all items are visible. */
+            if (row.kind === 'viewMore') {
+              return (
+                <TreeRow key={row.key} $ruleInset={ruleInsetFor(row.depth)} $noRule={isSansLines}>
+                  <NameCell>
+                    <RowInner>
+                      <TreeGutter row={row} />
+                      <LeafArmContinuation aria-hidden="true" />
+                      <ViewAllArea>
+                        <ViewAllButton
+                          href="#"
+                          onClick={(event) => {
+                            event.preventDefault()
+                            setExpandedCapMap((prev) => {
+                              const next = new Map(prev)
+                              next.set(row.node.id, row.shownCount + VIEW_MORE_STEP)
+                              return next
+                            })
+                          }}
+                        >
+                          View more
+                        </ViewAllButton>
+                        <ViewMoreSep aria-hidden="true">·</ViewMoreSep>
+                        <ViewAllInlineButton
+                          href="#"
+                          onClick={(event) => {
+                            event.preventDefault()
+                            setExpandedCapMap((prev) => {
+                              const next = new Map(prev)
+                              next.set(row.node.id, null)
+                              return next
+                            })
+                          }}
+                        >
+                          View all {row.totalCount}
+                        </ViewAllInlineButton>
+                        <RemainderNote>
+                          {row.hiddenCount} more not shown
+                        </RemainderNote>
+                      </ViewAllArea>
                     </RowInner>
                   </NameCell>
                   {!isSansLines && <Cell />}
