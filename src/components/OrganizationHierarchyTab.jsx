@@ -754,7 +754,7 @@ const ScrollLoadIndicator = styled.div`
   z-index: 20;
   transform: translateX(-50%);
   color: #2f3130;
-  font-size: 18pt;
+  font-size: 14pt;
   font-weight: 400;
   white-space: nowrap;
   pointer-events: none;
