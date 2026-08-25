@@ -159,8 +159,10 @@ const VIEW_MORE_STEP = 50
    reader has scrolled to, not the viewport edge — see ScrollLoadSentinel. It blinks
    for this long before the next batch lands, standing in for a fetch the same way
    SKELETON_DURATION_MS does elsewhere, just shorter: this is "more of a list you're
-   already reading" rather than "a subtree that was closed a moment ago". */
-const SCROLL_LOAD_BLINK_DURATION = 1200
+   already reading" rather than "a subtree that was closed a moment ago". Kept in
+   step with ScrollLoadIndicator's own animation (700ms × 3 blinks) so the batch
+   never lands mid-blink. */
+const SCROLL_LOAD_BLINK_DURATION = 2100
 const SCROLL_INDICATOR_OFFSET = 80
 
 /* Where a row's name text begins, measured from the left edge of the name
@@ -725,7 +727,7 @@ const SentinelMarker = styled.div`
   height: 1px;
 `
 
-/* "Viewing more…", floating over the tree rather than inside it — it has to stay on
+/* "Loading more", floating over the tree rather than inside it — it has to stay on
    screen at a fixed distance from where the reader stopped scrolling, and a row can't
    do that from inside a table that's still reflowing under it.
    Horizontally centred on the screen, not on the table: the table isn't full width in
@@ -734,23 +736,23 @@ const SentinelMarker = styled.div`
    than "this column is". `top` is set inline per instance — SCROLL_INDICATOR_OFFSET
    above wherever the sentinel row was found, not a fixed distance from the viewport
    edge, so it tracks the actual point the reader scrolled to.
+   Plain blue text, no chip — this fires on its own, nothing to click, and a pill
+   or a background reads as a button whether or not it does anything when pressed.
    Blinks three times rather than spinning or filling a bar: the same on/off the
    Skeleton rows use elsewhere in this tree, kept to a family of one loading idiom
-   instead of two. */
+   instead of two — just slower, since a background-less flash at Skeleton's own
+   speed read as flickering rather than as loading. */
 const ScrollLoadIndicator = styled.div`
   position: fixed;
   left: 50%;
   z-index: 20;
   transform: translateX(-50%);
-  padding: 6px 14px;
-  border-radius: 4px;
-  background-color: #406cc4;
-  color: #ffffff;
+  color: #406cc4;
   font-size: 13px;
   font-weight: 600;
   white-space: nowrap;
   pointer-events: none;
-  animation: scrollLoadBlink 400ms ease-in-out 3;
+  animation: scrollLoadBlink 700ms ease-in-out 3;
 
   @keyframes scrollLoadBlink {
     0%,
@@ -2080,7 +2082,7 @@ export default function OrganizationHierarchyTab({
       )}
       {[...scrollLoadingMap].map(([orgId, top]) => (
         <ScrollLoadIndicator key={orgId} style={{ top: top - SCROLL_INDICATOR_OFFSET }}>
-          Viewing more…
+          Loading more
         </ScrollLoadIndicator>
       ))}
     </Wrapper>
