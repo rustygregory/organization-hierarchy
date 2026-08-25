@@ -163,7 +163,9 @@ const VIEW_MORE_STEP = 50
    step with ScrollLoadIndicator's own animation (700ms × 3 blinks) so the batch
    never lands mid-blink. */
 const SCROLL_LOAD_BLINK_DURATION = 2100
-const SCROLL_INDICATOR_OFFSET = 80
+/* 80px was the original reading distance; raised 100px further so the text clears
+   the row it's about to add to rather than sitting right on top of it. */
+const SCROLL_INDICATOR_OFFSET = 180
 
 /* Where a row's name text begins, measured from the left edge of the name
    cell — the point its horizontal rule starts from. */
@@ -736,8 +738,12 @@ const SentinelMarker = styled.div`
    than "this column is". `top` is set inline per instance — SCROLL_INDICATOR_OFFSET
    above wherever the sentinel row was found, not a fixed distance from the viewport
    edge, so it tracks the actual point the reader scrolled to.
-   Plain blue text, no chip — this fires on its own, nothing to click, and a pill
-   or a background reads as a button whether or not it does anything when pressed.
+   Plain text, no chip — this fires on its own, nothing to click, and a pill or a
+   background reads as a button whether or not it does anything when pressed.
+   `#2f3130` is this theme's foreground.default (fg/default), the same colour
+   everything else in this tree that isn't muted or a link is set in — this is a
+   loading state, not a call to action, so it reads as body text rather than as
+   something to click.
    Blinks three times rather than spinning or filling a bar: the same on/off the
    Skeleton rows use elsewhere in this tree, kept to a family of one loading idiom
    instead of two — just slower, since a background-less flash at Skeleton's own
@@ -747,9 +753,9 @@ const ScrollLoadIndicator = styled.div`
   left: 50%;
   z-index: 20;
   transform: translateX(-50%);
-  color: #406cc4;
-  font-size: 13px;
-  font-weight: 600;
+  color: #2f3130;
+  font-size: 18pt;
+  font-weight: 400;
   white-space: nowrap;
   pointer-events: none;
   animation: scrollLoadBlink 700ms ease-in-out 3;
