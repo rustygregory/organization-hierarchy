@@ -86,17 +86,18 @@ const TabBarOverlay = styled.div`
    V4 keeps its number: it's still the widest case, and a decimal belongs on a version
    that is a variant of another, which it isn't.
 
-   V3.5 is a variant of V3: same wide roster, same Show control, same cap. The one
-   difference is what the cap row offers. V3 sends the reader to a new tab for the full
-   list; V3.5 expands in place with a *View more* that adds 50 rows each click and a
-   *View all* that drops the cap entirely. The id is `v3b` — `v3-5` was a retired id
-   from before the renumbering and reusing it would be the same trap as reusing `v2` or
-   `v3`. V4 is archived — still accessible, not on the main list. */
+   V3.5 is a variant of V3: same wide roster, same Show control, same cap. V3 sends
+   to a new tab; V3.5 expands in place with clickable View more. V3.75 is infinite
+   scroll: as you scroll near the bottom, a flashing View more indicator appears and
+   loads 50 more rows automatically, repeating until all are visible. All three share
+   the same Show control and counter. Ids are `v3b` and `v3c` — retired decimals from
+   before the renumbering, safe to reuse now. V4 is archived. */
 const VERSIONS = [
   { id: 'v1', label: 'V1 MVP' },
   { id: 'v2', label: 'V2 Expand all rows' },
   { id: 'v3', label: 'V3 View all with pagination' },
   { id: 'v3b', label: 'V3.5 View more in place' },
+  { id: 'v3c', label: 'V3.75 Scroll to load' },
   { id: 'v4', label: 'V4 No chevrons', archived: true },
 ]
 
@@ -127,8 +128,11 @@ export default function App() {
   // full list 100 rows at a time.
   // V4 No chevrons is V1's columns against Bramblewick's full 150 child departments,
   // paged 100 at a time and marking rows with a dot rather than a chevron.
-  // V3.5 View more in place is V3 with the cap row replaced: instead of opening a new
-  // tab, View more adds 50 rows in place and View all drops the cap entirely.
+  // V3.5 View more in place is V3 with the cap row replaced: clickable View more adds
+  // 50 rows in place and View all drops the cap entirely.
+  // V3.75 Scroll to load is the same cap-and-counter model, but loads 50 rows
+  // automatically as you scroll near the bottom — no buttons, just a flashing
+  // indicator and infinite scroll.
   const [version, setVersion] = useState('v1')
   const [commentIsOn, setCommentIsOn] = useState(false)
 
@@ -185,7 +189,7 @@ export default function App() {
      they were. The `??` still covers the old case, since a department whose parent
      can't be resolved is exactly the situation the fallback exists for. */
   useEffect(() => {
-    const hasDepartments = version === 'v4' || version === 'v3' || version === 'v3b'
+    const hasDepartments = version === 'v4' || version === 'v3' || version === 'v3b' || version === 'v3c'
     if (!hasDepartments && isAtScaleOrg(orgId)) {
       setOrgId(getOrganization(orgId)?.parentId ?? AT_SCALE_PARENT_ID)
     }
