@@ -1440,13 +1440,26 @@ export default function OrganizationHierarchyTab({
      setting. See WIDE_ROW_CAP_OPTIONS. */
   const [rowCapChoice, setRowCapChoice] = useState(WIDE_ROW_CAP)
 
-  /* V3.5 and V3.75's per-org cap overrides. orgId → number (current visible count
-     after View more clicks) | null (View all clicked — no cap). Orgs absent from the
-     map use rowCapChoice as the cap. Reset when leaving both versions so entering
-     either again starts fresh. */
+  /* V3.5's per-org cap overrides. orgId → number (current visible count after View
+     more clicks) | null (View all clicked — no cap). Orgs absent from the map use
+     rowCapChoice as the cap. Reset when leaving v3b so entering it again starts
+     fresh.
+
+     Kept separate from V3.75's own map below rather than shared: they're two
+     different treatments of the same idea being compared side by side, and sharing
+     state would mean revealing Knot Theory by scrolling in V3.75 also reveals it by
+     clicking in V3.5 — the two would stop being independent variables. */
   const [expandedCapMap, setExpandedCapMap] = useState(() => new Map())
   useEffect(() => {
-    if (!isViewMore && !isScrollLoad) setExpandedCapMap(new Map())
+    if (!isViewMore) setExpandedCapMap(new Map())
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [version])
+
+  /* V3.75's own cap overrides — same shape as expandedCapMap, its own state. See the
+     note above for why the two aren't shared. */
+  const [scrollCapMap, setScrollCapMap] = useState(() => new Map())
+  useEffect(() => {
+    if (!isScrollLoad) setScrollCapMap(new Map())
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [version])
 
@@ -1486,7 +1499,7 @@ export default function OrganizationHierarchyTab({
       scrollLoadingOrgsRef.current.add(orgId)
       setScrollLoadingMap((current) => new Map(current).set(orgId, top))
       const timeoutId = setTimeout(() => {
-        setExpandedCapMap((current) => {
+        setScrollCapMap((current) => {
           const next = new Map(current)
           next.set(orgId, (next.get(orgId) ?? rowCapChoice) + rowCapChoice)
           return next
@@ -1635,7 +1648,7 @@ export default function OrganizationHierarchyTab({
             // Paged only on the uncapped rooted page — that's the one showing a whole
             // long list, and the cap is the other answer to the same problem.
             page: uncapped && rootId ? page : null,
-            capOverrides: (isViewMore || isScrollLoad) && !uncapped ? expandedCapMap : null,
+            capOverrides: !uncapped ? (isViewMore ? expandedCapMap : isScrollLoad ? scrollCapMap : null) : null,
             inlineExpand: (isViewMore || isScrollLoad) && !uncapped,
           })
         : buildFocusedRows(selectedId, showPeopleRows, atScale, page),
@@ -1654,6 +1667,7 @@ export default function OrganizationHierarchyTab({
       uncapped,
       rowCapChoice,
       expandedCapMap,
+      scrollCapMap,
     ],
   )
 
