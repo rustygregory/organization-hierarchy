@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import styled from 'styled-components'
 import {
   Table,
@@ -154,6 +154,14 @@ const WIDE_ROW_CAP_OPTIONS = [50, 75, 100]
 /* How many rows V3.5's View more button adds each click. Fixed step regardless of
    the current Show setting, so "the next 50" is always 50. */
 const VIEW_MORE_STEP = 50
+
+/* V3.75's scroll-triggered load. The indicator sits above the point in the list the
+   reader has scrolled to, not the viewport edge — see ScrollLoadSentinel. It blinks
+   for this long before the next batch lands, standing in for a fetch the same way
+   SKELETON_DURATION_MS does elsewhere, just shorter: this is "more of a list you're
+   already reading" rather than "a subtree that was closed a moment ago". */
+const SCROLL_LOAD_BLINK_DURATION = 1200
+const SCROLL_INDICATOR_OFFSET = 80
 
 /* Where a row's name text begins, measured from the left edge of the name
    cell — the point its horizontal rule starts from. */
@@ -706,6 +714,98 @@ const ViewMoreSep = styled.span`
   font-size: 14px;
   flex-shrink: 0;
 `
+
+/* V3.75's cap row has no buttons — this is a 1px marker, not a piece of content.
+   IntersectionObserver needs something to watch, and something at zero size would
+   never intersect anything, so it's 1px rather than 0. Nothing about it is visible;
+   RowInner's own min-height is what keeps the row's height and the rail's spacing
+   the same as every version above it. */
+const SentinelMarker = styled.div`
+  width: 1px;
+  height: 1px;
+`
+
+/* "Viewing more…", floating over the tree rather than inside it — it has to stay on
+   screen at a fixed distance from where the reader stopped scrolling, and a row can't
+   do that from inside a table that's still reflowing under it.
+   Horizontally centred on the screen, not on the table: the table isn't full width in
+   every layout (the properties rail on the rooted page narrows it), and centring on
+   the screen is what makes the indicator read as "the page is doing something" rather
+   than "this column is". `top` is set inline per instance — SCROLL_INDICATOR_OFFSET
+   above wherever the sentinel row was found, not a fixed distance from the viewport
+   edge, so it tracks the actual point the reader scrolled to.
+   Blinks three times rather than spinning or filling a bar: the same on/off the
+   Skeleton rows use elsewhere in this tree, kept to a family of one loading idiom
+   instead of two. */
+const ScrollLoadIndicator = styled.div`
+  position: fixed;
+  left: 50%;
+  z-index: 20;
+  transform: translateX(-50%);
+  padding: 6px 14px;
+  border-radius: 4px;
+  background-color: #406cc4;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+  pointer-events: none;
+  animation: scrollLoadBlink 400ms ease-in-out 3;
+
+  @keyframes scrollLoadBlink {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.25;
+    }
+  }
+`
+
+/* Finds the nearest scrolling ancestor above `el`, the same walk goToPage uses to find
+   where to reset scroll position after a page change. IntersectionObserver needs this
+   as its `root`: the app's scroll container is a CSS `overflow-y: auto` div several
+   layers up, not the window, so watching the viewport (the default root) would never
+   see the sentinel cross a boundary that only exists inside that div. Returns null —
+   meaning "use the viewport" — only if no such ancestor exists. */
+const findScrollAncestor = (el) => {
+  let node = el?.parentElement
+  while (node) {
+    if (node.scrollHeight > node.clientHeight && /auto|scroll/.test(getComputedStyle(node).overflowY)) {
+      return node
+    }
+    node = node.parentElement
+  }
+  return null
+}
+
+/* One of these renders in place of the button row for every capped node in V3.75.
+   It has no visible content of its own — `onTrigger` fires once when the marker
+   scrolls into view, which is the reader reaching the bottom of what's currently
+   shown. Its own component rather than an effect in the tab itself because each
+   capped node needs an independent observer: Bramblewick and Mathematics can each be
+   mid-scroll at once, and one shared listener would have to rediscover which of them
+   the reader was near instead of just being told. */
+const ScrollLoadSentinel = ({ orgId, onTrigger }) => {
+  const ref = useRef(null)
+
+  useEffect(() => {
+    const el = ref.current
+    if (!el) return undefined
+    const root = findScrollAncestor(el)
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) onTrigger(orgId, entry.boundingClientRect.top)
+      },
+      { root, threshold: 0 },
+    )
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [orgId, onTrigger])
+
+  return <SentinelMarker ref={ref} aria-hidden="true" />
+}
 
 const CHEVRON_ROTATION = {
   down: 'none',
@@ -1342,6 +1442,60 @@ export default function OrganizationHierarchyTab({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [version])
 
+  /* V3.75: which nodes are currently blinking, and where — orgId → the sentinel's
+     `top` at the moment it was caught, which is where the indicator floats until the
+     batch lands. A Map rather than a single value because Bramblewick and Mathematics
+     can each be scrolled to their own bottom at once. */
+  const [scrollLoadingMap, setScrollLoadingMap] = useState(() => new Map())
+  /* Guards against a second observer callback re-triggering the same node while its
+     timeout is still pending — read synchronously inside the callback, so it has to
+     be a ref rather than state, which would still show the stale value at that point
+     in the same tick. */
+  const scrollLoadingOrgsRef = useRef(new Set())
+  const scrollTimeoutsRef = useRef(new Map())
+
+  useEffect(() => {
+    if (isScrollLoad) return undefined
+    // Leaving V3.75 mid-blink: drop whatever was pending rather than let it land on
+    // a version it no longer applies to.
+    scrollTimeoutsRef.current.forEach((timeoutId) => clearTimeout(timeoutId))
+    scrollTimeoutsRef.current.clear()
+    scrollLoadingOrgsRef.current.clear()
+    setScrollLoadingMap(new Map())
+  }, [isScrollLoad])
+
+  useEffect(
+    () => () => scrollTimeoutsRef.current.forEach((timeoutId) => clearTimeout(timeoutId)),
+    [],
+  )
+
+  /* The increment is `rowCapChoice` — the Show control's own setting — rather than a
+     fixed number, so "load the next batch" always means the same size batch the
+     reader chose to see in the first place. */
+  const handleScrollLoadTrigger = useCallback(
+    (orgId, top) => {
+      if (scrollLoadingOrgsRef.current.has(orgId)) return
+      scrollLoadingOrgsRef.current.add(orgId)
+      setScrollLoadingMap((current) => new Map(current).set(orgId, top))
+      const timeoutId = setTimeout(() => {
+        setExpandedCapMap((current) => {
+          const next = new Map(current)
+          next.set(orgId, (next.get(orgId) ?? rowCapChoice) + rowCapChoice)
+          return next
+        })
+        setScrollLoadingMap((current) => {
+          const next = new Map(current)
+          next.delete(orgId)
+          return next
+        })
+        scrollLoadingOrgsRef.current.delete(orgId)
+        scrollTimeoutsRef.current.delete(orgId)
+      }, SCROLL_LOAD_BLINK_DURATION)
+      scrollTimeoutsRef.current.set(orgId, timeoutId)
+    },
+    [rowCapChoice],
+  )
+
   const removeLoading = (orgId) =>
     setLoadingIds((current) => {
       if (!current.has(orgId)) return current
@@ -1674,6 +1828,27 @@ export default function OrganizationHierarchyTab({
               )
             }
 
+            /* V3.75's escape hatch: no buttons at all. The sentinel below fires once
+               when the reader scrolls it into view, and the batch that lands is
+               `rowCapChoice` rows — whatever the Show control is set to — not a fixed
+               step, so scrolling always reveals the same size chunk the reader chose
+               to see up front. */
+            if (row.kind === 'viewMore' && isScrollLoad) {
+              return (
+                <TreeRow key={row.key} $ruleInset={ruleInsetFor(row.depth)} $noRule={isSansLines}>
+                  <NameCell>
+                    <RowInner>
+                      <TreeGutter row={row} />
+                      <LeafArmContinuation aria-hidden="true" />
+                      <ScrollLoadSentinel orgId={row.node.id} onTrigger={handleScrollLoadTrigger} />
+                    </RowInner>
+                  </NameCell>
+                  {!isSansLines && <Cell />}
+                  {showPeopleColumn && <Cell />}
+                </TreeRow>
+              )
+            }
+
             /* V3.5's escape hatch: View more adds VIEW_MORE_STEP rows in place,
                View all drops the cap entirely. The counter stays accurate until
                all items are visible. */
@@ -1903,6 +2078,11 @@ export default function OrganizationHierarchyTab({
           </PaginationRow>
         </>
       )}
+      {[...scrollLoadingMap].map(([orgId, top]) => (
+        <ScrollLoadIndicator key={orgId} style={{ top: top - SCROLL_INDICATOR_OFFSET }}>
+          Viewing more…
+        </ScrollLoadIndicator>
+      ))}
     </Wrapper>
   )
 }
