@@ -155,10 +155,6 @@ const WIDE_ROW_CAP_OPTIONS = [50, 75, 100]
    the current Show setting, so "the next 50" is always 50. */
 const VIEW_MORE_STEP = 50
 
-/* V3.5 Scroll to load constants. */
-const SCROLL_INDICATOR_OFFSET = 80  // pixels above the bottom to show the indicator
-const SCROLL_LOAD_STEP = 50  // rows to add each scroll load
-
 /* Where a row's name text begins, measured from the left edge of the name
    cell — the point its horizontal rule starts from. */
 const ruleInsetFor = (depth) =>
@@ -709,30 +705,6 @@ const ViewMoreSep = styled.span`
   color: #c2c8cc;
   font-size: 14px;
   flex-shrink: 0;
-`
-
-/* V3.75: the scroll-load indicator, positioned absolutely in the tree container.
-   Flashes to indicate loading, then disappears as rows are added. Centered horizontally
-   and positioned ~SCROLL_INDICATOR_OFFSET pixels above the viewport bottom. */
-const ScrollLoadIndicator = styled.div`
-  position: fixed;
-  left: 50%;
-  transform: translateX(-50%);
-  padding: 6px 12px;
-  background-color: #406cc4;
-  color: #ffffff;
-  font-size: 13px;
-  font-weight: 600;
-  border-radius: 4px;
-  white-space: nowrap;
-  z-index: 100;
-  pointer-events: none;
-  animation: scrollLoadFlash 0.6s ease-in-out 2;
-
-  @keyframes scrollLoadFlash {
-    0%, 100% { opacity: 1 }
-    50% { opacity: 0.3 }
-  }
 `
 
 const CHEVRON_ROTATION = {
@@ -1286,11 +1258,12 @@ export default function OrganizationHierarchyTab({
   /* V3.5: same wide roster and same Show cap as V3, but the cap row is replaced by
      View more (adds VIEW_MORE_STEP rows in place) and View all (drops the cap). */
   const isViewMore = version === 'v3b'
-  /* V3.75: same as V3.5 but will load automatically as you scroll near the bottom. */
+  /* V3.75: currently an exact copy of V3.5, kept as its own id so scroll-to-load
+     behavior can be built into it without touching V3.5. */
   const isScrollLoad = version === 'v3c'
   /* V3, V3.5 and V3.75 use the wide department roster and the full 175 / 133 counts. */
   const isWideRoster = isWide || isViewMore || isScrollLoad
-  const isExpandable = version === 'v2' || isWide || isViewMore
+  const isExpandable = version === 'v2' || isWide || isViewMore || isScrollLoad
   /* No row dividers, and the child count inline beside each name. Both of the
      expandable versions do this and nothing else does, so it tracks `isExpandable`
      exactly — kept as its own name because they are two separate decisions that
@@ -1307,18 +1280,6 @@ export default function OrganizationHierarchyTab({
     () => ({ atScale: atScale || isWideRoster, wide: isWideRoster }),
     [atScale, isWideRoster],
   )
-
-  /* V3.75: per-org scroll load state. Same as expandedCapMap but for V3.75.
-     Used to track which orgs are loading via scroll, and what their current cap is. */
-  const [scrollCapMap, setScrollCapMap] = useState(() => new Map())
-  useEffect(() => {
-    if (!isScrollLoad) setScrollCapMap(new Map())
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [version])
-
-  /* V3.75: which org is currently showing its scroll indicator and loading. */
-  const [scrollLoadingOrgId, setScrollLoadingOrgId] = useState(null)
-  const [scrollIndicatorBottom, setScrollIndicatorBottom] = useState(null)
 
   // Which page of the paged organization group is on screen.
   const [page, setPage] = useState(1)
@@ -1371,46 +1332,13 @@ export default function OrganizationHierarchyTab({
      setting. See WIDE_ROW_CAP_OPTIONS. */
   const [rowCapChoice, setRowCapChoice] = useState(WIDE_ROW_CAP)
 
-  /* V3.5 Scroll to load: when scrolling near the bottom, auto-load 50 more rows.
-     Shows an indicator briefly (200ms) then loads immediately. No buttons. */
-  useEffect(() => {
-    if (!isScrollLoad || uncapped) return undefined
-    const container = rootRef.current?.closest('[style*="overflow"]') || window
-    let timeoutId = null
-    const handleScroll = () => {
-      if (scrollLoadingOrgId) return  // already loading
-      const el = container === window ? document.documentElement : container
-      const bottom = el.scrollHeight - (el.scrollTop + el.clientHeight)
-      if (bottom < SCROLL_INDICATOR_OFFSET) {
-        const firstCappedOrg = Array.from(scrollCapMap.keys())[0]
-        if (firstCappedOrg) {
-          setScrollLoadingOrgId(firstCappedOrg)
-          setScrollIndicatorBottom(bottom)
-          timeoutId = setTimeout(() => {
-            setScrollCapMap((prev) => {
-              const next = new Map(prev)
-              const current = next.get(firstCappedOrg) || rowCapChoice
-              next.set(firstCappedOrg, current + SCROLL_LOAD_STEP)
-              return next
-            })
-            setScrollLoadingOrgId(null)
-          }, 200)  // brief indicator, then load
-        }
-      }
-    }
-    container.addEventListener('scroll', handleScroll, { passive: true })
-    return () => {
-      container.removeEventListener('scroll', handleScroll)
-      if (timeoutId) clearTimeout(timeoutId)
-    }
-  }, [isScrollLoad, uncapped, scrollLoadingOrgId, scrollCapMap, rowCapChoice])
-
-  /* V3.5's per-org cap overrides. orgId → number (current visible count after View
-     more clicks) | null (View all clicked — no cap). Orgs absent from the map use
-     rowCapChoice as the cap. Reset when leaving v3b so entering it again starts fresh. */
+  /* V3.5 and V3.75's per-org cap overrides. orgId → number (current visible count
+     after View more clicks) | null (View all clicked — no cap). Orgs absent from the
+     map use rowCapChoice as the cap. Reset when leaving both versions so entering
+     either again starts fresh. */
   const [expandedCapMap, setExpandedCapMap] = useState(() => new Map())
   useEffect(() => {
-    if (!isViewMore) setExpandedCapMap(new Map())
+    if (!isViewMore && !isScrollLoad) setExpandedCapMap(new Map())
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [version])
 
@@ -1545,8 +1473,8 @@ export default function OrganizationHierarchyTab({
             // Paged only on the uncapped rooted page — that's the one showing a whole
             // long list, and the cap is the other answer to the same problem.
             page: uncapped && rootId ? page : null,
-            capOverrides: (isViewMore || isScrollLoad) && !uncapped ? (isViewMore ? expandedCapMap : scrollCapMap) : null,
-            inlineExpand: isViewMore && !uncapped,
+            capOverrides: (isViewMore || isScrollLoad) && !uncapped ? expandedCapMap : null,
+            inlineExpand: (isViewMore || isScrollLoad) && !uncapped,
           })
         : buildFocusedRows(selectedId, showPeopleRows, atScale, page),
     [
@@ -1564,7 +1492,6 @@ export default function OrganizationHierarchyTab({
       uncapped,
       rowCapChoice,
       expandedCapMap,
-      scrollCapMap,
     ],
   )
 
@@ -1975,11 +1902,6 @@ export default function OrganizationHierarchyTab({
             />
           </PaginationRow>
         </>
-      )}
-      {scrollLoadingOrgId && (
-        <ScrollLoadIndicator style={{ bottom: scrollIndicatorBottom }}>
-          Loading more…
-        </ScrollLoadIndicator>
       )}
     </Wrapper>
   )
