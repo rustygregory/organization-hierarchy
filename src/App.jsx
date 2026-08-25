@@ -87,17 +87,15 @@ const TabBarOverlay = styled.div`
    that is a variant of another, which it isn't.
 
    V3.5 is a variant of V3: same wide roster, same Show control, same cap. V3 sends
-   to a new tab; V3.5 expands in place with clickable View more buttons. V3.5 Scroll
-   loads automatically as you scroll near the bottom — no buttons, just a blue "View
-   more" indicator and infinite scroll until all are visible. Both share the Show
-   control and counter. Ids are `v3b` and `v3d` — retired decimals from before the
-   renumbering, safe to reuse now. V4 is archived. */
+   to a new tab; V3.5 expands in place with clickable View more buttons. V3.75 starts
+   as a copy of V3.5 for scroll-to-load development. Ids are `v3b` and `v3c` — retired
+   decimals from before the renumbering, safe to reuse now. V4 is archived. */
 const VERSIONS = [
   { id: 'v1', label: 'V1 MVP' },
   { id: 'v2', label: 'V2 Expand all rows' },
   { id: 'v3', label: 'V3 View all with pagination' },
   { id: 'v3b', label: 'V3.5 View more in place' },
-  { id: 'v3d', label: 'V3.5 Scroll to load' },
+  { id: 'v3c', label: 'V3.75 Scroll to load' },
   { id: 'v4', label: 'V4 No chevrons', archived: true },
 ]
 
@@ -189,7 +187,7 @@ export default function App() {
      they were. The `??` still covers the old case, since a department whose parent
      can't be resolved is exactly the situation the fallback exists for. */
   useEffect(() => {
-    const hasDepartments = version === 'v4' || version === 'v3' || version === 'v3b' || version === 'v3d'
+    const hasDepartments = version === 'v4' || version === 'v3' || version === 'v3b' || version === 'v3c'
     if (!hasDepartments && isAtScaleOrg(orgId)) {
       setOrgId(getOrganization(orgId)?.parentId ?? AT_SCALE_PARENT_ID)
     }

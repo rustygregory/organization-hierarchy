@@ -1286,9 +1286,8 @@ export default function OrganizationHierarchyTab({
   /* V3.5: same wide roster and same Show cap as V3, but the cap row is replaced by
      View more (adds VIEW_MORE_STEP rows in place) and View all (drops the cap). */
   const isViewMore = version === 'v3b'
-  /* V3.5 Scroll to load: same as V3.5 but loads automatically as you scroll near
-     the bottom, with no buttons. An indicator appears ~80px before the bottom. */
-  const isScrollLoad = version === 'v3d'
+  /* V3.75: same as V3.5 but will load automatically as you scroll near the bottom. */
+  const isScrollLoad = version === 'v3c'
   /* V3, V3.5 and V3.75 use the wide department roster and the full 175 / 133 counts. */
   const isWideRoster = isWide || isViewMore || isScrollLoad
   const isExpandable = version === 'v2' || isWide || isViewMore
