@@ -36,10 +36,13 @@ const CHEVRON_SLOT = 20
    which is measured from the cell's border box, not its content box. */
 const CELL_PADDING = 12
 const RULE_COLOR = '#eae9e8'
-/* A row's height. Shared by RowInner and V2's skeleton rows, which have to match
-   it exactly — a placeholder taller than the row it stands in for makes the list
-   jump as each group of children resolves. */
-const ROW_MIN_HEIGHT = 36
+/* A row's height. Garden pins its medium table rows at 40px (theme.space.base
+   * 10), so this has to be 40 too: anything less and RowInner comes up short of
+   the cell it's in, which opens a visible gap in the tree's vertical guide
+   lines at every row boundary. Shared by RowInner and V2's skeleton rows, which
+   have to match it exactly — a placeholder taller than the row it stands in for
+   makes the list jump as each group of children resolves. */
+const ROW_MIN_HEIGHT = 40
 
 /* The selected row's background: blue.100, the faintest step on Flora's primary
    ramp. It's a tint rather than a fill — enough to read as a band across the row
