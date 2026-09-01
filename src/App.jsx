@@ -130,7 +130,7 @@ export default function App() {
   // V4 No chevrons is V1's columns against Bramblewick's full 150 child departments,
   // paged 100 at a time and marking rows with a dot rather than a chevron.
   // V3.5 View more in place is V3 with the cap row replaced: a clickable View more
-  // adds 50 rows in place, with the capped remainder counted beside it.
+  // adds another Show-sized batch in place, with the capped remainder counted beside it.
   // V3.5 Scroll to load is the same cap-and-counter model, but loads 50 rows
   // automatically as you scroll near the bottom — no buttons, just a blue indicator
   // and infinite scroll.

@@ -154,10 +154,6 @@ const WIDE_ROW_CAP = 50
    looking at the three side by side, not by reading a number. */
 const WIDE_ROW_CAP_OPTIONS = [50, 75, 100]
 
-/* How many rows V3.5's View more button adds each click. Fixed step regardless of
-   the current Show setting, so "the next 50" is always 50. */
-const VIEW_MORE_STEP = 50
-
 /* V3.75's scroll-triggered load. The indicator sits above the point in the list the
    reader has scrolled to, not the viewport edge — see ScrollLoadSentinel. It blinks
    for this long before the next batch lands, standing in for a fetch the same way
@@ -1358,7 +1354,8 @@ export default function OrganizationHierarchyTab({
      with a toggle. */
   const isWide = version === 'v3'
   /* V3.5: same wide roster and same Show cap as V3, but the cap row is replaced by
-     View more (adds VIEW_MORE_STEP rows in place) and View all (drops the cap). */
+     View more, which adds another Show-sized batch in place (50, 75 or 100 depending
+     on the control's setting). */
   const isViewMore = version === 'v3b'
   /* V3.75: currently an exact copy of V3.5, kept as its own id so scroll-to-load
      behavior can be built into it without touching V3.5. */
@@ -1865,9 +1862,10 @@ export default function OrganizationHierarchyTab({
               )
             }
 
-            /* V3.5's escape hatch: View more adds VIEW_MORE_STEP rows in place,
-               with the count of what's still capped beside it. There is no
-               View all — in-place expansion is the treatment on the table. */
+            /* V3.5's escape hatch: View more adds another batch the size of the
+               Show control's setting, so "view more" always means "the next 50"
+               (or 75, or 100) — the same chunk the reader chose up front. The
+               count of what's still capped sits beside it. */
             if (row.kind === 'viewMore') {
               return (
                 <TreeRow key={row.key} $ruleInset={ruleInsetFor(row.depth)} $noRule={isSansLines}>
@@ -1882,7 +1880,7 @@ export default function OrganizationHierarchyTab({
                             event.preventDefault()
                             setExpandedCapMap((prev) => {
                               const next = new Map(prev)
-                              next.set(row.node.id, row.shownCount + VIEW_MORE_STEP)
+                              next.set(row.node.id, row.shownCount + rowCapChoice)
                               return next
                             })
                           }}
