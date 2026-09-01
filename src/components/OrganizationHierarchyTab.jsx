@@ -225,11 +225,10 @@ const SearchLabel = styled(Label)`
   margin-bottom: 4px;
 `
 
-/* The search highlight: Flora's yellow.200, the pale fill Flora pairs with 900
-   text everywhere else. Text colour is inherited so a hit on the selected row's
-   bold name stays bold and a hit on a link stays blue. */
+/* The search highlight: Flora's yellow.300. Text colour is inherited so a hit
+   on the selected row's bold name stays bold and a hit on a link stays blue. */
 const SearchMark = styled.mark`
-  background-color: #f6eba6;
+  background-color: #eedf7a;
   color: inherit;
 `
 
@@ -1509,38 +1508,15 @@ export default function OrganizationHierarchyTab({
   const [searchQuery, setSearchQuery] = useState('')
   const normalizedQuery = searchQuery.trim().toLowerCase()
 
-  /* A hit must never stay off screen. A match inside a collapsed subtree opens
-     the path down to it — the same additive set-selection uses, so a search can
-     only ever reveal, never close something the reader opened. */
-  useEffect(() => {
-    if (!normalizedQuery || !isExpandable || rootId) return
-    const root = getPath(selectedId)[0]
-    if (!root) return
-    const matches = []
-    const walk = (orgId) => {
-      getChildren(orgId, dataOptions).forEach((child) => {
-        if (child.name.toLowerCase().includes(normalizedQuery)) matches.push(child)
-        walk(child.id)
-      })
-    }
-    walk(root.id)
-    if (matches.length === 0) return
-    setExpandedIds((current) => {
-      const missing = new Set()
-      matches.forEach((match) => {
-        getPath(match.id).forEach((org) => {
-          if (org.id !== match.id && !current.has(org.id)) missing.add(org.id)
-        })
-      })
-      if (missing.size === 0) return current
-      return new Set([...current, ...missing])
-    })
-  }, [normalizedQuery, isExpandable, rootId, selectedId, dataOptions])
+  /* A hit behind a View more cap raises that list's cap far enough to show it
+     (the last matching row, so one search reveals every hit in the list, not
+     just the first). Runs against the version's own cap map, keeping V3.5 and
+     V3.75 independent.
 
-  /* The cap half of the same rule: a hit hidden behind View more raises that
-     list's cap far enough to show it (the last matching row, so one search
-     reveals every hit in the list, not just the first). Runs against the
-     version's own cap map, keeping V3.5 and V3.75 independent. */
+     Collapsed subtrees are deliberately not opened: a chevron is the reader's
+     own organization of the tree, and search only unfolds the flat lists.
+     Their caps still rise below, so a hit is already on screen when the reader
+     opens the branch themselves. */
   useEffect(() => {
     if (!normalizedQuery || uncapped || (!isViewMore && !isScrollLoad)) return
     const setCapMap = isViewMore ? setExpandedCapMap : setScrollCapMap
