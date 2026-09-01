@@ -182,16 +182,33 @@ const ruleInsetFor = (depth) =>
    of this layout, and attached is what keeps it continuous. */
 
 
-/* The scroller. `$flush` drops the top padding for the rooted department page, whose
+/* `$flush` drops the top padding for the rooted department page, whose
    own toolbar sits above this and owns the gap below the search field — otherwise the
    two stack and the table starts 48px down on first paint but 24px down once
    scrolled. */
-/* No scrolling of its own — the page around it scrolls, so the whole work area moves
-   together rather than the tree sliding under a pinned header. `flex: 1` still, so the
-   wrapper fills the space it's given and its padding sets the page's bottom margin. */
+/* A bounded column, not a free-flowing one: the search, count line and table header
+   stay pinned and only the rows scroll (TableScroll below). On the rooted department
+   page the wrapper's height is still content-driven — MainSection there scrolls the
+   whole page, so TableScroll never becomes a scroller and nothing about that page's
+   behavior changes. */
 const Wrapper = styled.div`
-  padding: ${(props) => (props.$flush ? '0' : '24px')} 32px 40px;
+  display: flex;
+  flex-direction: column;
+  padding: ${(props) => (props.$flush ? '0' : '24px')} 32px 0;
   flex: 1;
+  min-height: 0;
+`
+
+/* The one moving part of the page. Everything above it — search, the count line,
+   the table's own header row — is pinned; the rows scroll underneath that header,
+   which is opaque so they slide behind it rather than through it. The bottom padding
+   lives here rather than on the wrapper so it sits at the end of the scrolled
+   content instead of shrinking the scroll region. */
+const TableScroll = styled.div`
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding-bottom: ${(props) => (props.$flush ? '0' : '40px')};
 `
 
 /* Replaces the page heading. Fixed 450px rather than fluid — the tree beside it
@@ -222,7 +239,51 @@ const SearchLabel = styled(Label)`
   font-size: 14px;
   font-weight: 600;
   color: #2f3130;
+`
+
+/* The label line: the field's own label on the left, the match navigator
+   ("1 of 2" with down/up chevrons) on the right while a search is running. */
+const SearchLabelRow = styled.div`
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
   margin-bottom: 4px;
+`
+
+/* Same size as the label but regular weight and fg/default — it reports position
+   ("1 of 2"), it isn't a heading for anything. */
+const MatchNav = styled.span`
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  font-size: 14px;
+  font-weight: 400;
+  color: #2f3130;
+`
+
+const MatchNavButton = styled.button`
+  display: inline-flex;
+  align-items: center;
+  padding: 2px;
+  border: none;
+  border-radius: 2px;
+  background: transparent;
+  color: #2f3130;
+  cursor: pointer;
+
+  &:hover:not(:disabled) {
+    background-color: #f7f7f7;
+  }
+
+  &:disabled {
+    color: #c2c8cc;
+    cursor: default;
+  }
+
+  &:focus-visible {
+    outline: 2px solid #406cc4;
+    outline-offset: 1px;
+  }
 `
 
 /* The search highlight: Flora's yellow.300. Text colour is inherited so a hit
@@ -329,7 +390,16 @@ const TreeTable = styled(Table)`
      Note it's the row, not the cell: height:auto on the th does nothing, because a
      table cell can't be shorter than its row.
      (No backticks in comments inside a styled template — they close the literal.) */
+  /* Sticky, with an opaque grey.100 background: the header is the "grey bar" the
+     rows scroll underneath, and without the fill the rows would show through it.
+     The underline is redrawn as a box-shadow because Garden's own is a border on
+     the tr, which stays behind at the natural position while the cells stick. */
   thead th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background-color: #f7f7f7;
+    box-shadow: inset 0 -1px 0 0 #dcdcda;
     font-size: 14px;
     padding-top: 0;
     padding-bottom: 8px;
@@ -1417,9 +1487,18 @@ export default function OrganizationHierarchyTab({
      page's on the other. Walking up finds whichever is there instead of either component
      having to pass a ref down to the other. */
   const rootRef = useRef(null)
+  /* The rows' own scroll region. On the profile tab this is the scroller; on the
+     rooted department page it never overflows (the page around it scrolls instead),
+     so goToPage falls back to the upward walk for that case. */
+  const scrollRef = useRef(null)
 
   const goToPage = (next) => {
     setPage(next)
+    const own = scrollRef.current
+    if (own && own.scrollHeight > own.clientHeight) {
+      own.scrollTo({ top: 0 })
+      return
+    }
     let el = rootRef.current?.parentElement
     while (el) {
       if (el.scrollHeight > el.clientHeight && /auto|scroll/.test(getComputedStyle(el).overflowY)) {
@@ -1720,6 +1799,58 @@ export default function OrganizationHierarchyTab({
     ],
   )
 
+  /* Search match navigation. Matches are counted over the rows on screen — which
+     includes anything the cap reveal has surfaced, since that lands in `rows`.
+     Collapsed subtrees never enter the count: search doesn't open them, so a hit
+     the chevrons can't scroll to isn't one the counter should claim. */
+  const matchCount = useMemo(
+    () =>
+      normalizedQuery
+        ? rows.filter(
+            (row) =>
+              (row.kind === 'org' || row.kind === 'person') &&
+              row.node.name.toLowerCase().includes(normalizedQuery),
+          ).length
+        : 0,
+    [rows, normalizedQuery],
+  )
+  const [searchIndex, setSearchIndex] = useState(0)
+  /* A scroll request waiting for its target to render. The cap reveal lands a
+     render after the query changes, so the scroll can't fire in the same commit —
+     it waits here and the every-render effect below retries until the mark
+     exists. */
+  const pendingMatchScrollRef = useRef(null)
+
+  /* A new query starts at the first hit. Clearing the field cancels any pending
+     scroll — there's nothing to land on. */
+  useEffect(() => {
+    setSearchIndex(0)
+    pendingMatchScrollRef.current = normalizedQuery ? 0 : null
+  }, [normalizedQuery])
+
+  /* The count can shrink out from under the position (deleting characters,
+     matches scrolling off a re-centred tree) — keep the index inside it. */
+  useEffect(() => {
+    setSearchIndex((i) => Math.min(i, Math.max(matchCount - 1, 0)))
+  }, [matchCount])
+
+  useEffect(() => {
+    const target = pendingMatchScrollRef.current
+    if (target === null) return
+    /* tbody marks sit in row order, one per matching row — the same order the
+       counter counts, so the nth mark is the nth hit. */
+    const el = rootRef.current?.querySelectorAll('tbody mark')[target]
+    if (!el) return
+    el.scrollIntoView({ block: 'center' })
+    pendingMatchScrollRef.current = null
+  })
+
+  const shownMatchIndex = Math.min(searchIndex, Math.max(matchCount - 1, 0))
+  const goToMatch = (nextIndex) => {
+    setSearchIndex(nextIndex)
+    pendingMatchScrollRef.current = nextIndex
+  }
+
   const totalPages = Math.ceil(pagedTotal / CHILDREN_PER_PAGE)
   const isPaginated = totalPages > 1
   /* Where the "100 of 175 departments" caption goes. On the rooted department page it
@@ -1797,9 +1928,33 @@ export default function OrganizationHierarchyTab({
           {/* Follows the rows, not the column: V4 shows a People count but no people,
               so offering to search users would promise something its tree can't
               show. */}
-          <SearchLabel>
-            {showPeopleRows ? 'Search organizations and users' : 'Search organizations'}
-          </SearchLabel>
+          <SearchLabelRow>
+            <SearchLabel>
+              {showPeopleRows ? 'Search organizations and users' : 'Search organizations'}
+            </SearchLabel>
+            {normalizedQuery !== '' && (
+              <MatchNav>
+                {matchCount > 0 ? `${shownMatchIndex + 1} of ${matchCount}` : '0 of 0'}
+                {/* Down first, then up — Rusty's order. */}
+                <MatchNavButton
+                  type="button"
+                  aria-label="Next match"
+                  disabled={matchCount === 0 || shownMatchIndex >= matchCount - 1}
+                  onClick={() => goToMatch(shownMatchIndex + 1)}
+                >
+                  <Chevron direction="down" />
+                </MatchNavButton>
+                <MatchNavButton
+                  type="button"
+                  aria-label="Previous match"
+                  disabled={shownMatchIndex <= 0}
+                  onClick={() => goToMatch(shownMatchIndex - 1)}
+                >
+                  <Chevron direction="up" />
+                </MatchNavButton>
+              </MatchNav>
+            )}
+          </SearchLabelRow>
           <MediaInput
             start={<SearchIcon />}
             value={searchQuery}
@@ -1823,6 +1978,7 @@ export default function OrganizationHierarchyTab({
         )}
       </Counts>
 
+      <TableScroll ref={scrollRef} $flush={hideSearch}>
       <TreeTable isReadOnly>
         <HiddenCaption>
           {rootId
@@ -2140,6 +2296,7 @@ export default function OrganizationHierarchyTab({
           </PaginationRow>
         </>
       )}
+      </TableScroll>
       {[...scrollLoadingMap].map(([orgId, top]) => (
         <ScrollLoadIndicator key={orgId} style={{ top: top - SCROLL_INDICATOR_OFFSET }}>
           Loading more

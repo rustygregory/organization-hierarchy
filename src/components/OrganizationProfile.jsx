@@ -20,11 +20,10 @@ const Container = styled.div`
   overflow: hidden;
 `
 
-/* The scroll container for the whole work area: the organization's name, the tab
-   strip, the search field and the tree all scroll together. It used to be the tree
-   alone, with the header and tabs pinned above it — which reads as a pane inside a
-   page rather than as a page, and puts two scroll regions on screen (this and the
-   properties rail) for a reader to work out which one their wheel is over.
+/* Pinned, not scrolling: the organization's name, the tab strip, the search field
+   and the table header all stay put, and only the tree's rows scroll (the hierarchy
+   tab owns that scroll region itself). The header and tabs scrolling away read as
+   the page losing its subject mid-scroll.
    The rail keeps its own scroll: it's a separate column of a fixed width, and in
    Support it stays put while the record's content moves. */
 const MainSection = styled.div`
@@ -32,7 +31,8 @@ const MainSection = styled.div`
   flex-direction: column;
   flex: 1;
   min-width: 0;
-  overflow-y: auto;
+  min-height: 0;
+  overflow: hidden;
 `
 
 const ProfileHeader = styled.div`

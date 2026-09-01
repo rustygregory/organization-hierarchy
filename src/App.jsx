@@ -202,6 +202,18 @@ export default function App() {
     document.title = `${subject} — Organization hierarchy`
   }, [org.name, isWideTabActive, wideTabOrg])
 
+  /* The globalnav template hardcodes a red "1" badge on the notifications bell —
+     no prop, no aria hook. A pinned unread count promises a feature the prototype
+     doesn't have, so it comes off here, keyed on the badge's exact red since the
+     element carries no stable selector. */
+  useEffect(() => {
+    document.querySelectorAll('div').forEach((el) => {
+      if (getComputedStyle(el).backgroundColor === 'rgb(217, 63, 76)') {
+        el.style.display = 'none'
+      }
+    })
+  }, [])
+
   return (
     <ThemeProvider>
       <OuterShell>
