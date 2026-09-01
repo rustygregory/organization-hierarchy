@@ -1080,15 +1080,16 @@ Error generating stack: `+e.message+`
      Note it's the row, not the cell: height:auto on the th does nothing, because a
      table cell can't be shorter than its row.
      (No backticks in comments inside a styled template — they close the literal.) */
-  /* Sticky, with an opaque grey.100 background: the header is the "grey bar" the
-     rows scroll underneath, and without the fill the rows would show through it.
+  /* Sticky, with an opaque background: the header is the bar the rows scroll
+     underneath, and without the fill the rows would show through it. White, not
+     grey.100 — the header carries no tint of its own, just the stroke under it.
      The underline is redrawn as a box-shadow because Garden's own is a border on
      the tr, which stays behind at the natural position while the cells stick. */
   thead th {
     position: sticky;
     top: 0;
     z-index: 1;
-    background-color: #f7f7f7;
+    background-color: #ffffff;
     box-shadow: inset 0 -1px 0 0 #dcdcda;
     font-size: 14px;
     padding-top: 0;
