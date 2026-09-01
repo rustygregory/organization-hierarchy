@@ -1613,12 +1613,7 @@ export default function OrganizationHierarchyTab({
   /* A hit behind a View more cap raises that list's cap far enough to show it
      (the last matching row, so one search reveals every hit in the list, not
      just the first). Runs against the version's own cap map, keeping V3.5 and
-     V3.75 independent.
-
-     Collapsed subtrees are deliberately not opened: a chevron is the reader's
-     own organization of the tree, and search only unfolds the flat lists.
-     Their caps still rise below, so a hit is already on screen when the reader
-     opens the branch themselves. */
+     V3.75 independent. A hit behind a closed *chevron* is the effect below. */
   useEffect(() => {
     if (!normalizedQuery || uncapped || (!isViewMore && !isScrollLoad)) return
     const setCapMap = isViewMore ? setExpandedCapMap : setScrollCapMap
@@ -1640,6 +1635,52 @@ export default function OrganizationHierarchyTab({
       return next ?? current
     })
   }, [normalizedQuery, isViewMore, isScrollLoad, uncapped, rowCapChoice, dataOptions])
+
+  /* Every organization in the current dataset, walked from the tree's root —
+     what search can hit. ORGANIZATIONS alone isn't the whole set: the generated
+     rosters (Bramblewick's 175, Mathematics' 133) live outside it, and
+     getChildren is the only way back to them. On the rooted department page the
+     walk starts at that page's root, not the tree's. */
+  const searchableOrgs = useMemo(() => {
+    const root = rootId ? getOrganization(rootId) : ORGANIZATIONS.find((org) => !org.parentId)
+    if (!root) return []
+    const walk = (id) => [
+      getOrganization(id),
+      ...getChildren(id, dataOptions).flatMap((child) => walk(child.id)),
+    ]
+    return walk(root.id)
+  }, [rootId, dataOptions])
+
+  /* A hit inside a closed chevron opens the chevrons above it — enough of the
+     path for the hit to be on screen, no more. The hit's own chevron keeps its
+     state, and branches with no hit in them stay shut (that was the earlier
+     complaint: search unfolding levels the word isn't in). Additive, like the
+     cap reveal: search never closes anything the reader opened, and what it
+     opened stays open after the field is cleared.
+
+     Big subtrees get the same skeleton beat a manual chevron click would — it's
+     the same simulated fetch, just triggered by the search. Keyed on
+     expandedIds as well as the query: opening branches changes the set, the
+     effect re-runs, finds nothing missing, and stops. */
+  useEffect(() => {
+    if (!normalizedQuery || !isExpandable) return
+    const toOpen = new Set()
+    searchableOrgs.forEach((org) => {
+      if (!org.name.toLowerCase().includes(normalizedQuery)) return
+      // Ancestors only — the hit's own chevron stays as it was; opening it
+      // would unfold a subtree nobody asked to see.
+      pathIds(org.id).slice(0, -1).forEach((id) => toOpen.add(id))
+    })
+    const missing = [...toOpen].filter((id) => !expandedIds.has(id))
+    if (missing.length === 0) return
+    setExpandedIds((current) => new Set([...current, ...missing]))
+    const bigOpens = missing.filter(
+      (id) => getChildren(id, dataOptions).length > SKELETON_THRESHOLD,
+    )
+    if (bigOpens.length > 0) {
+      setLoadingIds((current) => new Set([...current, ...bigOpens]))
+    }
+  }, [normalizedQuery, isExpandable, expandedIds, searchableOrgs, dataOptions])
 
   /* The increment is `rowCapChoice` — the Show control's own setting — rather than a
      fixed number, so "load the next batch" always means the same size batch the
@@ -1822,10 +1863,10 @@ export default function OrganizationHierarchyTab({
     ],
   )
 
-  /* Search match navigation. Matches are counted over the rows on screen — which
-     includes anything the cap reveal has surfaced, since that lands in `rows`.
-     Collapsed subtrees never enter the count: search doesn't open them, so a hit
-     the chevrons can't scroll to isn't one the counter should claim. */
+  /* Search match navigation. Matches are counted over the rows on screen — the
+     reveal effects above keep that honest: a hit behind a cap or a closed
+     chevron is surfaced into `rows`, so it lands in the count a render (or a
+     skeleton beat) after the query that found it. */
   const matchCount = useMemo(
     () =>
       normalizedQuery
