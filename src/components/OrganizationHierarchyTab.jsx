@@ -215,10 +215,11 @@ const TableScroll = styled.div`
    is already as wide as the table, and a full-width search reads as a filter on
    the page rather than on this one list.
 
-   Two overrides on Garden's MediaInput: it sizes to its font by default, so the
+   Overrides on Garden's MediaInput: it sizes to its font by default, so the
    height is pinned to 40px; and it aligns the icon and text on `baseline`, which
    leaves the magnifying glass sitting low in a taller-than-default input —
-   `center` puts it on the vertical centre line. */
+   `center` puts it on the vertical centre line. The figure margins below set
+   the icon/text and text/navigator spacing. */
 const SearchField = styled(Field)`
   width: 450px;
   /* 20px, with the count line below supplying its own 8px before the table. */
@@ -233,6 +234,27 @@ const SearchField = styled(Field)`
   [data-garden-id='forms.input'] {
     height: 100%;
   }
+
+  /* 12px between the magnifying glass and the query text. This has to target
+     the bare svg: Garden's start figure clones its styling onto the icon
+     element, but the inlined SearchIcon doesn't forward props, so the figure
+     class never lands on it and the icon carries no margin of its own. */
+  [data-garden-id='forms.faux_input'] > svg {
+    margin-right: 12px;
+    flex-shrink: 0;
+  }
+
+  /* The match navigator rides in the end figure, which Garden sizes as a fixed
+     16px icon box with an 8px gap — auto size instead, and 16px of air between
+     the query text and the counter. Its right edge then lands on the faux
+     input's own 12px padding, the same inset the magnifying glass gets on the
+     left. The selector only matches while a search is running — with no query
+     there is no end figure at all. */
+  [data-garden-id='forms.media_figure'] {
+    width: auto;
+    height: auto;
+    margin: 0 0 0 16px;
+  }
 `
 
 const SearchLabel = styled(Label)`
@@ -241,17 +263,16 @@ const SearchLabel = styled(Label)`
   color: #2f3130;
 `
 
-/* The label line: the field's own label on the left, the match navigator
-   ("1 of 2" with down/up chevrons) on the right while a search is running. */
+/* The label line. A wrapper of its own, not a bare Label, so the label and the
+   faux input never become direct siblings — Garden gives an input that follows
+   a label 8px of margin-top, on top of the 4px wanted here. */
 const SearchLabelRow = styled.div`
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
   margin-bottom: 4px;
 `
 
-/* Same size as the label but regular weight and fg/default — it reports position
-   ("1 of 2"), it isn't a heading for anything. */
+/* The match navigator ("1 of 2" with down/up chevrons), riding inside the
+   field's end figure. Same size as the query text but regular weight and
+   fg/default — it reports position, it isn't part of what was typed. */
 const MatchNav = styled.span`
   display: inline-flex;
   align-items: center;
@@ -259,6 +280,7 @@ const MatchNav = styled.span`
   font-size: 14px;
   font-weight: 400;
   color: #2f3130;
+  white-space: nowrap;
 `
 
 const MatchNavButton = styled.button`
@@ -1933,31 +1955,35 @@ export default function OrganizationHierarchyTab({
             <SearchLabel>
               {showPeopleRows ? 'Search organizations and users' : 'Search organizations'}
             </SearchLabel>
-            {normalizedQuery !== '' && (
-              <MatchNav>
-                {matchCount > 0 ? `${shownMatchIndex + 1} of ${matchCount}` : '0 of 0'}
-                {/* Down first, then up — Rusty's order. */}
-                <MatchNavButton
-                  type="button"
-                  aria-label="Next match"
-                  disabled={matchCount === 0 || shownMatchIndex >= matchCount - 1}
-                  onClick={() => goToMatch(shownMatchIndex + 1)}
-                >
-                  <Chevron direction="down" />
-                </MatchNavButton>
-                <MatchNavButton
-                  type="button"
-                  aria-label="Previous match"
-                  disabled={shownMatchIndex <= 0}
-                  onClick={() => goToMatch(shownMatchIndex - 1)}
-                >
-                  <Chevron direction="up" />
-                </MatchNavButton>
-              </MatchNav>
-            )}
           </SearchLabelRow>
           <MediaInput
             start={<SearchIcon />}
+            end={
+              /* The match navigator rides inside the field, at its right end,
+                 while a search is running. Down chevron first, then up —
+                 Rusty's order. */
+              normalizedQuery === '' ? undefined : (
+                <MatchNav>
+                  {matchCount > 0 ? `${shownMatchIndex + 1} of ${matchCount}` : '0 of 0'}
+                  <MatchNavButton
+                    type="button"
+                    aria-label="Next match"
+                    disabled={matchCount === 0 || shownMatchIndex >= matchCount - 1}
+                    onClick={() => goToMatch(shownMatchIndex + 1)}
+                  >
+                    <Chevron direction="down" />
+                  </MatchNavButton>
+                  <MatchNavButton
+                    type="button"
+                    aria-label="Previous match"
+                    disabled={shownMatchIndex <= 0}
+                    onClick={() => goToMatch(shownMatchIndex - 1)}
+                  >
+                    <Chevron direction="up" />
+                  </MatchNavButton>
+                </MatchNav>
+              )
+            }
             value={searchQuery}
             onChange={(event) => setSearchQuery(event.target.value)}
           />
