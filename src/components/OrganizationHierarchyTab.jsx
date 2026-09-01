@@ -1610,12 +1610,35 @@ export default function OrganizationHierarchyTab({
   const [searchQuery, setSearchQuery] = useState('')
   const normalizedQuery = searchQuery.trim().toLowerCase()
 
+  /* The reveal runs on a debounced copy of the query. Typing "law" passes
+     through "l" and "la", which hit nearly everything (every "Lab" under
+     Computer Science, for a start) — revealing on each keystroke would fling
+     the tree open for a word nobody searched for. Highlighting and the match
+     counter stay on the live query; only the tree-moving work waits for a
+     pause. */
+  const [revealQuery, setRevealQuery] = useState('')
+  useEffect(() => {
+    const timeoutId = window.setTimeout(() => setRevealQuery(normalizedQuery), 300)
+    return () => window.clearTimeout(timeoutId)
+  }, [normalizedQuery])
+
+  /* Which branches are open because of search, and which the reader shut
+     themselves during this query. The two are what let the reveal relax as the
+     query narrows — closing branches it opened that no longer lead to a hit —
+     without ever closing one the reader opened, or reopening one they closed.
+     The reader's closes reset with the query: a new word is a new search. */
+  const searchOpenedRef = useRef(new Set())
+  const readerClosedRef = useRef(new Set())
+  useEffect(() => {
+    readerClosedRef.current = new Set()
+  }, [normalizedQuery])
+
   /* A hit behind a View more cap raises that list's cap far enough to show it
      (the last matching row, so one search reveals every hit in the list, not
      just the first). Runs against the version's own cap map, keeping V3.5 and
      V3.75 independent. A hit behind a closed *chevron* is the effect below. */
   useEffect(() => {
-    if (!normalizedQuery || uncapped || (!isViewMore && !isScrollLoad)) return
+    if (!revealQuery || uncapped || (!isViewMore && !isScrollLoad)) return
     const setCapMap = isViewMore ? setExpandedCapMap : setScrollCapMap
     setCapMap((current) => {
       let next = null
@@ -1625,7 +1648,7 @@ export default function OrganizationHierarchyTab({
         if (effectiveCap === null || children.length <= effectiveCap) return
         let lastMatch = -1
         children.forEach((child, index) => {
-          if (child.name.toLowerCase().includes(normalizedQuery)) lastMatch = index
+          if (child.name.toLowerCase().includes(revealQuery)) lastMatch = index
         })
         if (lastMatch >= effectiveCap) {
           next = next ?? new Map(current)
@@ -1634,7 +1657,7 @@ export default function OrganizationHierarchyTab({
       })
       return next ?? current
     })
-  }, [normalizedQuery, isViewMore, isScrollLoad, uncapped, rowCapChoice, dataOptions])
+  }, [revealQuery, isViewMore, isScrollLoad, uncapped, rowCapChoice, dataOptions])
 
   /* Every organization in the current dataset, walked from the tree's root —
      what search can hit. ORGANIZATIONS alone isn't the whole set: the generated
@@ -1654,33 +1677,51 @@ export default function OrganizationHierarchyTab({
   /* A hit inside a closed chevron opens the chevrons above it — enough of the
      path for the hit to be on screen, no more. The hit's own chevron keeps its
      state, and branches with no hit in them stay shut (that was the earlier
-     complaint: search unfolding levels the word isn't in). Additive, like the
-     cap reveal: search never closes anything the reader opened, and what it
-     opened stays open after the field is cleared.
+     complaint: search unfolding levels the word isn't in). And as the query
+     narrows or clears, branches the search opened that no longer lead to a hit
+     close again — the tree relaxes back to the reader's own arrangement. The
+     two refs above are what make that safe: a branch the reader opened is
+     never search's to close, and one they closed mid-query stays closed.
 
      Big subtrees get the same skeleton beat a manual chevron click would — it's
      the same simulated fetch, just triggered by the search. Keyed on
-     expandedIds as well as the query: opening branches changes the set, the
-     effect re-runs, finds nothing missing, and stops. */
+     expandedIds as well as the query: opening or closing branches changes the
+     set, the effect re-runs, finds nothing left to do, and stops. */
   useEffect(() => {
-    if (!normalizedQuery || !isExpandable) return
+    if (!isExpandable) return
     const toOpen = new Set()
-    searchableOrgs.forEach((org) => {
-      if (!org.name.toLowerCase().includes(normalizedQuery)) return
-      // Ancestors only — the hit's own chevron stays as it was; opening it
-      // would unfold a subtree nobody asked to see.
-      pathIds(org.id).slice(0, -1).forEach((id) => toOpen.add(id))
+    if (revealQuery) {
+      searchableOrgs.forEach((org) => {
+        if (!org.name.toLowerCase().includes(revealQuery)) return
+        // Ancestors only — the hit's own chevron stays as it was; opening it
+        // would unfold a subtree nobody asked to see.
+        pathIds(org.id).slice(0, -1).forEach((id) => toOpen.add(id))
+      })
+      readerClosedRef.current.forEach((id) => toOpen.delete(id))
+    }
+    const toClose = [...searchOpenedRef.current].filter((id) => !toOpen.has(id))
+    const toAdd = [...toOpen].filter((id) => !expandedIds.has(id))
+    if (toClose.length === 0 && toAdd.length === 0) return
+    setExpandedIds((current) => {
+      const next = new Set([...current].filter((id) => !toClose.includes(id)))
+      toAdd.forEach((id) => next.add(id))
+      return next
     })
-    const missing = [...toOpen].filter((id) => !expandedIds.has(id))
-    if (missing.length === 0) return
-    setExpandedIds((current) => new Set([...current, ...missing]))
-    const bigOpens = missing.filter(
+    searchOpenedRef.current = new Set(
+      [...searchOpenedRef.current, ...toAdd].filter((id) => toOpen.has(id)),
+    )
+    const bigOpens = toAdd.filter(
       (id) => getChildren(id, dataOptions).length > SKELETON_THRESHOLD,
     )
-    if (bigOpens.length > 0) {
-      setLoadingIds((current) => new Set([...current, ...bigOpens]))
+    if (toClose.length > 0 || bigOpens.length > 0) {
+      setLoadingIds((current) => {
+        const next = new Set(current)
+        toClose.forEach((id) => next.delete(id))
+        bigOpens.forEach((id) => next.add(id))
+        return next
+      })
     }
-  }, [normalizedQuery, isExpandable, expandedIds, searchableOrgs, dataOptions])
+  }, [revealQuery, isExpandable, expandedIds, searchableOrgs, dataOptions])
 
   /* The increment is `rowCapChoice` — the Show control's own setting — rather than a
      fixed number, so "load the next batch" always means the same size batch the
@@ -1719,6 +1760,13 @@ export default function OrganizationHierarchyTab({
 
   const toggleExpanded = (orgId) => {
     const isOpening = !expandedIds.has(orgId)
+
+    /* Search bookkeeping: a branch the reader touches is theirs from then on.
+       One they open must never be closed by the reveal relaxing as the query
+       narrows; one they close must not be reopened while this query stands. */
+    searchOpenedRef.current.delete(orgId)
+    if (isOpening) readerClosedRef.current.delete(orgId)
+    else readerClosedRef.current.add(orgId)
 
     setExpandedIds((current) => {
       const next = new Set(current)
@@ -1769,6 +1817,13 @@ export default function OrganizationHierarchyTab({
   useEffect(() => {
     setExpandedIds(new Set(rootId ? [rootId] : pathIds(selectedId)))
     setLoadingIds(new Set())
+    /* The tree was just rebuilt around the selection, so whatever search was
+       holding open belongs to the old tree. Cleared here rather than left for
+       the reveal to close: a stale ownership set could shut a branch the fresh
+       seed just opened. The reveal reopens what the query still needs on its
+       next pass. */
+    searchOpenedRef.current = new Set()
+    readerClosedRef.current = new Set()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [version, rootId])
 
