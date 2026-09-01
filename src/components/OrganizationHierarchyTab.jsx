@@ -16,6 +16,7 @@ import { Field, Label, MediaInput } from '@zendeskgarden/react-forms'
 import { Skeleton } from '@zendeskgarden/react-loaders'
 import { SM } from '@zendeskgarden/react-typography'
 import {
+  ORGANIZATIONS,
   getChildren,
   getOrganization,
   getPeopleIn,
@@ -223,6 +224,28 @@ const SearchLabel = styled(Label)`
   color: #2f3130;
   margin-bottom: 4px;
 `
+
+/* The search highlight: Flora's yellow.200, the pale fill Flora pairs with 900
+   text everywhere else. Text colour is inherited so a hit on the selected row's
+   bold name stays bold and a hit on a link stays blue. */
+const SearchMark = styled.mark`
+  background-color: #f6eba6;
+  color: inherit;
+`
+
+/* Splits a row's name around the first case-insensitive hit. Returns the plain
+   string when there's no query or no hit, so unaffected rows render untouched. */
+const NameText = ({ name, query }) => {
+  const index = query ? name.toLowerCase().indexOf(query) : -1
+  if (index < 0) return name
+  return (
+    <>
+      {name.slice(0, index)}
+      <SearchMark>{name.slice(index, index + query.length)}</SearchMark>
+      {name.slice(index + query.length)}
+    </>
+  )
+}
 
 /* The count line, above the table on every version. 20px above comes from
    SearchField's margin-bottom; no top margin here, so the two don't stack. 8px below
@@ -1481,6 +1504,65 @@ export default function OrganizationHierarchyTab({
     [],
   )
 
+  /* The search field's text. Highlighting keys off the trimmed lowercase form;
+     the raw string stays untouched so the field shows exactly what was typed. */
+  const [searchQuery, setSearchQuery] = useState('')
+  const normalizedQuery = searchQuery.trim().toLowerCase()
+
+  /* A hit must never stay off screen. A match inside a collapsed subtree opens
+     the path down to it — the same additive set-selection uses, so a search can
+     only ever reveal, never close something the reader opened. */
+  useEffect(() => {
+    if (!normalizedQuery || !isExpandable || rootId) return
+    const root = getPath(selectedId)[0]
+    if (!root) return
+    const matches = []
+    const walk = (orgId) => {
+      getChildren(orgId, dataOptions).forEach((child) => {
+        if (child.name.toLowerCase().includes(normalizedQuery)) matches.push(child)
+        walk(child.id)
+      })
+    }
+    walk(root.id)
+    if (matches.length === 0) return
+    setExpandedIds((current) => {
+      const missing = new Set()
+      matches.forEach((match) => {
+        getPath(match.id).forEach((org) => {
+          if (org.id !== match.id && !current.has(org.id)) missing.add(org.id)
+        })
+      })
+      if (missing.size === 0) return current
+      return new Set([...current, ...missing])
+    })
+  }, [normalizedQuery, isExpandable, rootId, selectedId, dataOptions])
+
+  /* The cap half of the same rule: a hit hidden behind View more raises that
+     list's cap far enough to show it (the last matching row, so one search
+     reveals every hit in the list, not just the first). Runs against the
+     version's own cap map, keeping V3.5 and V3.75 independent. */
+  useEffect(() => {
+    if (!normalizedQuery || uncapped || (!isViewMore && !isScrollLoad)) return
+    const setCapMap = isViewMore ? setExpandedCapMap : setScrollCapMap
+    setCapMap((current) => {
+      let next = null
+      ORGANIZATIONS.forEach((org) => {
+        const children = getChildren(org.id, dataOptions)
+        const effectiveCap = current.has(org.id) ? current.get(org.id) : rowCapChoice
+        if (effectiveCap === null || children.length <= effectiveCap) return
+        let lastMatch = -1
+        children.forEach((child, index) => {
+          if (child.name.toLowerCase().includes(normalizedQuery)) lastMatch = index
+        })
+        if (lastMatch >= effectiveCap) {
+          next = next ?? new Map(current)
+          next.set(org.id, lastMatch + 1)
+        }
+      })
+      return next ?? current
+    })
+  }, [normalizedQuery, isViewMore, isScrollLoad, uncapped, rowCapChoice, dataOptions])
+
   /* The increment is `rowCapChoice` — the Show control's own setting — rather than a
      fixed number, so "load the next batch" always means the same size batch the
      reader chose to see in the first place. */
@@ -1742,7 +1824,11 @@ export default function OrganizationHierarchyTab({
           <SearchLabel>
             {showPeopleRows ? 'Search organizations and users' : 'Search organizations'}
           </SearchLabel>
-          <MediaInput start={<SearchIcon />} />
+          <MediaInput
+            start={<SearchIcon />}
+            value={searchQuery}
+            onChange={(event) => setSearchQuery(event.target.value)}
+          />
         </SearchField>
       )}
 
@@ -2014,7 +2100,7 @@ export default function OrganizationHierarchyTab({
                            rooted page nothing is, since there is nowhere for a name to
                            go that wouldn't undo what the page is for. */
                         <NodeName $current={isCurrent} title={row.node.name}>
-                          {row.node.name}
+                          <NameText name={row.node.name} query={normalizedQuery} />
                         </NodeName>
                       ) : (
                         <NameLink
@@ -2025,7 +2111,7 @@ export default function OrganizationHierarchyTab({
                           }}
                           title={row.node.name}
                         >
-                          {row.node.name}
+                          <NameText name={row.node.name} query={normalizedQuery} />
                         </NameLink>
                       )}
                       {isSansLines && !isPerson && row.childOrgCount > 0 && (
