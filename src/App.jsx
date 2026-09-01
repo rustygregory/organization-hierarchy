@@ -87,15 +87,18 @@ const TabBarOverlay = styled.div`
    that is a variant of another, which it isn't.
 
    V3.5 is a variant of V3: same wide roster, same Show control, same cap. V3 sends
-   to a new tab; V3.5 expands in place with clickable View more buttons. V3.75 starts
+   to a new tab; V3.5 expands in place with a clickable View more button. V3.75 starts
    as a copy of V3.5 for scroll-to-load development. Ids are `v3b` and `v3c` — retired
-   decimals from before the renumbering, safe to reuse now. V4 is archived. */
+   decimals from before the renumbering, safe to reuse now.
+
+   V3.5 is the version on the table now: it opens by default and everything else
+   sits under ARCHIVE in the switcher. */
 const VERSIONS = [
-  { id: 'v1', label: 'V1 MVP' },
-  { id: 'v2', label: 'V2 Expand all rows' },
-  { id: 'v3', label: 'V3 View all with pagination' },
   { id: 'v3b', label: 'V3.5 View more in place' },
-  { id: 'v3c', label: 'V3.75 Scroll to load' },
+  { id: 'v1', label: 'V1 MVP', archived: true },
+  { id: 'v2', label: 'V2 Expand all rows', archived: true },
+  { id: 'v3', label: 'V3 View all with pagination', archived: true },
+  { id: 'v3c', label: 'V3.75 Scroll to load', archived: true },
   { id: 'v4', label: 'V4 No chevrons', archived: true },
 ]
 
@@ -126,12 +129,12 @@ export default function App() {
   // full list 100 rows at a time.
   // V4 No chevrons is V1's columns against Bramblewick's full 150 child departments,
   // paged 100 at a time and marking rows with a dot rather than a chevron.
-  // V3.5 View more in place is V3 with the cap row replaced: clickable View more adds
-  // 50 rows in place and View all drops the cap entirely.
+  // V3.5 View more in place is V3 with the cap row replaced: a clickable View more
+  // adds 50 rows in place, with the capped remainder counted beside it.
   // V3.5 Scroll to load is the same cap-and-counter model, but loads 50 rows
   // automatically as you scroll near the bottom — no buttons, just a blue indicator
   // and infinite scroll.
-  const [version, setVersion] = useState('v1')
+  const [version, setVersion] = useState('v3b')
   const [commentIsOn, setCommentIsOn] = useState(false)
 
   // Which organization's profile is open. Lives here because the tab strip and

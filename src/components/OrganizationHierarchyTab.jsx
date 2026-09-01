@@ -703,23 +703,12 @@ const ViewAllButton = styled(Anchor)`
   cursor: pointer;
 `
 
+/* fg/subtle at 14px: recedes next to the View more action but stays legible
+   as the running count of what's still capped. */
 const RemainderNote = styled(SM)`
   color: #646864;
+  font-size: 14px;
   white-space: nowrap;
-`
-
-/* V3.5's secondary action — "View all 175". Same text-button style as ViewAllButton
-   but slightly lighter weight so "View more" reads as the primary action. */
-const ViewAllInlineButton = styled(Anchor)`
-  font-size: 14px;
-  cursor: pointer;
-`
-
-/* The dot that sits between View more and View all in V3.5's cap row. */
-const ViewMoreSep = styled.span`
-  color: #c2c8cc;
-  font-size: 14px;
-  flex-shrink: 0;
 `
 
 /* V3.75's cap row has no buttons — this is a 1px marker, not a piece of content.
@@ -1877,8 +1866,8 @@ export default function OrganizationHierarchyTab({
             }
 
             /* V3.5's escape hatch: View more adds VIEW_MORE_STEP rows in place,
-               View all drops the cap entirely. The counter stays accurate until
-               all items are visible. */
+               with the count of what's still capped beside it. There is no
+               View all — in-place expansion is the treatment on the table. */
             if (row.kind === 'viewMore') {
               return (
                 <TreeRow key={row.key} $ruleInset={ruleInsetFor(row.depth)} $noRule={isSansLines}>
@@ -1900,20 +1889,6 @@ export default function OrganizationHierarchyTab({
                         >
                           View more
                         </ViewAllButton>
-                        <ViewMoreSep aria-hidden="true">·</ViewMoreSep>
-                        <ViewAllInlineButton
-                          href="#"
-                          onClick={(event) => {
-                            event.preventDefault()
-                            setExpandedCapMap((prev) => {
-                              const next = new Map(prev)
-                              next.set(row.node.id, null)
-                              return next
-                            })
-                          }}
-                        >
-                          View all {row.totalCount}
-                        </ViewAllInlineButton>
                         <RemainderNote>
                           {row.hiddenCount} more not shown
                         </RemainderNote>
