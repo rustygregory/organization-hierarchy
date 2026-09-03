@@ -1,8 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 
-/* global __BUILD_DATE__ */
-
 /* Reviewer chrome: a compact dark strip above the product prototype.
    Keeps identity (title + meta) and controls (version switcher, comment toggle)
    visible without interfering with the design being reviewed. */
