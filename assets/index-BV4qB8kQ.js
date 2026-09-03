@@ -1885,7 +1885,7 @@ Error generating stack: `+e.message+`
   background-color: ${e=>(Lg[e.$tone]||Lg.info).background};
   color: ${e=>(Lg[e.$tone]||Lg.info).color};
   font-size: 12px;
-`,zg=24,Bg=200,Vg=()=>{let e=[...document.querySelectorAll(`nav`)].map(e=>e.getBoundingClientRect()).find(e=>e.left<=0&&e.width>0);return Math.min((e?.width||0)+zg,Bg)},Hg=(e,t)=>{let n=new Date(e).getTime();if(Number.isNaN(n))return``;let r=Math.max(0,Math.round((t-n)/1e3));if(r<60)return`just now`;let i=Math.round(r/60);if(i<60)return`${i}m ago`;let a=Math.round(i/60);if(a<24)return`${a}h ago`;let o=Math.round(a/24);return o<31?`${o}d ago`:`${Math.round(o/30)}mo ago`};function Ug({context:e,onRestoreContext:t,toggleLeft:n,isOn:r,onIsOnChange:i}){let a=r!==void 0&&i!==void 0,[o,s]=(0,g.useState)(!1),c=a?r:o,l=(0,g.useRef)(null);l.current=a?e=>i(typeof e==`function`?e(r):e):s;let u=e=>l.current(e),[d,f]=(0,g.useState)([]),[p,m]=(0,g.useState)(null),[h,_]=(0,g.useState)(lg),[v,y]=(0,g.useState)(()=>!lg()),[b,x]=(0,g.useState)(null),[S,C]=(0,g.useState)(null),[w,T]=(0,g.useState)(``),[E,D]=(0,g.useState)(``),[O,ee]=(0,g.useState)(0),[k,te]=(0,g.useState)(()=>Date.now()),[ne,re]=(0,g.useState)(zg),A=n??ne;(0,g.useEffect)(()=>{let e=!1;return rg().then(t=>{e||f(t)}).catch(t=>{e||m(t.message)}),()=>{e=!0}},[]),(0,g.useEffect)(()=>{if(!c)return;let e=()=>ee(e=>e+1),t=Nh();window.addEventListener(`scroll`,e,!0),window.addEventListener(`resize`,e);let n=new ResizeObserver(e);t&&n.observe(t);let r=setTimeout(e,60);return()=>{window.removeEventListener(`scroll`,e,!0),window.removeEventListener(`resize`,e),n.disconnect(),clearTimeout(r)}},[c]),(0,g.useEffect)(()=>{if(n!==void 0)return;let e=()=>re(Vg()),t=requestAnimationFrame(e),r=setTimeout(e,200);return window.addEventListener(`resize`,e),()=>{cancelAnimationFrame(t),clearTimeout(r),window.removeEventListener(`resize`,e)}},[n]),(0,g.useEffect)(()=>{if(!c)return;let e=setInterval(()=>te(Date.now()),3e4);return()=>clearInterval(e)},[c]),(0,g.useEffect)(()=>{if(!c)return;let e=e=>{e.key===`Escape`&&(b?x(null):S?C(null):l.current(!1))};return window.addEventListener(`keydown`,e),()=>window.removeEventListener(`keydown`,e)},[c,b,S]);let j=(0,g.useMemo)(()=>d.filter(e=>!e.parentId),[d]),M=(0,g.useCallback)(e=>d.filter(t=>t.parentId===e),[d]),ie=(0,g.useMemo)(()=>j.map(t=>{if(!Vh(t.anchor?.context,e))return null;let n=Bh(t.anchor);return n?{comment:t,position:n}:null}).filter(Boolean),[j,e,O]),ae=(0,g.useMemo)(()=>j.filter(t=>!Vh(t.anchor?.context,e)),[j,e]),N=(0,g.useMemo)(()=>{let e=Nh();if(!e)return null;let t=e.getBoundingClientRect();return{left:t.left,top:t.top,width:t.width,height:t.height}},[O]),oe=(0,g.useMemo)(()=>b?Bh(b.anchor):null,[b,O]),se=S?d.find(e=>e.id===S):null,P=(0,g.useMemo)(()=>se?Bh(se.anchor):null,[se,O]),ce=t=>{if(t.metaKey||t.ctrlKey||t.altKey){let e=document.elementsFromPoint(t.clientX,t.clientY).find(e=>Nh()?.contains(e))?.closest(`a[href], button, input, select, [role="button"]`);e&&e.click();return}let n=Rh(t.clientX,t.clientY,e);if(!n){C(null),x(null);return}C(null),T(``),x({anchor:n})},le=async e=>{if(e.preventDefault(),!(!w.trim()||!h.trim())){ug(h.trim()),y(!1);try{let e=await ig({author:h.trim(),body:w.trim(),anchor:b.anchor,number:j.length+1});f(t=>[...t,e]),x(null),T(``),C(e.id)}catch(e){m(e.message)}}},ue=async e=>{if(e.preventDefault(),!(!E.trim()||!h.trim()||!se)){ug(h.trim()),y(!1);try{let e=await ig({author:h.trim(),body:E.trim(),anchor:null,parentId:se.id});f(t=>[...t,e]),D(``)}catch(e){m(e.message)}}},de=async e=>{try{await ag(e.id,!e.resolved),f(t=>t.map(t=>t.id===e.id?{...t,resolved:!e.resolved}:t))}catch(e){m(e.message)}},F=async e=>{try{await og(e.id),f(t=>t.filter(t=>t.id!==e.id&&t.parentId!==e.id)),S===e.id&&C(null)}catch(e){m(e.message)}},fe=n=>{let r=n.anchor?.context;r&&!Vh(r,e)&&t?.(r),C(n.id),x(null),D(``);let i=0,a=()=>{let e=zh(n.anchor);if(e){e.scrollIntoView({block:`center`,inline:`nearest`}),ee(e=>e+1);return}i++<10&&requestAnimationFrame(a)};requestAnimationFrame(a)},pe=j.filter(e=>!e.resolved).length;return(0,K.jsxs)(K.Fragment,{children:[!a&&(0,K.jsxs)(fg,{type:`button`,style:{left:A},$active:c,onClick:()=>{u(e=>!e),x(null),C(null)},"aria-pressed":c,children:[c?`Exit comment mode`:`Comment`,!c&&pe>0?` (${pe})`:``]}),c&&(0,K.jsxs)(K.Fragment,{children:[(0,K.jsx)(Og,{}),N&&(0,K.jsx)(pg,{onClick:ce,style:{left:N.left,top:N.top,width:N.width,height:N.height}}),ie.map(({comment:e,position:t})=>(0,K.jsx)(mg,{type:`button`,style:{left:t.x,top:t.y},$resolved:e.resolved,$dimmed:S!==null&&S!==e.id,onClick:t=>{t.stopPropagation(),x(null),D(``),C(e.id===S?null:e.id)},"aria-label":`Comment ${e.number??``} by ${e.author}`,children:e.number??`•`},e.id)),b&&oe&&(0,K.jsxs)(K.Fragment,{children:[(0,K.jsx)(mg,{as:`div`,style:{left:oe.x,top:oe.y},"aria-hidden":`true`,children:`+`}),(0,K.jsxs)(hg,{style:Jg(oe),onClick:e=>e.stopPropagation(),children:[(0,K.jsxs)(gg,{children:[(0,K.jsx)(`span`,{children:`New comment`}),(0,K.jsx)(_g,{children:(0,K.jsx)(vg,{type:`button`,onClick:()=>x(null),children:`Cancel`})})]}),b.anchor.label&&(0,K.jsxs)(Dg,{children:[`On: `,b.anchor.label]}),(0,K.jsxs)(Sg,{onSubmit:le,children:[v&&(0,K.jsx)(wg,{value:h,onChange:e=>_(e.target.value),placeholder:`Your name`,"aria-label":`Your name`}),(0,K.jsx)(Cg,{value:w,onChange:e=>T(e.target.value),placeholder:`Add a comment`,"aria-label":`Comment`,autoFocus:!0}),(0,K.jsx)(Tg,{children:(0,K.jsx)(Eg,{type:`submit`,disabled:!w.trim()||!h.trim(),children:`Comment`})})]})]})]}),se&&P&&!b&&(0,K.jsxs)(hg,{style:Jg(P),onClick:e=>e.stopPropagation(),children:[(0,K.jsxs)(gg,{children:[(0,K.jsxs)(`span`,{children:[`#`,se.number??`—`,P.drifted?` · content changed since`:``]}),(0,K.jsxs)(_g,{children:[(0,K.jsx)(vg,{type:`button`,onClick:()=>de(se),children:se.resolved?`Unresolve`:`Resolve`}),(0,K.jsx)(vg,{type:`button`,onClick:()=>F(se),children:`Delete`}),(0,K.jsx)(vg,{type:`button`,onClick:()=>C(null),children:`Close`})]})]}),(0,K.jsxs)(yg,{children:[(0,K.jsxs)(bg,{children:[se.author,` · `,Hg(se.createdAt,k)]}),(0,K.jsx)(xg,{children:se.body})]}),M(se.id).map(e=>(0,K.jsxs)(yg,{children:[(0,K.jsxs)(bg,{children:[e.author,` · `,Hg(e.createdAt,k)]}),(0,K.jsx)(xg,{children:e.body})]},e.id)),(0,K.jsxs)(Sg,{onSubmit:ue,children:[v&&(0,K.jsx)(wg,{value:h,onChange:e=>_(e.target.value),placeholder:`Your name`,"aria-label":`Your name`}),(0,K.jsx)(Cg,{value:E,onChange:e=>D(e.target.value),placeholder:`Reply`,"aria-label":`Reply`}),(0,K.jsx)(Tg,{children:(0,K.jsx)(Eg,{type:`submit`,disabled:!E.trim()||!h.trim(),children:`Reply`})})]})]}),(0,K.jsxs)(kg,{"data-comment-sidebar":`true`,onClick:e=>e.stopPropagation(),children:[(0,K.jsxs)(Ag,{children:[(0,K.jsxs)(`span`,{children:[`Comments (`,j.length,`)`]}),(0,K.jsx)(vg,{type:`button`,style:{color:`#646864`},onClick:()=>u(!1),children:`Close`})]}),Jh?(0,K.jsx)(Rg,{$tone:`info`,children:`Shared — everyone with this link sees these comments. You can delete your own.`}):(0,K.jsx)(Rg,{$tone:`warn`,children:`Stored in this browser only — others won't see these. See src/comments/SETUP.md to share them.`}),p&&(0,K.jsx)(Rg,{$tone:`error`,children:p}),ae.length>0&&(0,K.jsxs)(Rg,{$tone:`info`,children:[ae.length,` comment`,ae.length===1?``:`s`,` on another view — click to jump there.`]}),(0,K.jsx)(Rg,{$tone:`info`,children:`Click the design to comment. ⌘-click (or Ctrl-click) to navigate without leaving comment mode.`}),(0,K.jsx)(jg,{children:j.length===0?(0,K.jsx)(Ig,{children:`Click anywhere on the design to leave a comment.`}):j.map(e=>(0,K.jsxs)(Mg,{type:`button`,$active:e.id===S,$resolved:e.resolved,onClick:()=>fe(e),children:[(0,K.jsxs)(Ng,{children:[(0,K.jsxs)(`span`,{children:[`#`,e.number??`—`]}),(0,K.jsx)(`span`,{children:e.author}),(0,K.jsx)(`span`,{children:Hg(e.createdAt,k)}),e.resolved&&(0,K.jsx)(`span`,{children:`· resolved`})]}),(0,K.jsx)(Pg,{children:e.body}),e.anchor?.label&&(0,K.jsxs)(Fg,{children:[`On: `,e.anchor.label]})]},e.id))})]})]})]})}var Wg=300,Gg=320,Kg=320,qg=12,Jg=e=>{let t=window.innerWidth-Kg-Wg-qg,n=Math.max(qg,Math.min(e.x+16,t)),r=window.innerHeight-Gg-qg;return{left:n,top:Math.max(qg,Math.min(e.y,r))}},Yg=R.div`
+`,zg=24,Bg=200,Vg=()=>{let e=[...document.querySelectorAll(`nav`)].map(e=>e.getBoundingClientRect()).find(e=>e.left<=0&&e.width>0);return Math.min((e?.width||0)+zg,Bg)},Hg=(e,t)=>{let n=new Date(e).getTime();if(Number.isNaN(n))return``;let r=Math.max(0,Math.round((t-n)/1e3));if(r<60)return`just now`;let i=Math.round(r/60);if(i<60)return`${i}m ago`;let a=Math.round(i/60);if(a<24)return`${a}h ago`;let o=Math.round(a/24);return o<31?`${o}d ago`:`${Math.round(o/30)}mo ago`};function Ug({context:e,onRestoreContext:t,toggleLeft:n,isOn:r,onIsOnChange:i}){let a=r!==void 0&&i!==void 0,[o,s]=(0,g.useState)(!1),c=a?r:o,l=(0,g.useRef)(null);l.current=a?e=>i(typeof e==`function`?e(r):e):s;let u=e=>l.current(e),[d,f]=(0,g.useState)([]),[p,m]=(0,g.useState)(null),[h,_]=(0,g.useState)(lg),[v,y]=(0,g.useState)(()=>!lg()),[b,x]=(0,g.useState)(null),[S,C]=(0,g.useState)(null),[w,T]=(0,g.useState)(``),[E,D]=(0,g.useState)(``),[O,ee]=(0,g.useState)(0),[k,te]=(0,g.useState)(()=>Date.now()),[ne,re]=(0,g.useState)(zg),A=n??ne;(0,g.useEffect)(()=>{let e=!1;return rg().then(t=>{e||f(t)}).catch(t=>{e||m(t.message)}),()=>{e=!0}},[]),(0,g.useEffect)(()=>{if(!c)return;let e=()=>ee(e=>e+1),t=Nh();window.addEventListener(`scroll`,e,!0),window.addEventListener(`resize`,e);let n=new ResizeObserver(e);t&&n.observe(t);let r=setTimeout(e,60);return()=>{window.removeEventListener(`scroll`,e,!0),window.removeEventListener(`resize`,e),n.disconnect(),clearTimeout(r)}},[c]),(0,g.useEffect)(()=>{if(n!==void 0)return;let e=()=>re(Vg()),t=requestAnimationFrame(e),r=setTimeout(e,200);return window.addEventListener(`resize`,e),()=>{cancelAnimationFrame(t),clearTimeout(r),window.removeEventListener(`resize`,e)}},[n]),(0,g.useEffect)(()=>{if(!c)return;let e=setInterval(()=>te(Date.now()),3e4);return()=>clearInterval(e)},[c]),(0,g.useEffect)(()=>{if(!c)return;let e=e=>{e.key===`Escape`&&(b?x(null):S?C(null):l.current(!1))};return window.addEventListener(`keydown`,e),()=>window.removeEventListener(`keydown`,e)},[c,b,S]);let j=(0,g.useMemo)(()=>d.filter(e=>!e.parentId),[d]),M=(0,g.useCallback)(e=>d.filter(t=>t.parentId===e),[d]),ie=(0,g.useMemo)(()=>j.map(t=>{if(!Vh(t.anchor?.context,e))return null;let n=Bh(t.anchor);return n?{comment:t,position:n}:null}).filter(Boolean),[j,e,O]),ae=(0,g.useMemo)(()=>j.filter(t=>!Vh(t.anchor?.context,e)),[j,e]),N=(0,g.useMemo)(()=>{let e=Nh();if(!e)return null;let t=e.getBoundingClientRect();return{left:t.left,top:t.top,width:t.width,height:t.height}},[O]),oe=(0,g.useMemo)(()=>b?Bh(b.anchor):null,[b,O]),se=S?d.find(e=>e.id===S):null,P=(0,g.useMemo)(()=>se?Bh(se.anchor):null,[se,O]),ce=t=>{if(t.metaKey||t.ctrlKey||t.altKey){let e=document.elementsFromPoint(t.clientX,t.clientY).find(e=>Nh()?.contains(e))?.closest(`a[href], button, input, select, [role="button"]`);e&&e.click();return}let n=Rh(t.clientX,t.clientY,e);if(!n){C(null),x(null);return}C(null),T(``),x({anchor:n})},le=async e=>{if(e.preventDefault(),!(!w.trim()||!h.trim())){ug(h.trim()),y(!1);try{let e=await ig({author:h.trim(),body:w.trim(),anchor:b.anchor,number:j.length+1});f(t=>[...t,e]),x(null),T(``),C(e.id)}catch(e){m(e.message)}}},ue=async e=>{if(e.preventDefault(),!(!E.trim()||!h.trim()||!se)){ug(h.trim()),y(!1);try{let e=await ig({author:h.trim(),body:E.trim(),anchor:null,parentId:se.id});f(t=>[...t,e]),D(``)}catch(e){m(e.message)}}},de=async e=>{try{await ag(e.id,!e.resolved),f(t=>t.map(t=>t.id===e.id?{...t,resolved:!e.resolved}:t))}catch(e){m(e.message)}},F=async e=>{try{await og(e.id),f(t=>t.filter(t=>t.id!==e.id&&t.parentId!==e.id)),S===e.id&&C(null)}catch(e){m(e.message)}},fe=n=>{let r=n.anchor?.context;r&&!Vh(r,e)&&t?.(r),C(n.id),x(null),D(``);let i=0,a=()=>{let e=zh(n.anchor);if(e){e.scrollIntoView({block:`center`,inline:`nearest`}),ee(e=>e+1);return}i++<10&&requestAnimationFrame(a)};requestAnimationFrame(a)},pe=j.filter(e=>!e.resolved).length;return(0,K.jsxs)(K.Fragment,{children:[!a&&(0,K.jsxs)(fg,{type:`button`,style:{left:A},$active:c,onClick:()=>{u(e=>!e),x(null),C(null)},"aria-pressed":c,children:[c?`Exit comment mode`:`Comment`,!c&&pe>0?` (${pe})`:``]}),c&&(0,K.jsxs)(K.Fragment,{children:[(0,K.jsx)(Og,{}),N&&(0,K.jsx)(pg,{onClick:ce,style:{left:N.left,top:N.top,width:N.width,height:N.height}}),ie.map(({comment:e,position:t})=>(0,K.jsx)(mg,{type:`button`,style:{left:t.x,top:t.y},$resolved:e.resolved,$dimmed:S!==null&&S!==e.id,onClick:t=>{t.stopPropagation(),x(null),D(``),C(e.id===S?null:e.id)},"aria-label":`Comment ${e.number??``} by ${e.author}`,children:e.number??`•`},e.id)),b&&oe&&(0,K.jsxs)(K.Fragment,{children:[(0,K.jsx)(mg,{as:`div`,style:{left:oe.x,top:oe.y},"aria-hidden":`true`,children:`+`}),(0,K.jsxs)(hg,{style:Jg(oe),onClick:e=>e.stopPropagation(),children:[(0,K.jsxs)(gg,{children:[(0,K.jsx)(`span`,{children:`New comment`}),(0,K.jsx)(_g,{children:(0,K.jsx)(vg,{type:`button`,onClick:()=>x(null),children:`Cancel`})})]}),b.anchor.label&&(0,K.jsxs)(Dg,{children:[`On: `,b.anchor.label]}),(0,K.jsxs)(Sg,{onSubmit:le,children:[v&&(0,K.jsx)(wg,{value:h,onChange:e=>_(e.target.value),placeholder:`Your name`,"aria-label":`Your name`}),(0,K.jsx)(Cg,{value:w,onChange:e=>T(e.target.value),placeholder:`Add a comment`,"aria-label":`Comment`,autoFocus:!0}),(0,K.jsx)(Tg,{children:(0,K.jsx)(Eg,{type:`submit`,disabled:!w.trim()||!h.trim(),children:`Comment`})})]})]})]}),se&&P&&!b&&(0,K.jsxs)(hg,{style:Jg(P),onClick:e=>e.stopPropagation(),children:[(0,K.jsxs)(gg,{children:[(0,K.jsxs)(`span`,{children:[`#`,se.number??`—`,P.drifted?` · content changed since`:``]}),(0,K.jsxs)(_g,{children:[(0,K.jsx)(vg,{type:`button`,onClick:()=>de(se),children:se.resolved?`Unresolve`:`Resolve`}),(0,K.jsx)(vg,{type:`button`,onClick:()=>F(se),children:`Delete`}),(0,K.jsx)(vg,{type:`button`,onClick:()=>C(null),children:`Close`})]})]}),(0,K.jsxs)(yg,{children:[(0,K.jsxs)(bg,{children:[se.author,` · `,Hg(se.createdAt,k)]}),(0,K.jsx)(xg,{children:se.body})]}),M(se.id).map(e=>(0,K.jsxs)(yg,{children:[(0,K.jsxs)(bg,{children:[e.author,` · `,Hg(e.createdAt,k)]}),(0,K.jsx)(xg,{children:e.body})]},e.id)),(0,K.jsxs)(Sg,{onSubmit:ue,children:[v&&(0,K.jsx)(wg,{value:h,onChange:e=>_(e.target.value),placeholder:`Your name`,"aria-label":`Your name`}),(0,K.jsx)(Cg,{value:E,onChange:e=>D(e.target.value),placeholder:`Reply`,"aria-label":`Reply`}),(0,K.jsx)(Tg,{children:(0,K.jsx)(Eg,{type:`submit`,disabled:!E.trim()||!h.trim(),children:`Reply`})})]})]}),(0,K.jsxs)(kg,{"data-comment-sidebar":`true`,onClick:e=>e.stopPropagation(),children:[(0,K.jsxs)(Ag,{children:[(0,K.jsxs)(`span`,{children:[`Comments (`,j.length,`)`]}),(0,K.jsx)(vg,{type:`button`,style:{color:`#646864`},onClick:()=>u(!1),children:`Close`})]}),Jh?(0,K.jsx)(Rg,{$tone:`info`,children:`Shared — everyone with this link sees these comments. You can delete your own.`}):(0,K.jsx)(Rg,{$tone:`warn`,children:`Stored in this browser only — others won't see these. See src/comments/SETUP.md to share them.`}),p&&(0,K.jsx)(Rg,{$tone:`error`,children:p}),ae.length>0&&(0,K.jsxs)(Rg,{$tone:`info`,children:[ae.length,` comment`,ae.length===1?``:`s`,` on another view — click to jump there.`]}),(0,K.jsx)(Rg,{$tone:`info`,children:`Click the design to comment. ⌘-click (or Ctrl-click) to navigate without leaving comment mode.`}),(0,K.jsx)(jg,{children:j.length===0?(0,K.jsx)(Ig,{children:`Click anywhere on the design to leave a comment.`}):j.map(e=>(0,K.jsxs)(Mg,{type:`button`,$active:e.id===S,$resolved:e.resolved,onClick:()=>fe(e),children:[(0,K.jsxs)(Ng,{children:[(0,K.jsxs)(`span`,{children:[`#`,e.number??`—`]}),(0,K.jsx)(`span`,{children:e.author}),(0,K.jsx)(`span`,{children:Hg(e.createdAt,k)}),e.resolved&&(0,K.jsx)(`span`,{children:`· resolved`})]}),(0,K.jsx)(Pg,{children:e.body}),e.anchor?.label&&(0,K.jsxs)(Fg,{children:[`On: `,e.anchor.label]})]},e.id))})]})]})]})}var Wg=300,Gg=320,Kg=320,qg=12,Jg=e=>{let t=window.innerWidth-Kg-Wg-qg,n=Math.max(qg,Math.min(e.x+16,t)),r=window.innerHeight-Gg-qg;return{left:n,top:Math.max(qg,Math.min(e.y,r))}},Yg=[`January`,`February`,`March`,`April`,`May`,`June`,`July`,`August`,`September`,`October`,`November`,`December`],Xg=(e=>{let[t,n,r]=e.split(`-`).map(Number),i=Yg[n-1];return`${i.length<=4?i:i.slice(0,3)} ${r} ${t}`})(`2026-09-03`),Zg=R.div`
   display: flex;
   align-items: center;
   flex-shrink: 0;
@@ -1894,34 +1894,38 @@ Error generating stack: `+e.message+`
   background-color: #1a1f24;
   font-family: inherit;
   user-select: none;
-`,Xg=R.div`
+`,Qg=R.div`
   display: flex;
   align-items: center;
   gap: 10px;
   flex: 1;
   min-width: 0;
-`,Zg=R.span`
+`,$g=R.span`
   font-size: 13px;
   font-weight: 600;
   color: #ffffff;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-`,Qg=R.span`
+`,e_=R.span`
   flex-shrink: 0;
   color: #363d44;
-`,$g=R.span`
+`,t_=R.span`
+  flex-shrink: 0;
+  color: #7c8590;
+  font-size: 12px;
+`,n_=R.span`
   font-size: 12px;
   color: #7c8590;
   white-space: nowrap;
-`,e_=R.div`
+`,r_=R.div`
   display: flex;
   align-items: center;
   gap: 8px;
   flex-shrink: 0;
-`,t_=R.div`
+`,i_=R.div`
   position: relative;
-`,n_=R.button`
+`,a_=R.button`
   display: flex;
   align-items: center;
   gap: 6px;
@@ -1941,7 +1945,7 @@ Error generating stack: `+e.message+`
     border-color: #555e66;
     color: #ffffff;
   }
-`,r_=()=>(0,K.jsx)(`svg`,{width:`8`,height:`5`,viewBox:`0 0 8 5`,fill:`currentColor`,"aria-hidden":`true`,children:(0,K.jsx)(`path`,{d:`M0 0 L4 5 L8 0 Z`})}),i_=R.div`
+`,o_=()=>(0,K.jsx)(`svg`,{width:`8`,height:`5`,viewBox:`0 0 8 5`,fill:`currentColor`,"aria-hidden":`true`,children:(0,K.jsx)(`path`,{d:`M0 0 L4 5 L8 0 Z`})}),s_=R.div`
   position: absolute;
   top: calc(100% + 4px);
   right: 0;
@@ -1951,7 +1955,7 @@ Error generating stack: `+e.message+`
   border-radius: 4px;
   background-color: #262c32;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
-`,a_=R.button`
+`,c_=R.button`
   display: block;
   width: 100%;
   padding: 6px 14px;
@@ -1968,10 +1972,10 @@ Error generating stack: `+e.message+`
     background-color: #323b44;
     color: #ffffff;
   }
-`,o_=R.div`
+`,l_=R.div`
   margin: 4px 0;
   border-top: 1px solid #363d44;
-`,s_=R.div`
+`,u_=R.div`
   padding: 4px 14px 2px;
   color: #555e66;
   font-size: 11px;
@@ -1979,7 +1983,7 @@ Error generating stack: `+e.message+`
   letter-spacing: 0.06em;
   text-transform: uppercase;
   white-space: nowrap;
-`,c_=R.button`
+`,d_=R.button`
   display: flex;
   align-items: center;
   height: 24px;
@@ -1998,13 +2002,13 @@ Error generating stack: `+e.message+`
     border-color: ${e=>e.$active?`#4d7fd4`:`#555e66`};
     color: #ffffff;
   }
-`;function l_({title:e,meta:t,versions:n,versionId:r,onVersionChange:i,commentIsOn:a,onCommentToggle:o}){let[s,c]=(0,g.useState)(!1),l=(0,g.useRef)(null),u=n?.find(e=>e.id===r)?.label;return(0,g.useEffect)(()=>{if(!s)return;let e=e=>{l.current?.contains(e.target)||c(!1)};return document.addEventListener(`pointerdown`,e),()=>document.removeEventListener(`pointerdown`,e)},[s]),(0,g.useEffect)(()=>{if(!s)return;let e=e=>{e.key===`Escape`&&c(!1)};return window.addEventListener(`keydown`,e),()=>window.removeEventListener(`keydown`,e)},[s]),(0,K.jsxs)(Yg,{children:[(0,K.jsxs)(Xg,{children:[(0,K.jsx)(Zg,{children:e}),t&&(0,K.jsxs)(K.Fragment,{children:[(0,K.jsx)(Qg,{"aria-hidden":`true`,children:`|`}),(0,K.jsx)($g,{children:t})]})]}),(0,K.jsxs)(e_,{children:[n&&n.length>0&&(0,K.jsxs)(t_,{ref:l,children:[(0,K.jsxs)(n_,{type:`button`,onClick:()=>c(e=>!e),"aria-expanded":s,"aria-haspopup":`listbox`,children:[u??`Select version`,(0,K.jsx)(r_,{})]}),s&&(0,K.jsxs)(i_,{role:`listbox`,children:[n.filter(e=>!e.archived).map(e=>(0,K.jsx)(a_,{type:`button`,role:`option`,"aria-selected":e.id===r,$selected:e.id===r,onClick:()=>{i(e.id),c(!1)},children:e.label},e.id)),n.some(e=>e.archived)&&(0,K.jsxs)(K.Fragment,{children:[(0,K.jsx)(o_,{}),(0,K.jsx)(s_,{children:`Archive`}),n.filter(e=>e.archived).map(e=>(0,K.jsx)(a_,{type:`button`,role:`option`,"aria-selected":e.id===r,$selected:e.id===r,onClick:()=>{i(e.id),c(!1)},children:e.label},e.id))]})]})]}),o!==void 0&&(0,K.jsx)(c_,{type:`button`,$active:a,onClick:o,"aria-pressed":a,children:a?`Exit comment mode`:`Comment`})]})]})}var u_=`bramblewick`,d_=R.div`
+`;function f_({title:e,meta:t,versions:n,versionId:r,onVersionChange:i,commentIsOn:a,onCommentToggle:o}){let[s,c]=(0,g.useState)(!1),l=(0,g.useRef)(null),u=n?.find(e=>e.id===r)?.label;return(0,g.useEffect)(()=>{if(!s)return;let e=e=>{l.current?.contains(e.target)||c(!1)};return document.addEventListener(`pointerdown`,e),()=>document.removeEventListener(`pointerdown`,e)},[s]),(0,g.useEffect)(()=>{if(!s)return;let e=e=>{e.key===`Escape`&&c(!1)};return window.addEventListener(`keydown`,e),()=>window.removeEventListener(`keydown`,e)},[s]),(0,K.jsxs)(Zg,{children:[(0,K.jsxs)(Qg,{children:[(0,K.jsx)($g,{children:e}),t&&(0,K.jsxs)(K.Fragment,{children:[(0,K.jsx)(e_,{"aria-hidden":`true`,children:`|`}),(0,K.jsx)(n_,{children:t})]}),Xg&&(0,K.jsxs)(K.Fragment,{children:[(0,K.jsx)(t_,{"aria-hidden":`true`,children:`·`}),(0,K.jsxs)(n_,{children:[`Updated `,Xg]})]})]}),(0,K.jsxs)(r_,{children:[n&&n.length>0&&(0,K.jsxs)(i_,{ref:l,children:[(0,K.jsxs)(a_,{type:`button`,onClick:()=>c(e=>!e),"aria-expanded":s,"aria-haspopup":`listbox`,children:[u??`Select version`,(0,K.jsx)(o_,{})]}),s&&(0,K.jsxs)(s_,{role:`listbox`,children:[n.filter(e=>!e.archived).map(e=>(0,K.jsx)(c_,{type:`button`,role:`option`,"aria-selected":e.id===r,$selected:e.id===r,onClick:()=>{i(e.id),c(!1)},children:e.label},e.id)),n.some(e=>e.archived)&&(0,K.jsxs)(K.Fragment,{children:[(0,K.jsx)(l_,{}),(0,K.jsx)(u_,{children:`Archive`}),n.filter(e=>e.archived).map(e=>(0,K.jsx)(c_,{type:`button`,role:`option`,"aria-selected":e.id===r,$selected:e.id===r,onClick:()=>{i(e.id),c(!1)},children:e.label},e.id))]})]})]}),o!==void 0&&(0,K.jsx)(d_,{type:`button`,$active:a,onClick:o,"aria-pressed":a,children:a?`Exit comment mode`:`Comment`})]})]})}var p_=`bramblewick`,m_=R.div`
   display: flex;
   flex-direction: column;
   height: 100vh;
   width: 100vw;
   overflow: hidden;
-`,f_=R.div`
+`,h_=R.div`
   display: flex;
   flex-direction: column;
   flex: 1;
@@ -2012,13 +2016,13 @@ Error generating stack: `+e.message+`
   width: 100%;
   background-color: #f8f9f9;
   overflow: hidden;
-`,p_=R.div`
+`,g_=R.div`
   display: flex;
   flex: 1;
   min-height: 0;
   width: 100%;
   overflow: hidden;
-`,m_=R.main`
+`,__=R.main`
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
@@ -2028,10 +2032,10 @@ Error generating stack: `+e.message+`
   border-radius: 8px 0px 0px 0px;
   box-shadow: 0px 0px 4px rgba(10, 13, 14, 0.16);
   overflow: hidden;
-`,h_=R.div`
+`,v_=R.div`
   position: relative;
   flex-shrink: 0;
-`,g_=R.div`
+`,y_=R.div`
   position: absolute;
   top: 0;
   left: 140px;
@@ -2039,4 +2043,4 @@ Error generating stack: `+e.message+`
   display: flex;
   align-items: center;
   z-index: 10;
-`,__=[{id:`v3b`,label:`V3.5 View more in place`},{id:`v1`,label:`V1 MVP`,archived:!0},{id:`v2`,label:`V2 Expand all rows`,archived:!0},{id:`v3`,label:`V3 View all with pagination`,archived:!0},{id:`v3c`,label:`V3.75 Scroll to load`,archived:!0},{id:`v4`,label:`V4 No chevrons`,archived:!0}],v_=e=>__.some(t=>t.id===e);function y_(){let[e,t]=(0,g.useState)(`support`),[n,r]=(0,g.useState)(2),[i,a]=(0,g.useState)(!1),[o,s]=(0,g.useState)(`v3b`),[c,l]=(0,g.useState)(!1),[u,d]=(0,g.useState)(u_),f=fp(u),[p,m]=(0,g.useState)(null),[h,_]=(0,g.useState)(`profile`),v=p?fp(p):null,y=!!v&&h===`wide`,b=e=>{m(e),_(`wide`)},x=()=>{m(null),_(`profile`)};return(0,g.useEffect)(()=>{o!==`v3`&&p&&x()},[o,p]),(0,g.useEffect)(()=>{o!==`v4`&&o!==`v3`&&o!==`v3b`&&o!==`v3c`&&dp(u)&&d(fp(u)?.parentId??`bramblewick`)},[o,u]),(0,g.useEffect)(()=>{let e=y?v.name:f.name;document.title=`${e} — Organization hierarchy`},[f.name,y,v]),(0,g.useEffect)(()=>{document.querySelectorAll(`div`).forEach(e=>{getComputedStyle(e).backgroundColor===`rgb(217, 63, 76)`&&(e.style.display=`none`)})},[]),(0,K.jsx)(_o,{children:(0,K.jsxs)(d_,{children:[(0,K.jsx)(l_,{title:`Organization hierarchy`,meta:`Started July 2026`,versions:__,versionId:o,onVersionChange:s,commentIsOn:c,onCommentToggle:()=>{l(e=>!e)}}),(0,K.jsxs)(f_,{children:[(0,K.jsxs)(h_,{children:[(0,K.jsx)(zc,{currentProduct:e,onProductChange:t}),(0,K.jsx)(g_,{children:(0,K.jsx)(kh,{tabs:[{id:`profile`,title:f.name},...v?[{id:`wide`,title:v.name,isCloseable:!0}]:[]],activeTabId:v?h:`profile`,onSelectTab:_,onCloseTab:x})})]}),(0,K.jsxs)(p_,{children:[(0,K.jsx)(tl,{currentProduct:`support`,activeNavItem:n,setActiveNavItem:r,isSubnavExpanded:i,setIsSubnavExpanded:a}),(0,K.jsx)(m_,{children:y?(0,K.jsx)(xh,{orgId:p,onSelectOrganization:d}):(0,K.jsx)(ch,{orgId:u,onSelectOrganization:d,version:o,onOpenInNewTab:o===`v3`?b:void 0})})]}),(0,K.jsx)(Ug,{context:{version:o,orgId:u,wideTabOrgId:p,activeTabId:h},onRestoreContext:e=>{v_(e.version)&&s(e.version),e.orgId&&d(e.orgId),m(e.wideTabOrgId??null),_(e.activeTabId??`profile`)},isOn:c,onIsOnChange:l})]})]})})}(0,_.createRoot)(document.getElementById(`root`)).render((0,K.jsx)(g.StrictMode,{children:(0,K.jsx)(y_,{})}));
+`,b_=[{id:`v3b`,label:`V3.5 View more in place`},{id:`v1`,label:`V1 MVP`,archived:!0},{id:`v2`,label:`V2 Expand all rows`,archived:!0},{id:`v3`,label:`V3 View all with pagination`,archived:!0},{id:`v3c`,label:`V3.75 Scroll to load`,archived:!0},{id:`v4`,label:`V4 No chevrons`,archived:!0}],x_=e=>b_.some(t=>t.id===e);function S_(){let[e,t]=(0,g.useState)(`support`),[n,r]=(0,g.useState)(2),[i,a]=(0,g.useState)(!1),[o,s]=(0,g.useState)(`v3b`),[c,l]=(0,g.useState)(!1),[u,d]=(0,g.useState)(p_),f=fp(u),[p,m]=(0,g.useState)(null),[h,_]=(0,g.useState)(`profile`),v=p?fp(p):null,y=!!v&&h===`wide`,b=e=>{m(e),_(`wide`)},x=()=>{m(null),_(`profile`)};return(0,g.useEffect)(()=>{o!==`v3`&&p&&x()},[o,p]),(0,g.useEffect)(()=>{o!==`v4`&&o!==`v3`&&o!==`v3b`&&o!==`v3c`&&dp(u)&&d(fp(u)?.parentId??`bramblewick`)},[o,u]),(0,g.useEffect)(()=>{let e=y?v.name:f.name;document.title=`${e} — Organization hierarchy`},[f.name,y,v]),(0,g.useEffect)(()=>{document.querySelectorAll(`div`).forEach(e=>{getComputedStyle(e).backgroundColor===`rgb(217, 63, 76)`&&(e.style.display=`none`)})},[]),(0,K.jsx)(_o,{children:(0,K.jsxs)(m_,{children:[(0,K.jsx)(f_,{title:`Organization hierarchy`,meta:`Started July 2026`,versions:b_,versionId:o,onVersionChange:s,commentIsOn:c,onCommentToggle:()=>{l(e=>!e)}}),(0,K.jsxs)(h_,{children:[(0,K.jsxs)(v_,{children:[(0,K.jsx)(zc,{currentProduct:e,onProductChange:t}),(0,K.jsx)(y_,{children:(0,K.jsx)(kh,{tabs:[{id:`profile`,title:f.name},...v?[{id:`wide`,title:v.name,isCloseable:!0}]:[]],activeTabId:v?h:`profile`,onSelectTab:_,onCloseTab:x})})]}),(0,K.jsxs)(g_,{children:[(0,K.jsx)(tl,{currentProduct:`support`,activeNavItem:n,setActiveNavItem:r,isSubnavExpanded:i,setIsSubnavExpanded:a}),(0,K.jsx)(__,{children:y?(0,K.jsx)(xh,{orgId:p,onSelectOrganization:d}):(0,K.jsx)(ch,{orgId:u,onSelectOrganization:d,version:o,onOpenInNewTab:o===`v3`?b:void 0})})]}),(0,K.jsx)(Ug,{context:{version:o,orgId:u,wideTabOrgId:p,activeTabId:h},onRestoreContext:e=>{x_(e.version)&&s(e.version),e.orgId&&d(e.orgId),m(e.wideTabOrgId??null),_(e.activeTabId??`profile`)},isOn:c,onIsOnChange:l})]})]})})}(0,_.createRoot)(document.getElementById(`root`)).render((0,K.jsx)(g.StrictMode,{children:(0,K.jsx)(S_,{})}));
