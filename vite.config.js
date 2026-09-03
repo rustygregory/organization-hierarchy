@@ -2,10 +2,10 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
 /* The day this build was made, as a local YYYY-MM-DD string. Day granularity is
-   deliberate — the bar shows "Updated Sep 3 2026", never a time. Stamped into the
-   bundle rather than computed in the browser so the live site only moves when a
-   build actually ships: no changes pushed, no new date. Local date parts, not
-   toISOString, so a late-evening build doesn't roll into tomorrow in UTC. */
+   deliberate — the bar shows "Updated Sept 3, 2026", never a time. Stamped into
+   the bundle rather than computed in the browser so the live site only moves
+   when a build actually ships: no changes pushed, no new date. Local date parts,
+   not toISOString, so a late-evening build doesn't roll into tomorrow in UTC. */
 const now = new Date()
 const buildDate = [
   now.getFullYear(),

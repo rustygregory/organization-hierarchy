@@ -5,21 +5,34 @@ import styled from 'styled-components'
    Keeps identity (title + meta) and controls (version switcher, comment toggle)
    visible without interfering with the design being reviewed. */
 
-/* The date of the build that's running, shown as "Updated Sep 3 2026" beside
+/* The date of the build that's running, shown as "Updated Sept 3, 2026" beside
    the meta. Day granularity only — never a time. Months of four letters or
-   fewer stay written out (May, June, July); longer months take their
-   three-letter abbreviation with no period, and there's no comma before the
-   year. The date arrives as a local YYYY-MM-DD string from a Vite define, so a
-   project without the define simply shows no Updated rather than throwing. */
+   fewer stay written out (May, June, July); longer months take their standard
+   abbreviation — September's is four letters, Sept — with no period after it,
+   and a comma between the day and the year. The date arrives as a local
+   YYYY-MM-DD string from a Vite define, so a project without the define simply
+   shows no Updated rather than throwing. */
 const MONTHS = [
   'January', 'February', 'March', 'April', 'May', 'June',
   'July', 'August', 'September', 'October', 'November', 'December',
 ]
 
+const SHORT_MONTHS = {
+  January: 'Jan',
+  February: 'Feb',
+  March: 'Mar',
+  April: 'Apr',
+  August: 'Aug',
+  September: 'Sept',
+  October: 'Oct',
+  November: 'Nov',
+  December: 'Dec',
+}
+
 const formatUpdatedDate = (buildDate) => {
   const [year, month, day] = buildDate.split('-').map(Number)
   const name = MONTHS[month - 1]
-  return `${name.length <= 4 ? name : name.slice(0, 3)} ${day} ${year}`
+  return `${SHORT_MONTHS[name] ?? name} ${day}, ${year}`
 }
 
 const updatedDate =
