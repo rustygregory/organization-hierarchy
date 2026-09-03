@@ -1,9 +1,31 @@
 import { useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 
+/* global __BUILD_DATE__ */
+
 /* Reviewer chrome: a compact dark strip above the product prototype.
    Keeps identity (title + meta) and controls (version switcher, comment toggle)
    visible without interfering with the design being reviewed. */
+
+/* The date of the build that's running, shown as "Updated Sep 3 2026" beside
+   the meta. Day granularity only — never a time. Months of four letters or
+   fewer stay written out (May, June, July); longer months take their
+   three-letter abbreviation with no period, and there's no comma before the
+   year. The date arrives as a local YYYY-MM-DD string from a Vite define, so a
+   project without the define simply shows no Updated rather than throwing. */
+const MONTHS = [
+  'January', 'February', 'March', 'April', 'May', 'June',
+  'July', 'August', 'September', 'October', 'November', 'December',
+]
+
+const formatUpdatedDate = (buildDate) => {
+  const [year, month, day] = buildDate.split('-').map(Number)
+  const name = MONTHS[month - 1]
+  return `${name.length <= 4 ? name : name.slice(0, 3)} ${day} ${year}`
+}
+
+const updatedDate =
+  typeof __BUILD_DATE__ !== 'undefined' ? formatUpdatedDate(__BUILD_DATE__) : null
 
 const Bar = styled.div`
   display: flex;
@@ -36,6 +58,12 @@ const Title = styled.span`
 const Pipe = styled.span`
   flex-shrink: 0;
   color: #363d44;
+`
+
+const Dot = styled.span`
+  flex-shrink: 0;
+  color: #7c8590;
+  font-size: 12px;
 `
 
 const Meta = styled.span`
@@ -195,6 +223,12 @@ export default function PrototypeBar({
           <>
             <Pipe aria-hidden="true">|</Pipe>
             <Meta>{meta}</Meta>
+          </>
+        )}
+        {updatedDate && (
+          <>
+            <Dot aria-hidden="true">·</Dot>
+            <Meta>Updated {updatedDate}</Meta>
           </>
         )}
       </Identity>
