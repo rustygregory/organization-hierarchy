@@ -91,16 +91,17 @@ const TabBarOverlay = styled.div`
    as a copy of V3.5 for scroll-to-load development. Ids are `v3b` and `v3c` — retired
    decimals from before the renumbering, safe to reuse now.
 
-   V3.5 is the version on the table now: it opens by default and everything else
-   sits under ARCHIVE in the switcher.
-
    V1.5 is a decimal variant of V1, per the convention above: V1's focused view
    plus a skeleton beat on re-centre, a Show child orgs cap with View more, and a
-   search scoped to the selected organization's children. */
+   search scoped to the selected organization's children.
+
+   V1.5 is the version on the table now: it opens by default. V3.5 stays up top
+   with it — the two are the comparison being shown — and everything else sits
+   under ARCHIVE in the switcher. */
 const VERSIONS = [
+  { id: 'v1b', label: 'V1.5 View more with skeleton' },
   { id: 'v3b', label: 'V3.5 View more in place' },
   { id: 'v1', label: 'V1 MVP', archived: true },
-  { id: 'v1b', label: 'V1.5 View more with skeleton', archived: true },
   { id: 'v2', label: 'V2 Expand all rows', archived: true },
   { id: 'v3', label: 'V3 View all with pagination', archived: true },
   { id: 'v3c', label: 'V3.75 Scroll to load', archived: true },
@@ -139,7 +140,7 @@ export default function App() {
   // V3.5 Scroll to load is the same cap-and-counter model, but loads 50 rows
   // automatically as you scroll near the bottom — no buttons, just a blue indicator
   // and infinite scroll.
-  const [version, setVersion] = useState('v3b')
+  const [version, setVersion] = useState('v1b')
   const [commentIsOn, setCommentIsOn] = useState(false)
 
   // Which organization's profile is open. Lives here because the tab strip and
