@@ -1632,6 +1632,10 @@ export default function OrganizationHierarchyTab({
      happen to coincide, and a version wanting one without the other would only need
      to change this line. */
   const isSansLines = isExpandable
+  /* V1.5 drops the row division lines too — only the line under the header
+     stays. Its own flag rather than widening isSansLines, which also gates the
+     expandable versions' inline counts; this is only about the rules. */
+  const noRowRules = isSansLines || isCappedFocused
   /* The Child orgs column belongs to the lined versions — minus V1.5, which
      drops the column and carries the count inline beside the name, the way
      V3.5 does. Lines stay; only the column goes. */
@@ -2480,7 +2484,7 @@ export default function OrganizationHierarchyTab({
                 <TreeRow
                   key={row.key}
                   $ruleInset={ruleInsetFor(row.depth)}
-                  $noRule={isSansLines}
+                  $noRule={noRowRules}
                 >
                   <NameCell>
                     <RowInner>
@@ -2504,7 +2508,7 @@ export default function OrganizationHierarchyTab({
                to see up front. */
             if (row.kind === 'viewMore' && isScrollLoad) {
               return (
-                <TreeRow key={row.key} $ruleInset={ruleInsetFor(row.depth)} $noRule={isSansLines}>
+                <TreeRow key={row.key} $ruleInset={ruleInsetFor(row.depth)} $noRule={noRowRules}>
                   <NameCell>
                     <RowInner>
                       <TreeGutter row={row} />
@@ -2524,7 +2528,7 @@ export default function OrganizationHierarchyTab({
                count of what's still capped sits beside it. */
             if (row.kind === 'viewMore') {
               return (
-                <TreeRow key={row.key} $ruleInset={ruleInsetFor(row.depth)} $noRule={isSansLines}>
+                <TreeRow key={row.key} $ruleInset={ruleInsetFor(row.depth)} $noRule={noRowRules}>
                   <NameCell>
                     <RowInner>
                       <TreeGutter row={row} />
@@ -2564,7 +2568,7 @@ export default function OrganizationHierarchyTab({
                since 50 rows of departments give no clue how many more there are. */
             if (row.kind === 'viewAll') {
               return (
-                <TreeRow key={row.key} $ruleInset={ruleInsetFor(row.depth)} $noRule={isSansLines}>
+                <TreeRow key={row.key} $ruleInset={ruleInsetFor(row.depth)} $noRule={noRowRules}>
                   <NameCell>
                     <RowInner>
                       <TreeGutter row={row} />
@@ -2609,7 +2613,7 @@ export default function OrganizationHierarchyTab({
               <TreeRow
                 key={row.key}
                 $ruleInset={ruleInsetFor(row.depth)}
-                $noRule={isSansLines}
+                $noRule={noRowRules}
                 $selected={isCurrent}
                 /* V1.5's hit scroll finds its row by this — see selectSearchHit. */
                 data-org-id={isPerson ? undefined : row.node.id}
