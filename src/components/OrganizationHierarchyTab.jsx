@@ -2435,12 +2435,12 @@ export default function OrganizationHierarchyTab({
             <HeaderCell>
               Organization
               {/* *Show 50 | 75 | 100 records*, at the right-hand end of this cell —
-                  V3, V3.5 and V3.75. V1.5 carries the same control retitled *Show
-                  child orgs* — there the records are one thing: the selected
-                  organization's children. Not on the rooted page; not elsewhere. */}
+                  V3, V3.5 and V3.75. V1.5 carries the same control with the plain
+                  *Show* label — no noun, since the list below is one thing: the
+                  selected organization's children. Not on the rooted page. */}
               {(isWide || isViewMore || isScrollLoad || isCappedFocused) && !uncapped && (
                 <ShowRecords>
-                  {isCappedFocused ? 'Show child orgs ' : 'Show '}
+                  {'Show '}
                   {WIDE_ROW_CAP_OPTIONS.map((option, index) => (
                     <span key={option}>
                       {index > 0 && <ShowDivider aria-hidden="true">|</ShowDivider>}
