@@ -358,7 +358,7 @@ const SearchMenuItem = styled.button`
 `
 
 /* Flora's yellow.300 — the search highlight everywhere: the inline mark in the
-   expandable versions and V1.5's whole hit row. */
+   expandable versions and on the matched word in V1.5's hit row. */
 const SEARCH_HIT_BG = '#eedf7a'
 
 /* Text colour is inherited so a hit on the selected row's bold name stays bold
@@ -507,19 +507,14 @@ const TreeTable = styled(Table)`
    under the header, so the tree's own vertical guides carry the structure. */
 const TreeRow = styled(Row)`
   /* Set on the cells rather than the row: Garden gives its own cells a
-     background, which would paint over a colour set on the row itself.
-     $searchHit is V1.5's chosen search result — a whole row of Flora yellow.300,
-     taking precedence over the selection tint (the two never coincide in that
-     version: the hit is a child of the selected row, never the row itself). */
+     background, which would paint over a colour set on the row itself. */
   td {
     position: relative;
-    background-color: ${(props) =>
-      props.$searchHit ? SEARCH_HIT_BG : props.$selected ? SELECTED_ROW_BG : 'transparent'};
+    background-color: ${(props) => (props.$selected ? SELECTED_ROW_BG : 'transparent')};
   }
 
   &:hover td {
-    background-color: ${(props) =>
-      props.$searchHit ? SEARCH_HIT_BG : props.$selected ? SELECTED_ROW_BG : HOVER_ROW_BG};
+    background-color: ${(props) => (props.$selected ? SELECTED_ROW_BG : HOVER_ROW_BG)};
   }
 
   ${(props) =>
@@ -2539,7 +2534,11 @@ export default function OrganizationHierarchyTab({
                           href="#"
                           onClick={(event) => {
                             event.preventDefault()
-                            setExpandedCapMap((prev) => {
+                            // V1.5's cap lives in focusedCapMap, V3.5's in
+                            // expandedCapMap — each version's View more has to
+                            // grow the map that version's builder reads.
+                            const setCapMap = isCappedFocused ? setFocusedCapMap : setExpandedCapMap
+                            setCapMap((prev) => {
                               const next = new Map(prev)
                               next.set(row.node.id, row.shownCount + rowCapChoice)
                               return next
@@ -2612,7 +2611,6 @@ export default function OrganizationHierarchyTab({
                 $ruleInset={ruleInsetFor(row.depth)}
                 $noRule={isSansLines}
                 $selected={isCurrent}
-                $searchHit={!isPerson && row.node.id === searchHitId}
                 /* V1.5's hit scroll finds its row by this — see selectSearchHit. */
                 data-org-id={isPerson ? undefined : row.node.id}
                 $clickable={isRowToggle}
@@ -2678,7 +2676,7 @@ export default function OrganizationHierarchyTab({
                            rooted page nothing is, since there is nowhere for a name to
                            go that wouldn't undo what the page is for. */
                         <NodeName $current={isCurrent} title={row.node.name}>
-                          <NameText name={row.node.name} query={isCappedFocused ? '' : normalizedQuery} />
+                          <NameText name={row.node.name} query={isCappedFocused ? (row.node.id === searchHitId ? normalizedQuery : '') : normalizedQuery} />
                         </NodeName>
                       ) : (
                         <NameLink
@@ -2689,7 +2687,7 @@ export default function OrganizationHierarchyTab({
                           }}
                           title={row.node.name}
                         >
-                          <NameText name={row.node.name} query={isCappedFocused ? '' : normalizedQuery} />
+                          <NameText name={row.node.name} query={isCappedFocused ? (row.node.id === searchHitId ? normalizedQuery : '') : normalizedQuery} />
                         </NameLink>
                       )}
                       {(isSansLines || isCappedFocused) && !isPerson && row.childOrgCount > 0 && (
