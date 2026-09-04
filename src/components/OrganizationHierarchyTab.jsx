@@ -1489,11 +1489,13 @@ export default function OrganizationHierarchyTab({
      `{ atScale }` repeated at five call sites, because V3 added a second flag and
      the failure mode of missing one is a count that disagrees with the rows.
 
-     `wideMaths` is V1's: it carries Mathematics' 133-child roster — but not
-     Bramblewick's 175 — so Computer Science, Mathematics and Engineering read
-     the same child counts in V1 as in V3.5. */
+     V1 reads the V3.5 roster — every organization keeps the same child count in
+     both versions, per the review ask. */
   const dataOptions = useMemo(
-    () => ({ atScale: atScale || isWideRoster, wide: isWideRoster, wideMaths: version === 'v1' }),
+    () => ({
+      atScale: atScale || isWideRoster || version === 'v1',
+      wide: isWideRoster || version === 'v1',
+    }),
     [atScale, isWideRoster, version],
   )
 

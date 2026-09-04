@@ -7,7 +7,7 @@ import DepartmentPage from './components/DepartmentPage'
 import TabBar from './components/TabBar'
 import CommentLayer from './comments/CommentLayer'
 import PrototypeBar from './prototype-bar/PrototypeBar'
-import { AT_SCALE_PARENT_ID, getOrganization, isAtScaleOrg, isWideMathsOrg } from './data/hierarchy'
+import { AT_SCALE_PARENT_ID, getOrganization, isAtScaleOrg } from './data/hierarchy'
 import './App.css'
 
 // The organization whose profile this prototype opens on. Clicking through the
@@ -190,12 +190,11 @@ export default function App() {
      they were. The `??` still covers the old case, since a department whose parent
      can't be resolved is exactly the situation the fallback exists for. */
   useEffect(() => {
-    const hasDepartments = version === 'v4' || version === 'v3' || version === 'v3b' || version === 'v3c'
-    // V1 renders Mathematics' generated roster (to match V3.5's child counts), so
-    // a maths department is a legitimate place to stand there — every other
-    // generated id still bounces.
-    const canStay = hasDepartments || (version === 'v1' && isWideMathsOrg(orgId))
-    if (!canStay && isAtScaleOrg(orgId)) {
+    // V1 shows the V3.5 roster, so a generated department is a legitimate place
+    // to stand there too — only V2 still bounces.
+    const hasDepartments =
+      version === 'v4' || version === 'v3' || version === 'v3b' || version === 'v3c' || version === 'v1'
+    if (!hasDepartments && isAtScaleOrg(orgId)) {
       setOrgId(getOrganization(orgId)?.parentId ?? AT_SCALE_PARENT_ID)
     }
   }, [version, orgId])
