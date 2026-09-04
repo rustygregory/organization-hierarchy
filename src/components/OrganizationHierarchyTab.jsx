@@ -395,16 +395,6 @@ const Counts = styled(SM)`
   margin-bottom: 8px;
 `
 
-/* The line above the table: the reach count on the left, and on V1.5 the Show
-   child orgs control on the right. V1.5 puts it here rather than in the header
-   cell where V3.5 carries it — the control is about the list, same as the count,
-   so the two share the caption row and the header keeps only the column name. */
-const CountsRow = styled.div`
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-`
-
 /* *Show 50 | 75 | 100 records*, at the right-hand end of the Organization header row.
 
    In the header cell rather than in a toolbar of its own because it's a property of this
@@ -1647,6 +1637,10 @@ export default function OrganizationHierarchyTab({
      happen to coincide, and a version wanting one without the other would only need
      to change this line. */
   const isSansLines = isExpandable
+  /* The Child orgs column belongs to the lined versions — minus V1.5, which
+     drops the column and carries the count inline beside the name, the way
+     V3.5 does. Lines stay; only the column goes. */
+  const showChildCountColumn = !isSansLines && !isCappedFocused
   // V4 marks expandable rows with dots instead of chevrons — hence its name.
   const isDotted = atScale
 
@@ -2414,41 +2408,16 @@ export default function OrganizationHierarchyTab({
           `100 of 175 departments` — and everywhere else it counts the reach. Both are
           captions about the list below, which is why they share the slot; what differs
           is only which number the view can honestly claim. */}
-      <CountsRow>
-        <Counts>
-          {isRootedPageStatus ? (
-            `${pagedTo - pagedFrom + 1} of ${pagedTotal} departments`
-          ) : (
-            <>
-              {reachOrgCount} {orgLabel}
-              {showPeopleReach && ` · ${peopleReach} ${peopleLabel}`}
-            </>
-          )}
-        </Counts>
-        {isCappedFocused && !uncapped && (
-          <ShowRecords>
-            {'Show child orgs '}
-            {WIDE_ROW_CAP_OPTIONS.map((option, index) => (
-              <span key={option}>
-                {index > 0 && <ShowDivider aria-hidden="true">|</ShowDivider>}
-                {option === rowCapChoice ? (
-                  <ShowCurrent aria-current="true">{option}</ShowCurrent>
-                ) : (
-                  <ShowOption
-                    href="#"
-                    onClick={(event) => {
-                      event.preventDefault()
-                      setRowCapChoice(option)
-                    }}
-                  >
-                    {option}
-                  </ShowOption>
-                )}
-              </span>
-            ))}
-          </ShowRecords>
+      <Counts>
+        {isRootedPageStatus ? (
+          `${pagedTo - pagedFrom + 1} of ${pagedTotal} departments`
+        ) : (
+          <>
+            {reachOrgCount} {orgLabel}
+            {showPeopleReach && ` · ${peopleReach} ${peopleLabel}`}
+          </>
         )}
-      </CountsRow>
+      </Counts>
 
       <TableScroll ref={scrollRef} $flush={hideSearch}>
       <TreeTable isReadOnly>
@@ -2468,11 +2437,11 @@ export default function OrganizationHierarchyTab({
               Organization
               {/* *Show 50 | 75 | 100 records*, at the right-hand end of this cell —
                   V3, V3.5 and V3.75. V1.5 carries the same control retitled *Show
-                  child orgs*, up on the caption row beside the count instead.
-                  Not on the rooted page; not elsewhere. */}
-              {(isWide || isViewMore || isScrollLoad) && !uncapped && (
+                  child orgs* — there the records are one thing: the selected
+                  organization's children. Not on the rooted page; not elsewhere. */}
+              {(isWide || isViewMore || isScrollLoad || isCappedFocused) && !uncapped && (
                 <ShowRecords>
-                  {'Show '}
+                  {isCappedFocused ? 'Show child orgs ' : 'Show '}
                   {WIDE_ROW_CAP_OPTIONS.map((option, index) => (
                     <span key={option}>
                       {index > 0 && <ShowDivider aria-hidden="true">|</ShowDivider>}
@@ -2491,7 +2460,7 @@ export default function OrganizationHierarchyTab({
                       )}
                     </span>
                   ))}
-                  {' records'}
+                  {!isCappedFocused && ' records'}
                 </ShowRecords>
               )}
             </HeaderCell>
@@ -2501,7 +2470,7 @@ export default function OrganizationHierarchyTab({
                 of the Organization column, which is the one that has to absorb
                 ten levels of indent. Note what went with it: Agent vs End user
                 is no longer stated anywhere in the tree. */}
-            {!isSansLines && <HeaderCell width="12%">Child orgs</HeaderCell>}
+            {showChildCountColumn && <HeaderCell width="12%">Child orgs</HeaderCell>}
             {showPeopleColumn && <HeaderCell width="10%">People</HeaderCell>}
           </HeaderRow>
         </Head>
@@ -2527,7 +2496,7 @@ export default function OrganizationHierarchyTab({
                       </SkeletonName>
                     </RowInner>
                   </NameCell>
-                  {!isSansLines && <Cell />}
+                  {showChildCountColumn && <Cell />}
                   {showPeopleColumn && <Cell />}
                 </TreeRow>
               )
@@ -2548,7 +2517,7 @@ export default function OrganizationHierarchyTab({
                       <ScrollLoadSentinel orgId={row.node.id} onTrigger={handleScrollLoadTrigger} />
                     </RowInner>
                   </NameCell>
-                  {!isSansLines && <Cell />}
+                  {showChildCountColumn && <Cell />}
                   {showPeopleColumn && <Cell />}
                 </TreeRow>
               )
@@ -2585,7 +2554,7 @@ export default function OrganizationHierarchyTab({
                       </ViewAllArea>
                     </RowInner>
                   </NameCell>
-                  {!isSansLines && <Cell />}
+                  {showChildCountColumn && <Cell />}
                   {showPeopleColumn && <Cell />}
                 </TreeRow>
               )
@@ -2616,7 +2585,7 @@ export default function OrganizationHierarchyTab({
                       </ViewAllArea>
                     </RowInner>
                   </NameCell>
-                  {!isSansLines && <Cell />}
+                  {showChildCountColumn && <Cell />}
                   {showPeopleColumn && <Cell />}
                 </TreeRow>
               )
@@ -2723,7 +2692,7 @@ export default function OrganizationHierarchyTab({
                           <NameText name={row.node.name} query={isCappedFocused ? '' : normalizedQuery} />
                         </NameLink>
                       )}
-                      {isSansLines && !isPerson && row.childOrgCount > 0 && (
+                      {(isSansLines || isCappedFocused) && !isPerson && row.childOrgCount > 0 && (
                         <ChildCount>({row.childOrgCount})</ChildCount>
                       )}
                       {/* No `current` tag. The bar and the tint say which row this
@@ -2735,7 +2704,7 @@ export default function OrganizationHierarchyTab({
                     </NameArea>
                   </RowInner>
                 </NameCell>
-                {!isSansLines && (
+                {showChildCountColumn && (
                   <Cell>
                     {isPerson ? (
                       <Muted>—</Muted>
