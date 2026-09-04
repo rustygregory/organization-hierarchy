@@ -404,8 +404,17 @@ const ALL_GENERATED_DEPARTMENTS = [...WIDE_DEPARTMENTS, ...MATHEMATICS_DEPARTMEN
    cannot render. */
 const AT_SCALE_IDS = new Set(ALL_GENERATED_DEPARTMENTS.map((org) => org.id))
 
-/** Is this a generated department? True for nothing V1 or V2 can show. */
+/** Is this a generated department? True for nothing V2 can show — and for V1,
+   true for nothing outside Mathematics' roster (see isWideMathsOrg). */
 export const isAtScaleOrg = (orgId) => AT_SCALE_IDS.has(orgId)
+
+/* Mathematics' generated roster on its own. V1 carries that list (via the
+   `wideMaths` option) but not Bramblewick's, so the version guards need to
+   tell the two rosters apart. */
+const WIDE_MATHS_IDS = new Set(MATHEMATICS_DEPARTMENTS.map((org) => org.id))
+
+/** Is this one of Mathematics' generated departments — the ones V1 can show? */
+export const isWideMathsOrg = (orgId) => WIDE_MATHS_IDS.has(orgId)
 
 /**
  * The personas the prototype can switch between. `attachedOrgId` is the single
@@ -487,19 +496,23 @@ export const getOrganization = (orgId) =>
  * flags exist rather than one number because V4's 150 is fixed by its paging
  * arithmetic; see WIDE_ONLY_DEPARTMENT_NAMES.
  *
- * `wide` also widens a **second** node: Mathematics, to 133 children. Only V3 gets it,
- * so V4's tree is untouched and its arithmetic can't drift. Two wide nodes rather than
- * one is the point — see MATHEMATICS_DEPARTMENT_NAMES.
+ * `wide` also widens a **second** node: Mathematics, to 133 children. V4 doesn't
+ * get it, so its tree is untouched and its arithmetic can't drift. Two wide nodes
+ * rather than one is the point — see MATHEMATICS_DEPARTMENT_NAMES.
+ *
+ * `wideMaths` widens Mathematics alone — V1's flag, so its Mathematics count
+ * matches V3.5's without V1 inheriting Bramblewick's 175.
  */
-export const getChildren = (orgId, { atScale = false, wide = false } = {}) => {
+export const getChildren = (orgId, { atScale = false, wide = false, wideMaths = false } = {}) => {
   const own = ORGANIZATIONS.filter((org) => org.parentId === orgId)
 
   /* Mathematics' list, before the Bramblewick check below — it hangs off a different
      parent, so an early return keyed to Bramblewick would never reach it.
-     `wide` only: V4 doesn't have this node, and giving it one would change the totals
-     its paging is built on. */
+     `wide` is the V3 family; `wideMaths` is V1, which carries this roster — and
+     only this one — so its Mathematics count matches V3.5's 133. V4 gets neither:
+     its tree is untouched and its paging arithmetic can't drift. */
   if (orgId === WIDE_SECOND_PARENT_ID) {
-    return wide ? [...own, ...MATHEMATICS_DEPARTMENTS] : own
+    return wide || wideMaths ? [...own, ...MATHEMATICS_DEPARTMENTS] : own
   }
 
   if (orgId !== AT_SCALE_PARENT_ID) return own

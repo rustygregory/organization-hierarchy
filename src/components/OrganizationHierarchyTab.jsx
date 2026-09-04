@@ -987,14 +987,12 @@ const Chevron = ({ direction = 'down' }) => (
  * Returns `{ rows, pagedTotal, pagedFrom, pagedTo }` so the caller can caption the
  * slice without recounting it. `pagedTotal` is 0 when nothing needed paging.
  */
-const buildFocusedRows = (selectedId, showPeople = true, atScale = false, page = 1) => {
+const buildFocusedRows = (selectedId, showPeople = true, orgOptions = {}, page = 1) => {
   const rows = []
   const empty = { rows, pagedTotal: 0, pagedFrom: 0, pagedTo: 0 }
   const path = getPath(selectedId)
   const selected = path[path.length - 1]
   if (!selected) return empty
-
-  const orgOptions = { atScale }
 
   const hasChildren = (orgId) =>
     getChildren(orgId, orgOptions).length > 0 ||
@@ -1489,10 +1487,14 @@ export default function OrganizationHierarchyTab({
 
   /* The data options every selector in this component passes. One object rather than
      `{ atScale }` repeated at five call sites, because V3 added a second flag and
-     the failure mode of missing one is a count that disagrees with the rows. */
+     the failure mode of missing one is a count that disagrees with the rows.
+
+     `wideMaths` is V1's: it carries Mathematics' 133-child roster — but not
+     Bramblewick's 175 — so Computer Science, Mathematics and Engineering read
+     the same child counts in V1 as in V3.5. */
   const dataOptions = useMemo(
-    () => ({ atScale: atScale || isWideRoster, wide: isWideRoster }),
-    [atScale, isWideRoster],
+    () => ({ atScale: atScale || isWideRoster, wide: isWideRoster, wideMaths: version === 'v1' }),
+    [atScale, isWideRoster, version],
   )
 
   // Which page of the paged organization group is on screen.
@@ -1898,11 +1900,11 @@ export default function OrganizationHierarchyTab({
             capOverrides: !uncapped ? (isViewMore ? expandedCapMap : isScrollLoad ? scrollCapMap : null) : null,
             inlineExpand: (isViewMore || isScrollLoad) && !uncapped,
           })
-        : buildFocusedRows(selectedId, showPeopleRows, atScale, page),
+        : buildFocusedRows(selectedId, showPeopleRows, dataOptions, page),
     [
       selectedId,
       showPeopleRows,
-      atScale,
+      dataOptions,
       page,
       isExpandable,
       isViewMore,
