@@ -92,10 +92,15 @@ const TabBarOverlay = styled.div`
    decimals from before the renumbering, safe to reuse now.
 
    V3.5 is the version on the table now: it opens by default and everything else
-   sits under ARCHIVE in the switcher. */
+   sits under ARCHIVE in the switcher.
+
+   V1.5 is a decimal variant of V1, per the convention above: V1's focused view
+   plus a skeleton beat on re-centre, a Show child orgs cap with View more, and a
+   search scoped to the selected organization's children. */
 const VERSIONS = [
   { id: 'v3b', label: 'V3.5 View more in place' },
   { id: 'v1', label: 'V1 MVP', archived: true },
+  { id: 'v1b', label: 'V1.5 View more with skeleton', archived: true },
   { id: 'v2', label: 'V2 Expand all rows', archived: true },
   { id: 'v3', label: 'V3 View all with pagination', archived: true },
   { id: 'v3c', label: 'V3.75 Scroll to load', archived: true },
@@ -191,9 +196,15 @@ export default function App() {
      can't be resolved is exactly the situation the fallback exists for. */
   useEffect(() => {
     // V1 shows the V3.5 roster, so a generated department is a legitimate place
-    // to stand there too — only V2 still bounces.
+    // to stand there too (and in V1.5, which inherits that roster) — only V2
+    // still bounces.
     const hasDepartments =
-      version === 'v4' || version === 'v3' || version === 'v3b' || version === 'v3c' || version === 'v1'
+      version === 'v4' ||
+      version === 'v3' ||
+      version === 'v3b' ||
+      version === 'v3c' ||
+      version === 'v1' ||
+      version === 'v1b'
     if (!hasDepartments && isAtScaleOrg(orgId)) {
       setOrgId(getOrganization(orgId)?.parentId ?? AT_SCALE_PARENT_ID)
     }
