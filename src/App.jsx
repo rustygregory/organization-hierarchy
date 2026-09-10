@@ -99,7 +99,7 @@ const TabBarOverlay = styled.div`
    with it — the two are the comparison being shown — and everything else sits
    under ARCHIVE in the switcher. */
 const VERSIONS = [
-  { id: 'v1b', label: 'V1.5 View more with skeleton' },
+  { id: 'v1b', label: 'V1.5 View more, filter search' },
   { id: 'v3b', label: 'V3.5 View more in place' },
   { id: 'v1', label: 'V1 MVP', archived: true },
   { id: 'v2', label: 'V2 Expand all rows', archived: true },
