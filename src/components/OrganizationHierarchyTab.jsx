@@ -2383,8 +2383,10 @@ export default function OrganizationHierarchyTab({
             </SearchInputWrapper>
             {/* V1.5 only — its search is the one with something to reset: a
                 committed filter that holds until cleared, rather than the live
-                highlight the other versions clear by emptying the box. */}
-            {isCappedFocused && (searchQuery !== '' || committedFilter !== null) && (
+                highlight the other versions clear by emptying the box. Shown
+                even with nothing typed, so the control's position doesn't
+                shift as a query is entered and cleared. */}
+            {isCappedFocused && (
               <ClearSearchLink type="button" onClick={clearSearch}>
                 Clear search
               </ClearSearchLink>
