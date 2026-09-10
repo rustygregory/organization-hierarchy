@@ -221,7 +221,6 @@ const TableScroll = styled.div`
    `center` puts it on the vertical centre line. The figure margins below set
    the icon/text and text/navigator spacing. */
 const SearchField = styled(Field)`
-  width: 450px;
   /* 20px, with the count line below supplying its own 8px before the table. */
   margin-bottom: 20px;
 
@@ -268,6 +267,39 @@ const SearchLabel = styled(Label)`
    a label 8px of margin-top, on top of the 4px wanted here. */
 const SearchLabelRow = styled.div`
   margin-bottom: 4px;
+`
+
+/* The input and, in V1.5, *Clear search* beside it. The 450px that used to sit
+   on SearchField itself moves to SearchInputWrapper below, so the row can hold
+   the link outside that width rather than the link stretching the field. */
+const SearchRow = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 12px;
+`
+
+const SearchInputWrapper = styled.div`
+  width: 450px;
+  flex-shrink: 0;
+`
+
+/* V1.5's clear control. A link, not a button — same footing as the version
+   switcher and ShowOption, and this prototype's one family for "click this to
+   change what's showing." No underline: unlike NameLink it isn't a way into
+   another organization, so it doesn't carry that affordance. */
+const ClearSearchLink = styled.button`
+  padding: 0;
+  border: 0;
+  background: transparent;
+  font-family: inherit;
+  font-size: 14px;
+  color: #406cc4;
+  white-space: nowrap;
+  cursor: pointer;
+
+  &:hover {
+    color: #284173;
+  }
 `
 
 /* The match navigator ("1 of 2" with down/up chevrons), riding inside the
@@ -1840,15 +1872,21 @@ export default function OrganizationHierarchyTab({
      the field has to show what was typed. */
   const [committedFilter, setCommittedFilter] = useState(null)
 
+  /* Clear search: empties the box and drops the applied filter in one act, so
+     the tree returns to every current child rather than the query that used
+     to narrow it. Shared by the Clear search link and Escape, which do the
+     same thing by two different routes. */
+  const clearSearch = () => {
+    setSearchQuery('')
+    setCommittedFilter(null)
+  }
+
   /* A re-centre moves the search scope with it — V1.5's query is scoped to the
      selected organization's children, so a name typed against one organization
      can't stay in the box after the view moves to another. The input would
      promise a scope it no longer has. */
   useEffect(() => {
-    if (isCappedFocused) {
-      setSearchQuery('')
-      setCommittedFilter(null)
-    }
+    if (isCappedFocused) clearSearch()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedId, version])
 
@@ -2294,53 +2332,64 @@ export default function OrganizationHierarchyTab({
                   : 'Search organizations'}
             </SearchLabel>
           </SearchLabelRow>
-          <MediaInput
-            start={<SearchIcon />}
-            onKeyDown={
-              isCappedFocused
-                ? (event) => {
-                    // Return/Enter is what runs the filter — typing alone
-                    // never does, so committing has to be an explicit act.
-                    if (event.key === 'Enter') {
-                      event.preventDefault()
-                      setCommittedFilter(normalizedQuery || null)
-                    } else if (event.key === 'Escape') {
-                      setSearchQuery('')
-                      setCommittedFilter(null)
-                    }
-                  }
-                : undefined
-            }
-            end={
-              /* The match navigator rides inside the field, at its right end,
-                 while a search is running. Down chevron first, then up —
-                 Rusty's order. Not V1.5: its search is a filter, so there is
-                 no count to navigate. */
-              normalizedQuery === '' || isCappedFocused ? undefined : (
-                <MatchNav>
-                  {matchCount > 0 ? `${shownMatchIndex + 1} of ${matchCount}` : '0 of 0'}
-                  <MatchNavButton
-                    type="button"
-                    aria-label="Next match"
-                    disabled={matchCount === 0 || shownMatchIndex >= matchCount - 1}
-                    onClick={() => goToMatch(shownMatchIndex + 1)}
-                  >
-                    <Chevron direction="down" />
-                  </MatchNavButton>
-                  <MatchNavButton
-                    type="button"
-                    aria-label="Previous match"
-                    disabled={shownMatchIndex <= 0}
-                    onClick={() => goToMatch(shownMatchIndex - 1)}
-                  >
-                    <Chevron direction="up" />
-                  </MatchNavButton>
-                </MatchNav>
-              )
-            }
-            value={searchQuery}
-            onChange={(event) => setSearchQuery(event.target.value)}
-          />
+          <SearchRow>
+            <SearchInputWrapper>
+              <MediaInput
+                start={<SearchIcon />}
+                onKeyDown={
+                  isCappedFocused
+                    ? (event) => {
+                        // Return/Enter is what runs the filter — typing alone
+                        // never does, so committing has to be an explicit act.
+                        if (event.key === 'Enter') {
+                          event.preventDefault()
+                          setCommittedFilter(normalizedQuery || null)
+                        } else if (event.key === 'Escape') {
+                          clearSearch()
+                        }
+                      }
+                    : undefined
+                }
+                end={
+                  /* The match navigator rides inside the field, at its right end,
+                     while a search is running. Down chevron first, then up —
+                     Rusty's order. Not V1.5: its search is a filter, so there is
+                     no count to navigate. */
+                  normalizedQuery === '' || isCappedFocused ? undefined : (
+                    <MatchNav>
+                      {matchCount > 0 ? `${shownMatchIndex + 1} of ${matchCount}` : '0 of 0'}
+                      <MatchNavButton
+                        type="button"
+                        aria-label="Next match"
+                        disabled={matchCount === 0 || shownMatchIndex >= matchCount - 1}
+                        onClick={() => goToMatch(shownMatchIndex + 1)}
+                      >
+                        <Chevron direction="down" />
+                      </MatchNavButton>
+                      <MatchNavButton
+                        type="button"
+                        aria-label="Previous match"
+                        disabled={shownMatchIndex <= 0}
+                        onClick={() => goToMatch(shownMatchIndex - 1)}
+                      >
+                        <Chevron direction="up" />
+                      </MatchNavButton>
+                    </MatchNav>
+                  )
+                }
+                value={searchQuery}
+                onChange={(event) => setSearchQuery(event.target.value)}
+              />
+            </SearchInputWrapper>
+            {/* V1.5 only — its search is the one with something to reset: a
+                committed filter that holds until cleared, rather than the live
+                highlight the other versions clear by emptying the box. */}
+            {isCappedFocused && (searchQuery !== '' || committedFilter !== null) && (
+              <ClearSearchLink type="button" onClick={clearSearch}>
+                Clear search
+              </ClearSearchLink>
+            )}
+          </SearchRow>
         </SearchField>
       )}
 
