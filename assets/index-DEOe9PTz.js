@@ -1346,7 +1346,7 @@ Error generating stack: `+e.message+`
   & svg {
     margin-bottom: 16px;
   }
-`,Tm=()=>(0,q.jsxs)(`svg`,{width:`32`,height:`32`,viewBox:`0 0 16 16`,fill:`none`,stroke:`#646864`,"aria-hidden":`true`,children:[(0,q.jsxs)(`g`,{strokeWidth:`1`,children:[(0,q.jsx)(`circle`,{cx:`7.5`,cy:`8.5`,r:`7`,fill:`none`}),(0,q.jsx)(`path`,{strokeLinecap:`round`,d:`M7.5 12.5V8`})]}),(0,q.jsx)(`circle`,{cx:`7.5`,cy:`5`,r:`1`,fill:`#646864`,stroke:`none`})]}),Em=z.span`
+`,Tm=()=>(0,q.jsx)(`svg`,{width:`20`,height:`20`,viewBox:`0 0 20 20`,fill:`none`,"aria-hidden":`true`,children:(0,q.jsx)(`path`,{fillRule:`evenodd`,clipRule:`evenodd`,fill:`#646864`,d:`M10 1.66602C14.6023 1.66602 18.333 5.39762 18.333 10C18.3329 14.6023 14.6023 18.333 10 18.333C5.39772 18.333 1.66708 14.6022 1.66699 10C1.66699 5.39765 5.39766 1.66606 10 1.66602ZM9.16699 8.33301C8.70674 8.33301 8.33301 8.70674 8.33301 9.16699C8.33327 9.62702 8.7069 10 9.16699 10V13.333C9.16699 13.7932 9.53979 14.1669 10 14.167C10.4602 14.167 10.833 13.7933 10.833 13.333V9.16699C10.833 8.70674 10.4602 8.33301 10 8.33301H9.16699ZM10 5.83301C9.53979 5.83305 9.16699 6.20679 9.16699 6.66699C9.16726 7.12697 9.53995 7.49996 10 7.5C10.4601 7.5 10.8327 7.127 10.833 6.66699C10.833 6.20676 10.4602 5.83301 10 5.83301Z`})}),Em=z.span`
   font-size: 20px;
   font-weight: 600;
   color: #2f3130;
