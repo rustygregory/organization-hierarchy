@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import styled from 'styled-components'
 import {
   Table,
@@ -340,8 +340,9 @@ const MatchNavButton = styled.button`
   }
 `
 
-/* Flora's yellow.300 — the search highlight in the expandable versions: the
-   inline mark on the matched word. V1.5 no longer highlights; it filters. */
+/* Flora's yellow.300 — the search highlight in every version: the inline mark
+   on the matched word. In the filter versions it marks the word the list was
+   narrowed by, so the filter reads as "these, because of this word". */
 const SEARCH_HIT_BG = '#eedf7a'
 
 /* Text colour is inherited so a hit on the selected row's bold name stays bold
@@ -777,25 +778,43 @@ const SearchIcon = () => (
    Centred in the table's row area rather than appearing as a row itself — a
    miss is the absence of rows, not one more row among them. 280px is roughly
    what the tree it replaces would have occupied for a handful of children;
-   tall enough to read as the table's content, not a strip pasted over it. */
+   tall enough to read as the table's content, not a strip pasted over it.
+
+   Spacing follows the Admin Center Framework's empty state: the title sits
+   well clear of the icon (16px of margin under it, on top of the 8px row gap)
+   while the subtitle hugs the title at 8px. */
 const NoResultsArea = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 12px;
+  gap: 8px;
   min-height: 280px;
   padding: 40px 0;
+
+  & svg {
+    margin-bottom: 16px;
+  }
 `
 
+/* @zendeskgarden/svg-icons' info-stroke — the icon the Admin Center Framework
+   empty state shows — inlined for the same no-SVG-loader reason as SearchIcon
+   above. The 16px source geometry untouched; rendering it at 32 is the
+   viewBox's job, so ring, stem and dot all scale together exactly. Coloured
+   fg/subtle where it's used, per the framework's empty state. */
 const NoResultsIcon = () => (
-  <svg width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="#646864" aria-hidden="true">
-    <circle cx="16" cy="16" r="14" strokeWidth="1.5" />
-    <path strokeWidth="1.5" strokeLinecap="round" d="M16 14v7" />
-    <circle cx="16" cy="10.5" r="1" fill="#646864" stroke="none" />
+  <svg width="32" height="32" viewBox="0 0 16 16" fill="none" stroke="#646864" aria-hidden="true">
+    <g strokeWidth="1">
+      <circle cx="7.5" cy="8.5" r="7" fill="none" />
+      <path strokeLinecap="round" d="M7.5 12.5V8" />
+    </g>
+    <circle cx="7.5" cy="5" r="1" fill="#646864" stroke="none" />
   </svg>
 )
 
+/* Title in fg/default (Flora grey.900), subtitle in fg/subtle (grey.700) — the
+   Admin Center Framework empty state's split: the message carries the weight,
+   the guidance stays quiet. */
 const NoResultsTitle = styled.span`
   font-size: 20px;
   font-weight: 600;
@@ -1067,10 +1086,16 @@ const Chevron = ({ direction = 'down' }) => (
  * guide lines land where the real rows will.
  *
  * `searchFilter` narrows the selected organization's direct children to those
- * whose names contain it — V1.5's scoped filter. While it is set the cap and
+ * whose names contain it — V1.5/V5's scoped filter. While it is set the cap and
  * View more are held off, so every match shows even past the cap; the ancestor
  * path, the selected node, and the sibling group are left untouched, since the
  * filter's scope is the children.
+ *
+ * `expandedChildIds` is a Set of org ids whose subtrees should be shown inline
+ * under the selected organization's children — V5's in-place chevron expansion.
+ * When a child id is in this set, its own children are pushed recursively below
+ * it. Rows added this way carry `isChildRow: true` so the renderer can give them
+ * expand/collapse chevrons rather than drill-in arrows. Non-null only in V5.
  *
  * Returns `{ rows, pagedTotal, pagedFrom, pagedTo }` so the caller can caption the
  * slice without recounting it. `pagedTotal` is 0 when nothing needed paging.
@@ -1080,7 +1105,7 @@ const buildFocusedRows = (
   showPeople = true,
   orgOptions = {},
   page = 1,
-  { cap = null, loading = false, searchFilter = null } = {},
+  { cap = null, loading = false, searchFilter = null, expandedChildIds = null } = {},
 ) => {
   const rows = []
   const empty = { rows, pagedTotal: 0, pagedFrom: 0, pagedTo: 0 }
@@ -1193,24 +1218,23 @@ const buildFocusedRows = (
      Sibling paging is windowed around the selected row rather than from index 0 —
      see keepSelectedVisible — because the alternative is a page-one reader looking
      for a selected row that is on page two. */
-  /* V1.5's cap takes precedence over the pager for the children group — the cap
-     is that version's whole answer to a long child list. The sibling group keeps
-     the pager either way. The gate is `cap !== null`, not `childCapped`: a search
-     hit near the end of the list grows the cap past the last child's index, and
-     then the list is owed to the reader whole — paging it at 100 would hide the
-     very row the search just promised to show. */
+  /* V1.5/V5: no pager at all. Children use a View more cap and siblings show in
+     full — the pager was the other answer to a long list, and the user chose
+     View more. The gate is `cap !== null`: search hits past the cap lift it, so
+     the list is never cut while a hit is owed; and siblings never get a pager
+     because there is only one direction to expand (down), which View more gives. */
   const childCapped = !searchFilter && cap !== null && allChildOrgs.length > cap
   const pagesOver = (list) => list.length > CHILDREN_PER_PAGE
   const pagedGroup =
-    searchFilter || cap !== null
-      ? pagesOver(allSiblings)
-        ? 'siblings'
-        : 'none'
-      : pagesOver(allChildOrgs)
-        ? 'children'
-        : pagesOver(allSiblings)
-          ? 'siblings'
-          : 'none'
+    cap !== null
+      ? 'none'
+      : searchFilter
+        ? 'none'
+        : pagesOver(allChildOrgs)
+          ? 'children'
+          : pagesOver(allSiblings)
+            ? 'siblings'
+            : 'none'
   const pagedTotal =
     pagedGroup === 'children'
       ? allChildOrgs.length
@@ -1263,12 +1287,58 @@ const buildFocusedRows = (
 
     if (!isSelected) return
 
-    // Direct children, nested under the selected organization. Each is a leaf
-    // *here* — whatever hangs below it stays out of the view until it is clicked.
+    /* V5's recursive helper — pushes a subtree below a child that the reader
+       opened in-place. Only used when `expandedChildIds` is non-null (V5).
+       Each row carries `isChildRow: true` so the renderer can give them
+       expand/collapse chevrons. Defined here so it closes over `rows`,
+       `hasChildren`, `orgOptions`, `showPeople`. */
+    const pushChildSubtree = (parentOrg, depth, chain, idChain) => {
+      const grandchildren = getChildren(parentOrg.id, orgOptions)
+      const grandPeople = showPeople ? getPeopleIn(parentOrg.id) : []
+      const lastGrandId = grandchildren[grandchildren.length - 1]?.id
+      grandchildren.forEach((gc) => {
+        const gcIsOpen = expandedChildIds.has(gc.id) && hasChildren(gc.id)
+        const isLastHere = gc.id === lastGrandId && grandPeople.length === 0
+        rows.push({
+          key: `org-${gc.id}`,
+          kind: 'org',
+          node: gc,
+          depth,
+          isLast: isLastHere,
+          ancestorIsLast: [...chain, isLastHere],
+          ancestorIds: [...idChain, gc.id],
+          isOpen: gcIsOpen,
+          hasChildren: hasChildren(gc.id),
+          isChildRow: true,
+          childOrgCount: getChildren(gc.id, orgOptions).length,
+          peopleCount: countPeopleAtOrBelow(gc.id, orgOptions),
+        })
+        if (gcIsOpen) {
+          pushChildSubtree(gc, depth + 1, [...chain, isLastHere], [...idChain, gc.id])
+        }
+      })
+      grandPeople.forEach((person, idx) => {
+        const isLast = idx === grandPeople.length - 1
+        rows.push({
+          key: `person-${person.id}-${parentOrg.id}`,
+          kind: 'person',
+          node: person,
+          depth,
+          isLast,
+          ancestorIsLast: [...chain, isLast],
+          ancestorIds: [...idChain, person.id],
+          isOpen: false,
+          hasChildren: false,
+        })
+      })
+    }
+
+    // Direct children, nested under the selected organization.
     childOrgs.forEach((child) => {
       /* When the list is capped the View more row follows it, and that row is
          what closes the rail — the last shown child must not draw an elbow. */
       const isLastChild = !childCapped && child.id === lastChildId && people.length === 0
+      const childIsOpen = expandedChildIds?.has(child.id) && hasChildren(child.id)
 
       rows.push({
         key: `org-${child.id}`,
@@ -1278,11 +1348,16 @@ const buildFocusedRows = (
         isLast: isLastChild,
         ancestorIsLast: [...chainHere, isLastChild],
         ancestorIds: [...idChainHere, child.id],
-        isOpen: false,
+        isOpen: childIsOpen,
         hasChildren: hasChildren(child.id),
+        isChildRow: expandedChildIds !== null,
         childOrgCount: getChildren(child.id, orgOptions).length,
         peopleCount: countPeopleAtOrBelow(child.id, orgOptions),
       })
+
+      if (childIsOpen) {
+        pushChildSubtree(child, selectedDepth + 2, [...chainHere, isLastChild], [...idChainHere, child.id])
+      }
     })
 
     // V1.5's filter with no matches: an empty state spanning the table, in
@@ -1665,7 +1740,19 @@ export default function OrganizationHierarchyTab({
      organization's children), and a cap on that children list with View more at
      the bottom. Reads the V3.5 roster, as V1 now does, so every child count
      matches V3.5's. */
-  const isCappedFocused = version === 'v1b'
+  /* V5: V1.5's full mechanics — skeleton, cap, View more, filter search, Show
+     control — with one addition: the child rows carry expand/collapse chevrons so
+     the reader can open a department's subtree in place without navigating into it.
+     Clicking a name still re-centres; clicking the chevron opens or closes that
+     node's children without moving the page. */
+  const isV5 = version === 'v5'
+  /* V5.1: V5's chrome — search field, header, Show control — with every row
+     replaced by the same empty state V1.5/V5 already show for a filter with no
+     matches. A placeholder for "this organization has no hierarchy at all"
+     rather than a new empty state of its own; reusing the existing content and
+     icon was the ask, not writing new copy for a state nobody's designed yet. */
+  const isNoHierarchy = version === 'v5a'
+  const isCappedFocused = version === 'v1b' || isV5 || isNoHierarchy
   /* V3, V3.5 and V3.75 use the wide department roster and the full 175 / 133 counts. */
   const isWideRoster = isWide || isViewMore || isScrollLoad
   const isExpandable = version === 'v2' || isWide || isViewMore || isScrollLoad
@@ -1792,17 +1879,42 @@ export default function OrganizationHierarchyTab({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [version])
 
-  /* V1.5's simulated fetch. The focused view has no chevrons to open, so the
+  /* V5's in-place child expansion. Tracks which of the selected org's children
+     (and their descendants) have been opened via the expand chevron. Separate from
+     V2's `expandedIds` — V5 is a focused view so there is only ever one expanded
+     subtree context, and it should not carry over when the view re-centres. Reset
+     on navigation and on version switch. */
+  const [v5ExpandedIds, setV5ExpandedIds] = useState(() => new Set())
+  useEffect(() => {
+    setV5ExpandedIds(new Set())
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedId, version])
+
+  const toggleV5Child = (orgId) => {
+    setV5ExpandedIds((prev) => {
+      const next = new Set(prev)
+      if (next.has(orgId)) next.delete(orgId)
+      else next.add(orgId)
+      return next
+    })
+  }
+
+  /* V1.5/V5 simulated fetch. The focused view has no chevrons to open, so the
      "request" is the navigation itself: every re-centre — drill in, drill out,
      or landing on the version — holds skeleton rows for the same beat a chevron
-     open would in the expandable versions. */
+     open would in the expandable versions.
+
+     Skipped for leaf nodes: an org with no children has nothing to "load", so
+     flashing placeholders over a page that will look the same is pure noise. */
   const [focusedLoading, setFocusedLoading] = useState(false)
   useEffect(() => {
     if (!isCappedFocused) return undefined
+    const hasAnyChildren = getChildren(selectedId, dataOptions).length > 0
+    if (!hasAnyChildren) return undefined
     setFocusedLoading(true)
     const timeoutId = window.setTimeout(() => setFocusedLoading(false), SKELETON_DURATION_MS)
     return () => window.clearTimeout(timeoutId)
-  }, [isCappedFocused, selectedId])
+  }, [isCappedFocused, selectedId, dataOptions])
 
   /* V3.75: which nodes are currently blinking, and where — orgId → the sentinel's
      `top` at the moment it was caught, which is where the indicator floats until the
@@ -1859,9 +1971,10 @@ export default function OrganizationHierarchyTab({
     readerClosedRef.current = new Set()
   }, [normalizedQuery])
 
-  /* V1.5's scoped search is a filter, not a highlight and not a typeahead: the
+  /* V1.5's scoped search is a filter, not a typeahead: the
      selected organization's direct children narrow to those whose names contain
-     the query. The scope follows the view — on Bramble Wick it filters Bramble
+     the query, and the matching word carries the yellow mark (see
+     highlightQuery). The scope follows the view — on Bramble Wick it filters Bramble
      Wick's children, on Mathematics it filters Mathematics' children — so the
      field's label ("Search Mathematics") restates it. No counter or chevron
      navigation.
@@ -1883,12 +1996,37 @@ export default function OrganizationHierarchyTab({
 
   /* A re-centre moves the search scope with it — V1.5's query is scoped to the
      selected organization's children, so a name typed against one organization
-     can't stay in the box after the view moves to another. The input would
-     promise a scope it no longer has. */
+     can't stay in the box after the view moves to another. Clicking a search
+     hit clears it and brings back that organization's siblings, exactly as
+     any other click into the tree does; the scroll effect below is what keeps
+     the row you just clicked from disappearing below the fold when the page
+     resets to it. */
+  /* Version switch clears search. selectedId changes are handled synchronously
+     inside select() so they batch with the org change in one render rather than
+     in a separate render that causes the jump. Comment-pin restores don't go
+     through select(), but the anchor ref is null so the correction bails early. */
   useEffect(() => {
     if (isCappedFocused) clearSearch()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedId, version])
+  }, [version])
+
+  /* Keeps the clicked row at its pre-click position on screen. When the filter
+     clears and siblings fill in, rows are inserted above the clicked row and
+     push it down. The anchor is captured synchronously in select() (before the
+     render), and this layout effect locks the scroll before the browser paints.
+     useLayoutEffect without deps runs after every render and bails immediately
+     when there's no anchor — only the render following a click does real work. */
+  const scrollAnchorRef = useRef(null)
+  useLayoutEffect(() => {
+    const anchor = scrollAnchorRef.current
+    if (!anchor || focusedLoading) return
+    const el = rootRef.current?.querySelector(`[data-org-id="${anchor.rowId}"]`)
+    const scrollEl = scrollRef.current
+    if (!el || !scrollEl) return
+    const delta = el.getBoundingClientRect().top - anchor.rowTop
+    if (Math.abs(delta) > 0.5) scrollEl.scrollTop += delta
+    scrollAnchorRef.current = null
+  })
 
   /* A hit behind a View more cap raises that list's cap far enough to show it
      (the last matching row, so one search reveals every hit in the list, not
@@ -2146,7 +2284,22 @@ export default function OrganizationHierarchyTab({
      expanding, and it is why they are separate builders. */
   const { rows, pagedTotal, pagedGroup, pagedFrom, pagedTo } = useMemo(
     () =>
-      isExpandable
+      isNoHierarchy
+        ? {
+            rows: [
+              {
+                key: 'no-hierarchy',
+                kind: 'noResults',
+                title: 'No organizations in sight',
+                text: 'There are no organizations currently here.',
+              },
+            ],
+            pagedTotal: 0,
+            pagedGroup: 'none',
+            pagedFrom: 0,
+            pagedTo: 0,
+          }
+        : isExpandable
         ? buildExpandableRows(selectedId, showPeopleRows, expandedIds, loadingIds, {
             wide: isWideRoster,
             rowCap: isWideRoster && !uncapped ? rowCapChoice : null,
@@ -2166,6 +2319,7 @@ export default function OrganizationHierarchyTab({
             cap: isCappedFocused ? (focusedCapMap.get(selectedId) ?? rowCapChoice) : null,
             loading: isCappedFocused && focusedLoading,
             searchFilter: isCappedFocused ? committedFilter : null,
+            expandedChildIds: isV5 ? v5ExpandedIds : null,
           }),
     [
       selectedId,
@@ -2177,6 +2331,7 @@ export default function OrganizationHierarchyTab({
       isScrollLoad,
       isWideRoster,
       isCappedFocused,
+      isV5,
       expandedIds,
       loadingIds,
       rootId,
@@ -2187,6 +2342,8 @@ export default function OrganizationHierarchyTab({
       focusedCapMap,
       focusedLoading,
       committedFilter,
+      v5ExpandedIds,
+      isNoHierarchy,
     ],
   )
 
@@ -2194,6 +2351,19 @@ export default function OrganizationHierarchyTab({
      reveal effects above keep that honest: a hit behind a cap or a closed
      chevron is surfaced into `rows`, so it lands in the count a render (or a
      skeleton beat) after the query that found it. */
+  /* The word the inline mark paints. In the expandable versions it's the live
+     query — the reveal keeps hits on screen as you type. In the filter versions
+     it's the committed filter, not the live text: the list only narrows on
+     Return, so marking on every keystroke would highlight rows the filter
+     isn't showing. Lowercased for NameText's index lookup, same as
+     normalizedQuery. Empty string when nothing is applied, so rows render
+     untouched. */
+  const highlightQuery = isCappedFocused
+    ? committedFilter
+      ? committedFilter.toLowerCase()
+      : ''
+    : normalizedQuery
+
   const matchCount = useMemo(
     () =>
       normalizedQuery
@@ -2289,8 +2459,26 @@ export default function OrganizationHierarchyTab({
 
   // Drill-in. Every organization in the view is a link to its own context; the
   // page re-centres and the row set is rebuilt from that node's perspective.
+  //
+  // For V1.5/V5: clear the search filter here, in the same event handler, so
+  // React 18 batches the filter change and the org change into one render. If
+  // clearSearch fired in a useEffect instead, there would be an intermediate
+  // render (filter still active, org changed) that moves the clicked row before
+  // the final render, causing the jump the user sees. The anchor captures the
+  // row's screen position BEFORE the batch so the layout effect can restore it.
   const select = (orgId) => {
-    if (orgId !== selectedId) onSelectOrganization?.(orgId)
+    if (orgId === selectedId) return
+    if (isCappedFocused) {
+      const rowEl = rootRef.current?.querySelector(`[data-org-id="${orgId}"]`)
+      if (rowEl && scrollRef.current) {
+        scrollAnchorRef.current = {
+          rowId: orgId,
+          rowTop: rowEl.getBoundingClientRect().top,
+        }
+      }
+      clearSearch()
+    }
+    onSelectOrganization?.(orgId)
   }
 
   const orgLabel = reachOrgCount === 1 ? 'organization' : 'organizations'
@@ -2398,7 +2586,9 @@ export default function OrganizationHierarchyTab({
       {/* Above the table on every version. On the rooted page it counts the window —
           `100 of 175 departments` — and everywhere else it counts the reach. Both are
           captions about the list below, which is why they share the slot; what differs
-          is only which number the view can honestly claim. */}
+          is only which number the view can honestly claim. V5.1 has no rows to caption,
+          so the line is skipped rather than stating a count the empty state contradicts. */}
+      {!isNoHierarchy && (
       <Counts>
         {isRootedPageStatus ? (
           `${pagedTo - pagedFrom + 1} of ${pagedTotal} departments`
@@ -2409,6 +2599,7 @@ export default function OrganizationHierarchyTab({
           </>
         )}
       </Counts>
+      )}
 
       <TableScroll ref={scrollRef} $flush={hideSearch}>
       <TreeTable isReadOnly>
@@ -2429,8 +2620,9 @@ export default function OrganizationHierarchyTab({
               {/* *Show 50 | 75 | 100 records*, at the right-hand end of this cell —
                   V3, V3.5 and V3.75. V1.5 carries the same control with the plain
                   *Show* label — no noun, since the list below is one thing: the
-                  selected organization's children. Not on the rooted page. */}
-              {(isWide || isViewMore || isScrollLoad || isCappedFocused) && !uncapped && (
+                  selected organization's children. Not on the rooted page, and not
+                  on V5.1 — there is no children list for it to cap. */}
+              {(isWide || isViewMore || isScrollLoad || isCappedFocused) && !uncapped && !isNoHierarchy && (
                 <ShowRecords>
                   {'Show '}
                   {WIDE_ROW_CAP_OPTIONS.map((option, index) => (
@@ -2586,17 +2778,20 @@ export default function OrganizationHierarchyTab({
               )
             }
 
-            /* V1.5's filter with no matches. A single cell spanning every column
-               rather than the name cell alone — there is no tree to gutter here,
-               just the table's content for this state. */
+            /* V1.5's filter with no matches, and V5.1's whole-page empty state.
+               A single cell spanning every column rather than the name cell
+               alone — there is no tree to gutter here, just the table's content
+               for this state. Same icon either way; the title and text default
+               to the search-miss copy and V5.1's row overrides them with its
+               own, since "no hierarchy at all" isn't "adjust your search." */
             if (row.kind === 'noResults') {
               return (
                 <TreeRow key={row.key} $noRule>
                   <Cell colSpan={1 + (showChildCountColumn ? 1 : 0) + (showPeopleColumn ? 1 : 0)}>
                     <NoResultsArea>
                       <NoResultsIcon />
-                      <NoResultsTitle>No results in sight</NoResultsTitle>
-                      <NoResultsText>Adjust your search and try again.</NoResultsText>
+                      <NoResultsTitle>{row.title ?? 'No results in sight'}</NoResultsTitle>
+                      <NoResultsText>{row.text ?? 'Adjust your search and try again.'}</NoResultsText>
                     </NoResultsArea>
                   </Cell>
                 </TreeRow>
@@ -2605,12 +2800,13 @@ export default function OrganizationHierarchyTab({
 
             const isPerson = row.kind === 'person'
             const isCurrent = !isPerson && row.node.id === selectedId
-            /* V2: the chevron expands in place instead of drilling in, on every
-               organization that has children — including the selected one and its
-               ancestors. There is no inert marker in this version: no row's children
-               are on screen because of where the page is centred, so there is none
-               whose control would be a lie. */
-            const isExpandControl = isExpandable && row.hasChildren
+            /* V2: the chevron expands in place on every org that has children.
+               V5: same chevron but scoped to child rows only — ancestors and siblings
+               keep their structural/drill-in treatment; only the selected org's
+               children (and their expanded descendants) get the in-place toggle. */
+            const isExpandControl =
+              (isExpandable && row.hasChildren) ||
+              (isV5 && row.isChildRow && row.hasChildren)
             /* On the rooted page the chevron is a small target for the only thing the
                row does, so the row carries it too — click anywhere on a department to
                open or close it. Only where names aren't links: elsewhere a row-wide
@@ -2624,6 +2820,9 @@ export default function OrganizationHierarchyTab({
                 $ruleInset={ruleInsetFor(row.depth)}
                 $noRule={noRowRules}
                 $selected={isCurrent}
+                /* The scroll-into-view effect finds the newly selected row by
+                   this, after a re-centre clears V1.5's search. */
+                data-org-id={isPerson ? undefined : row.node.id}
                 $clickable={isRowToggle}
                 onClick={isRowToggle ? () => toggleExpanded(row.node.id) : undefined}
               >
@@ -2654,7 +2853,8 @@ export default function OrganizationHierarchyTab({
                           /* Where the row toggles too, a chevron click would bubble up
                              to it and toggle a second time, netting no change at all. */
                           event.stopPropagation()
-                          toggleExpanded(row.node.id)
+                          if (isExpandable) toggleExpanded(row.node.id)
+                          else toggleV5Child(row.node.id)
                         }}
                         aria-expanded={row.isOpen}
                         aria-label={
@@ -2687,7 +2887,7 @@ export default function OrganizationHierarchyTab({
                            rooted page nothing is, since there is nowhere for a name to
                            go that wouldn't undo what the page is for. */
                         <NodeName $current={isCurrent} title={row.node.name}>
-                          <NameText name={row.node.name} query={isCappedFocused ? '' : normalizedQuery} />
+                          <NameText name={row.node.name} query={highlightQuery} />
                         </NodeName>
                       ) : (
                         <NameLink
@@ -2698,7 +2898,7 @@ export default function OrganizationHierarchyTab({
                           }}
                           title={row.node.name}
                         >
-                          <NameText name={row.node.name} query={isCappedFocused ? '' : normalizedQuery} />
+                          <NameText name={row.node.name} query={highlightQuery} />
                         </NameLink>
                       )}
                       {(isSansLines || isCappedFocused) && !isPerson && row.childOrgCount > 0 && (

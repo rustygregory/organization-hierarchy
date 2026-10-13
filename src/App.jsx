@@ -95,15 +95,25 @@ const TabBarOverlay = styled.div`
    plus a skeleton beat on re-centre, a Show child orgs cap with View more, and a
    search scoped to the selected organization's children.
 
-   V1.5 is the version on the table now: it opens by default. V3.5 stays up top
-   with it — the two are the comparison being shown — and everything else sits
-   under ARCHIVE in the switcher. */
+   V5 replaced V1.5 as the version on the table: same mechanics, plus expand/collapse
+   chevrons on the selected organization's children so their subtrees can be opened
+   in place. V1.5 moved to ARCHIVE with it; V3.5 went with it too, since the two were
+   being compared against each other and that comparison is over.
+
+   V5.1 is `v5a` — V5's decimal, not V5's `.5`: a second variant sitting beside it
+   rather than a refinement of it, so the id follows the same "letter suffix, no
+   fixed meaning" rule as `v1b`/`v3b` rather than trying to encode ".1" itself. It
+   swaps every row for the same empty state V1.5/V5 already show a filter with no
+   matches — there was no existing "no hierarchy" design to reuse, so this reuses
+   that one rather than inventing new copy for a state nobody's designed yet. */
 const VERSIONS = [
-  { id: 'v1b', label: 'V1.5 View more, filter search' },
-  { id: 'v3b', label: 'V3.5 View more in place' },
+  { id: 'v5', label: 'V5 View more, search, chevron expand' },
+  { id: 'v5a', label: 'V5.1 No org. hierarchy' },
   { id: 'v1', label: 'V1 MVP', archived: true },
+  { id: 'v1b', label: 'V1.5 View more, filter search', archived: true },
   { id: 'v2', label: 'V2 Expand all rows', archived: true },
   { id: 'v3', label: 'V3 View all with pagination', archived: true },
+  { id: 'v3b', label: 'V3.5 View more in place', archived: true },
   { id: 'v3c', label: 'V3.75 Scroll to load', archived: true },
   { id: 'v4', label: 'V4 No chevrons', archived: true },
 ]
@@ -140,7 +150,7 @@ export default function App() {
   // V3.5 Scroll to load is the same cap-and-counter model, but loads 50 rows
   // automatically as you scroll near the bottom — no buttons, just a blue indicator
   // and infinite scroll.
-  const [version, setVersion] = useState('v1b')
+  const [version, setVersion] = useState('v5')
   const [commentIsOn, setCommentIsOn] = useState(false)
 
   // Which organization's profile is open. Lives here because the tab strip and
@@ -200,6 +210,8 @@ export default function App() {
     // to stand there too (and in V1.5, which inherits that roster) — only V2
     // still bounces.
     const hasDepartments =
+      version === 'v5' ||
+      version === 'v5a' ||
       version === 'v4' ||
       version === 'v3' ||
       version === 'v3b' ||
