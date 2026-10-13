@@ -497,9 +497,16 @@ const TreeRow = styled(Row)`
     background-color: ${(props) => (props.$selected ? SELECTED_ROW_BG : 'transparent')};
   }
 
+  /* $static rows are state, not content — the empty state's centred message is
+     nothing to point at, and a hover tint on it invites a click that goes
+     nowhere. */
+  ${(props) =>
+    !props.$static &&
+    `
   &:hover td {
     background-color: ${(props) => (props.$selected ? SELECTED_ROW_BG : HOVER_ROW_BG)};
   }
+  `}
 
   ${(props) =>
     !props.$noRule &&
@@ -779,10 +786,8 @@ const SearchIcon = () => (
    miss is the absence of rows, not one more row among them. 280px is roughly
    what the tree it replaces would have occupied for a handful of children;
    tall enough to read as the table's content, not a strip pasted over it.
-
-   Spacing follows the Admin Center Framework's empty state: the title sits
-   well clear of the icon (16px of margin under it, on top of the 8px row gap)
-   while the subtitle hugs the title at 8px. */
+   Text only: the framework empty state's info icon read as clutter above a
+   tree that is itself mostly absence, so it's dropped. */
 const NoResultsArea = styled.div`
   display: flex;
   flex-direction: column;
@@ -791,27 +796,7 @@ const NoResultsArea = styled.div`
   gap: 8px;
   min-height: 280px;
   padding: 40px 0;
-
-  & svg {
-    margin-bottom: 16px;
-  }
 `
-
-/* The Flora Icons library's Info circle, Style=Stroke — exported from the
-   Flora Icons Figma library (via the set behind Flora Core's Notification
-   icon) and inlined for the same no-SVG-loader reason as SearchIcon above.
-   The component is 20×20 with the glyph itself at 16×16 — the ring spans
-   1.67–18.33 in the viewBox — so it renders at 20 fixed and never rescales.
-   Stroke style: the ring is an outlined donut, the stem and dot filled. The
-   library ships a Style=Fill sibling whose solid disc is a different, heavier
-   mark. Colour is fg/subtle, the empty state's icon token. */
-const NoResultsIcon = () => (
-  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-    <path fill="#646864" d="M10 8.33301C10.4602 8.33301 10.833 8.70675 10.833 9.16699V13.333C10.833 13.7932 10.4602 14.167 10 14.167C9.53977 14.167 9.16699 13.7932 9.16699 13.333V10C8.70692 10 8.33327 9.62701 8.33301 9.16699C8.33301 8.70675 8.70675 8.33301 9.16699 8.33301H10Z" />
-    <path fill="#646864" d="M10 5.83301C10.4602 5.83301 10.833 6.20676 10.833 6.66699C10.8327 7.127 10.4601 7.5 10 7.5C9.53995 7.49999 9.16726 7.127 9.16699 6.66699C9.16699 6.20676 9.53979 5.83302 10 5.83301Z" />
-    <path fillRule="evenodd" clipRule="evenodd" fill="#646864" d="M10 1.66602C14.6024 1.66602 18.333 5.39763 18.333 10C18.3329 14.6023 14.6024 18.333 10 18.333C5.3977 18.333 1.66708 14.6023 1.66699 10C1.66699 5.39764 5.39764 1.66603 10 1.66602ZM10 3.33301C6.31811 3.33302 3.33301 6.31811 3.33301 10C3.3331 13.6818 6.31817 16.667 10 16.667C13.6819 16.667 16.6669 13.6819 16.667 10C16.667 6.3181 13.6819 3.33301 10 3.33301Z" />
-  </svg>
-)
 
 /* Title in fg/default (Flora grey.900), subtitle in fg/subtle (grey.700) — the
    Admin Center Framework empty state's split: the message carries the weight,
@@ -2787,10 +2772,9 @@ export default function OrganizationHierarchyTab({
                own, since "no hierarchy at all" isn't "adjust your search." */
             if (row.kind === 'noResults') {
               return (
-                <TreeRow key={row.key} $noRule>
+                <TreeRow key={row.key} $noRule $static>
                   <Cell colSpan={1 + (showChildCountColumn ? 1 : 0) + (showPeopleColumn ? 1 : 0)}>
                     <NoResultsArea>
-                      <NoResultsIcon />
                       <NoResultsTitle>{row.title ?? 'No results in sight'}</NoResultsTitle>
                       <NoResultsText>{row.text ?? 'Adjust your search and try again.'}</NoResultsText>
                     </NoResultsArea>
