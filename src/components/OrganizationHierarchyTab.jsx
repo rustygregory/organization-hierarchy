@@ -797,20 +797,19 @@ const NoResultsArea = styled.div`
   }
 `
 
-/* The Flora Icons library's Info circle, exported from the Flora Icons Figma
-   library and inlined for the same no-SVG-loader reason as SearchIcon above.
-   Flora icons scale from a single 20px source, so it renders at 20 fixed —
-   no rescaling. Its style is filled (the ring is a filled donut with the
-   stem and dot knocked out), not Garden's stroked circle. Colour is
-   fg/subtle, the empty state's icon token. */
+/* The Flora Icons library's Info circle, Style=Stroke — exported from the
+   Flora Icons Figma library (via the set behind Flora Core's Notification
+   icon) and inlined for the same no-SVG-loader reason as SearchIcon above.
+   The component is 20×20 with the glyph itself at 16×16 — the ring spans
+   1.67–18.33 in the viewBox — so it renders at 20 fixed and never rescales.
+   Stroke style: the ring is an outlined donut, the stem and dot filled. The
+   library ships a Style=Fill sibling whose solid disc is a different, heavier
+   mark. Colour is fg/subtle, the empty state's icon token. */
 const NoResultsIcon = () => (
   <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-    <path
-      fillRule="evenodd"
-      clipRule="evenodd"
-      fill="#646864"
-      d="M10 1.66602C14.6023 1.66602 18.333 5.39762 18.333 10C18.3329 14.6023 14.6023 18.333 10 18.333C5.39772 18.333 1.66708 14.6022 1.66699 10C1.66699 5.39765 5.39766 1.66606 10 1.66602ZM9.16699 8.33301C8.70674 8.33301 8.33301 8.70674 8.33301 9.16699C8.33327 9.62702 8.7069 10 9.16699 10V13.333C9.16699 13.7932 9.53979 14.1669 10 14.167C10.4602 14.167 10.833 13.7933 10.833 13.333V9.16699C10.833 8.70674 10.4602 8.33301 10 8.33301H9.16699ZM10 5.83301C9.53979 5.83305 9.16699 6.20679 9.16699 6.66699C9.16726 7.12697 9.53995 7.49996 10 7.5C10.4601 7.5 10.8327 7.127 10.833 6.66699C10.833 6.20676 10.4602 5.83301 10 5.83301Z"
-    />
+    <path fill="#646864" d="M10 8.33301C10.4602 8.33301 10.833 8.70675 10.833 9.16699V13.333C10.833 13.7932 10.4602 14.167 10 14.167C9.53977 14.167 9.16699 13.7932 9.16699 13.333V10C8.70692 10 8.33327 9.62701 8.33301 9.16699C8.33301 8.70675 8.70675 8.33301 9.16699 8.33301H10Z" />
+    <path fill="#646864" d="M10 5.83301C10.4602 5.83301 10.833 6.20676 10.833 6.66699C10.8327 7.127 10.4601 7.5 10 7.5C9.53995 7.49999 9.16726 7.127 9.16699 6.66699C9.16699 6.20676 9.53979 5.83302 10 5.83301Z" />
+    <path fillRule="evenodd" clipRule="evenodd" fill="#646864" d="M10 1.66602C14.6024 1.66602 18.333 5.39763 18.333 10C18.3329 14.6023 14.6024 18.333 10 18.333C5.3977 18.333 1.66708 14.6023 1.66699 10C1.66699 5.39764 5.39764 1.66603 10 1.66602ZM10 3.33301C6.31811 3.33302 3.33301 6.31811 3.33301 10C3.3331 13.6818 6.31817 16.667 10 16.667C13.6819 16.667 16.6669 13.6819 16.667 10C16.667 6.3181 13.6819 3.33301 10 3.33301Z" />
   </svg>
 )
 
