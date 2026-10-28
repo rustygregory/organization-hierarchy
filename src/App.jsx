@@ -126,6 +126,7 @@ const VERSIONS = [
 
 const ADD_USER_VERSION = 'add-user'
 const DEFAULT_HIERARCHY_VERSION = 'v5'
+const isAddUserVersion = (id) => id === ADD_USER_VERSION
 
 /* Restoring a comment's saved version, guarded against ids that no longer exist.
    A pin carrying an id no version answers to would leave the switcher with no matching
@@ -161,14 +162,14 @@ export default function App() {
   // and infinite scroll.
   const [version, setVersion] = useState(DEFAULT_HIERARCHY_VERSION)
   const [commentIsOn, setCommentIsOn] = useState(false)
-  /* Version to restore when leaving the add-user modal. Ref rather than state so
+  /* Version to restore when leaving an add-user modal. Ref rather than state so
      picking Add new user doesn't re-render solely to remember where we came from. */
   const versionBeforeAddUser = useRef(DEFAULT_HIERARCHY_VERSION)
-  const isAddUser = version === ADD_USER_VERSION
+  const isAddUser = isAddUserVersion(version)
   const hierarchyVersion = isAddUser ? DEFAULT_HIERARCHY_VERSION : version
 
   const handleVersionChange = (nextId) => {
-    if (nextId === ADD_USER_VERSION && version !== ADD_USER_VERSION) {
+    if (isAddUserVersion(nextId) && !isAddUserVersion(version)) {
       versionBeforeAddUser.current = version
     }
     setVersion(nextId)
@@ -176,7 +177,7 @@ export default function App() {
 
   const closeAddUserModal = () => {
     const restore = versionBeforeAddUser.current
-    setVersion(restore === ADD_USER_VERSION ? DEFAULT_HIERARCHY_VERSION : restore)
+    setVersion(isAddUserVersion(restore) ? DEFAULT_HIERARCHY_VERSION : restore)
   }
 
   // Which organization's profile is open. Lives here because the tab strip and
@@ -338,7 +339,7 @@ export default function App() {
         <CommentLayer
           context={{ version: hierarchyVersion, orgId, wideTabOrgId, activeTabId }}
           onRestoreContext={(saved) => {
-            if (isKnownVersion(saved.version) && saved.version !== ADD_USER_VERSION) {
+            if (isKnownVersion(saved.version) && !isAddUserVersion(saved.version)) {
               setVersion(saved.version)
             }
             if (saved.orgId) setOrgId(saved.orgId)
