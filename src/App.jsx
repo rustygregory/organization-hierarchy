@@ -1,9 +1,10 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { ThemeProvider } from './flora-theme/elements/ThemeProvider'
 import { TopBar, MainNav } from 'zendesk-globalnav-template'
 import styled from 'styled-components'
 import OrganizationProfile from './components/OrganizationProfile'
 import DepartmentPage from './components/DepartmentPage'
+import AddNewUserModal from './components/AddNewUserModal'
 import TabBar from './components/TabBar'
 import CommentLayer from './comments/CommentLayer'
 import PrototypeBar from './prototype-bar/PrototypeBar'
@@ -105,10 +106,15 @@ const TabBarOverlay = styled.div`
    fixed meaning" rule as `v1b`/`v3b` rather than trying to encode ".1" itself. It
    swaps every row for the same empty state V1.5/V5 already show a filter with no
    matches — there was no existing "no hierarchy" design to reuse, so this reuses
-   that one rather than inventing new copy for a state nobody's designed yet. */
+   that one rather than inventing new copy for a state nobody's designed yet.
+
+   Add new user (`add-user`) is not a hierarchy variant: selecting it keeps V5's
+   tree on screen and opens the grant-access modal over it. Closing restores the
+   version that was showing before. */
 const VERSIONS = [
   { id: 'v5', label: 'V5 View more, search, chevron expand' },
   { id: 'v5a', label: 'V5.1 No org. hierarchy' },
+  { id: 'add-user', label: 'Add new user' },
   { id: 'v1', label: 'V1 MVP', archived: true },
   { id: 'v1b', label: 'V1.5 View more, filter search', archived: true },
   { id: 'v2', label: 'V2 Expand all rows', archived: true },
@@ -117,6 +123,9 @@ const VERSIONS = [
   { id: 'v3c', label: 'V3.75 Scroll to load', archived: true },
   { id: 'v4', label: 'V4 No chevrons', archived: true },
 ]
+
+const ADD_USER_VERSION = 'add-user'
+const DEFAULT_HIERARCHY_VERSION = 'v5'
 
 /* Restoring a comment's saved version, guarded against ids that no longer exist.
    A pin carrying an id no version answers to would leave the switcher with no matching
@@ -150,8 +159,25 @@ export default function App() {
   // V3.5 Scroll to load is the same cap-and-counter model, but loads 50 rows
   // automatically as you scroll near the bottom — no buttons, just a blue indicator
   // and infinite scroll.
-  const [version, setVersion] = useState('v5')
+  const [version, setVersion] = useState(DEFAULT_HIERARCHY_VERSION)
   const [commentIsOn, setCommentIsOn] = useState(false)
+  /* Version to restore when leaving the add-user modal. Ref rather than state so
+     picking Add new user doesn't re-render solely to remember where we came from. */
+  const versionBeforeAddUser = useRef(DEFAULT_HIERARCHY_VERSION)
+  const isAddUser = version === ADD_USER_VERSION
+  const hierarchyVersion = isAddUser ? DEFAULT_HIERARCHY_VERSION : version
+
+  const handleVersionChange = (nextId) => {
+    if (nextId === ADD_USER_VERSION && version !== ADD_USER_VERSION) {
+      versionBeforeAddUser.current = version
+    }
+    setVersion(nextId)
+  }
+
+  const closeAddUserModal = () => {
+    const restore = versionBeforeAddUser.current
+    setVersion(restore === ADD_USER_VERSION ? DEFAULT_HIERARCHY_VERSION : restore)
+  }
 
   // Which organization's profile is open. Lives here because the tab strip and
   // the profile header both name it, and the hierarchy tab re-points it.
@@ -210,18 +236,18 @@ export default function App() {
     // to stand there too (and in V1.5, which inherits that roster) — only V2
     // still bounces.
     const hasDepartments =
-      version === 'v5' ||
-      version === 'v5a' ||
-      version === 'v4' ||
-      version === 'v3' ||
-      version === 'v3b' ||
-      version === 'v3c' ||
-      version === 'v1' ||
-      version === 'v1b'
+      hierarchyVersion === 'v5' ||
+      hierarchyVersion === 'v5a' ||
+      hierarchyVersion === 'v4' ||
+      hierarchyVersion === 'v3' ||
+      hierarchyVersion === 'v3b' ||
+      hierarchyVersion === 'v3c' ||
+      hierarchyVersion === 'v1' ||
+      hierarchyVersion === 'v1b'
     if (!hasDepartments && isAtScaleOrg(orgId)) {
       setOrgId(getOrganization(orgId)?.parentId ?? AT_SCALE_PARENT_ID)
     }
-  }, [version, orgId])
+  }, [hierarchyVersion, orgId])
 
   // Browser tab follows whichever Support tab is in front, the way a real one does.
   useEffect(() => {
@@ -249,7 +275,7 @@ export default function App() {
         meta="Started July 2026"
         versions={VERSIONS}
         versionId={version}
-        onVersionChange={setVersion}
+        onVersionChange={handleVersionChange}
         commentIsOn={commentIsOn}
         onCommentToggle={() => {
           setCommentIsOn((v) => !v)
@@ -292,8 +318,8 @@ export default function App() {
               <OrganizationProfile
                 orgId={orgId}
                 onSelectOrganization={setOrgId}
-                version={version}
-                onOpenInNewTab={version === 'v3' ? openWideTab : undefined}
+                version={hierarchyVersion}
+                onOpenInNewTab={hierarchyVersion === 'v3' ? openWideTab : undefined}
               />
             )}
           </MainContent>
@@ -310,9 +336,11 @@ export default function App() {
             content depending on the version and the selected organization, so a
             pin without this context would point at the wrong row. */}
         <CommentLayer
-          context={{ version, orgId, wideTabOrgId, activeTabId }}
+          context={{ version: hierarchyVersion, orgId, wideTabOrgId, activeTabId }}
           onRestoreContext={(saved) => {
-            if (isKnownVersion(saved.version)) setVersion(saved.version)
+            if (isKnownVersion(saved.version) && saved.version !== ADD_USER_VERSION) {
+              setVersion(saved.version)
+            }
             if (saved.orgId) setOrgId(saved.orgId)
             /* V3's second tab is part of the view a pin was made in: the same
                screen position holds a department list on one tab and the profile on
@@ -324,6 +352,9 @@ export default function App() {
           isOn={commentIsOn}
           onIsOnChange={setCommentIsOn}
         />
+        {isAddUser && (
+          <AddNewUserModal orgName={org.name} onClose={closeAddUserModal} />
+        )}
       </PageContainer>
       </OuterShell>
     </ThemeProvider>

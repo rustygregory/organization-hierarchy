@@ -18,6 +18,7 @@
     "@zendeskgarden/react-dropdowns": "^9.15.6",
     "@zendeskgarden/react-forms": "^9.15.6",
     "@zendeskgarden/react-loaders": "^9.15.7",
+    "@zendeskgarden/react-modals": "^9.16.1",
     "@zendeskgarden/react-pagination": "^9.15.7",
     "@zendeskgarden/react-tables": "^9.15.6",
     "@zendeskgarden/react-tabs": "^9.15.6",
